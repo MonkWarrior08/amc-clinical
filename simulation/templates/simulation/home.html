@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMC Clinical - Home</title>
+</head>
+<body>
+<h1>AMC Clinical</h1>
+
+{% if user.is_authenticated %}
+<p>Welcome, {{ user.username }}!</p>
+<p><a href="/accounts/logout/">Log out</a></p>
+{% else %}
+<p><a href="/accounts/login/">Log in</a></p>
+{% endif %}
+</body>
+</html>
+
