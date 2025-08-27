@@ -19,15 +19,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / '.env')
 
-# Clerk
-CLERK_PUBLISHABLE_KEY = env('CLERK_PUBLISHABLE_KEY', default='')
-
+GOOGLE_API_KEY = env('GOOGLE_API_KEY')
+PINECONE_API_KEY = env('PINECONE_API_KEY')
+PINECONE_ENVIRONMENT = env('PINECONE_ENVIRONMENT')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-12l=g!1#=+r*nueo=4)#!mfzb^l!s^w8_tg1d0kgwc7!_y^g*j'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -127,7 +127,7 @@ STATIC_URL = 'static/'
 
 # Django auth redirects
 LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
