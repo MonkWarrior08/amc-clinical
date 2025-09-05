@@ -134,6 +134,7 @@ class MedicalCasesDatabase:
         
         # Common subsection patterns
         subsection_patterns = [
+            r'\[INSTRUCTION\](.*?)(?=\[|$)',
             r'\[SCENARIO\](.*?)(?=\[|$)',
             r'\[SUMMARY\](.*?)(?=\[|$)',
             r'\[EXAMINATION_FINDINGS\](.*?)(?=\[|$)',
@@ -157,6 +158,16 @@ class MedicalCasesDatabase:
                         'subsection_type': subsection_type,
                         'content': content
                     })
+        
+        # Special handling for CASE_TYPE which has a different format
+        case_type_matches = re.finditer(r'\[CASE_TYPE:([^\]]+)\]', section_content)
+        for match in case_type_matches:
+            content = match.group(1).strip()
+            if content:
+                subsections.append({
+                    'subsection_type': 'CASE_TYPE',
+                    'content': content
+                })
         
         return subsections
     
@@ -218,7 +229,7 @@ def main():
     db.create_tables()
     
     # Parse and insert data from both files
-    files_to_process = ["../source_info/cases/cases.txt", "../source_info/cases/cases2.txt"]
+    files_to_process = ["source_info/cases/case1.txt", "source_info/cases/cases2.txt"]
     
     for filename in files_to_process:
         if os.path.exists(filename):

@@ -352,6 +352,57 @@
             font-style: italic;
         }
         
+        .scenario-section, .instruction-section {
+            margin-bottom: 2rem;
+        }
+        
+        .scenario-content, .instruction-content {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 4px solid var(--medical-green);
+            margin-top: 1rem;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        .instruction-content {
+            background: #fef3c7;
+            border-left-color: #f59e0b;
+        }
+        
+        .case-type-section {
+            margin-bottom: 2rem;
+        }
+        
+        .case-type-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .case-type-badge {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .case-type-short {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+        }
+        
+        .case-type-long {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            color: white;
+        }
+        
+        
         /* Action Section */
         .action-section {
             background: var(--medical-card);
@@ -653,7 +704,7 @@
                         <i data-lucide="file-text" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="case-title">{{ case.patient_name|default:"Erin Campbell" }}</h1>
+                        <h1 class="case-title">{{ case.case_id|title }}</h1>
                         <p class="case-subtitle">
                             Case Briefing - Read the instructions carefully before beginning your timed session
                         </p>
@@ -662,16 +713,16 @@
                 
                 <div class="case-meta">
                     <div class="meta-item">
-                        <i data-lucide="user" class="w-4 h-4"></i>
-                        <span><span class="meta-value">{{ case.age|default:"14" }} years old</span> • {{ case.gender|default:"Female" }}</span>
+                        <i data-lucide="folder" class="w-4 h-4"></i>
+                        <span class="meta-value">{{ case.category_name|title }}</span>
                     </div>
                     <div class="meta-item">
                         <i data-lucide="clock" class="w-4 h-4"></i>
-                        <span><span class="meta-value">{{ case.duration|default:"20" }} minutes</span> session</span>
+                        <span><span class="meta-value">20 minutes</span> session</span>
                     </div>
                     <div class="meta-item">
                         <i data-lucide="target" class="w-4 h-4"></i>
-                        <span class="meta-value">{{ case.difficulty|title|default:"Beginner" }}</span>
+                        <span class="meta-value">Clinical Case</span>
                     </div>
                 </div>
             </section>
@@ -687,58 +738,34 @@
                 </div>
                 
                 <div class="briefing-content">
-                    <!-- Sample Instructions - Replace with {{ case.instruction_for_doc|safe }} -->
-                    <h1>Patient Information</h1>
-                    <p>You are about to examine <strong>Erin Campbell</strong>, a 14-year-old female who has presented to your clinic with concerns about her skin condition.</p>
+                    {% if case.case_type %}
+                    <div class="case-type-section">
+                        <h1>Case Type</h1>
+                        <div class="case-type-content">
+                            <span class="case-type-badge {% if case.case_type == 'long' %}case-type-long{% else %}case-type-short{% endif %}">
+                                {{ case.case_type|title }} Case
+                            </span>
+                        </div>
+                    </div>
+                    {% endif %}
                     
-                    <h2>Setting</h2>
-                    <p>This consultation is taking place in a general practice clinic. You have allocated 20 minutes for this appointment. The patient's mother has accompanied her but has agreed to wait outside during the initial consultation to allow the patient to speak freely.</p>
+                    {% if case.scenario %}
+                    <div class="scenario-section">
+                        <h1>Patient Scenario</h1>
+                        <div class="scenario-content">{{ case.scenario|safe }}</div>
+                    </div>
+                    {% endif %}
                     
-                    <h2>Your Role</h2>
-                    <p>You are the general practitioner conducting the consultation. Your objectives include:</p>
-                    <ul>
-                        <li>Conducting a thorough history taking focused on the presenting complaint</li>
-                        <li>Performing an appropriate physical examination</li>
-                        <li>Demonstrating effective communication skills with an adolescent patient</li>
-                        <li>Addressing the patient's concerns and providing appropriate management</li>
-                        <li>Discussing treatment options and lifestyle modifications</li>
-                    </ul>
+                    {% if case.instruction %}
+                    <div class="instruction-section">
+                        <h1>Instructions for Doctor</h1>
+                        <div class="instruction-content">{{ case.instruction|safe }}</div>
+                    </div>
+                    {% endif %}
                     
-                    <h2>Key Areas to Address</h2>
-                    <p>During this consultation, you should focus on:</p>
-                    <ol>
-                        <li><strong>History Taking:</strong> Explore the onset, duration, and characteristics of the skin condition</li>
-                        <li><strong>Psychosocial Impact:</strong> Assess how the condition is affecting the patient's self-esteem and daily activities</li>
-                        <li><strong>Physical Examination:</strong> Conduct an appropriate dermatological examination</li>
-                        <li><strong>Patient Education:</strong> Explain the condition and available treatment options</li>
-                        <li><strong>Adolescent Communication:</strong> Use age-appropriate language and respect the patient's autonomy</li>
-                    </ol>
-                    
-                    <h2>Assessment Criteria</h2>
-                    <p>You will be assessed on the following areas:</p>
-                    <ul>
-                        <li>History taking skills and systematic approach</li>
-                        <li>Physical examination technique and completeness</li>
-                        <li>Communication skills and rapport building</li>
-                        <li>Clinical reasoning and diagnostic approach</li>
-                        <li>Management planning and patient education</li>
-                        <li>Professional behavior and ethical considerations</li>
-                    </ul>
-                    
-                    <h2>Special Considerations</h2>
-                    <p><em>Remember that this is an adolescent patient who may feel embarrassed about her appearance. Be sensitive to her emotional state and ensure she feels comfortable throughout the consultation. Consider issues around consent, confidentiality, and the role of parents in adolescent healthcare.</em></p>
-                    
-                    <h2>Available Resources</h2>
-                    <p>During the examination, you will have access to:</p>
-                    <ul>
-                        <li>Basic examination equipment (stethoscope, otoscope, etc.)</li>
-                        <li>Dermatoscope for detailed skin examination</li>
-                        <li>Patient information sheets about acne management</li>
-                        <li>Prescription pad for medications if indicated</li>
-                    </ul>
-                    
-                    <!-- This would be replaced with the actual case content -->
-                    <!-- {{ case.instruction_for_doc|safe|default:"<p>Case instructions will be displayed here...</p>" }} -->
+                    {% if not case.scenario and not case.instruction %}
+                    <p>Case details are being prepared. Please check back later or contact support if this issue persists.</p>
+                    {% endif %}
                 </div>
             </section>
             
@@ -753,7 +780,7 @@
                     The timer will begin immediately and cannot be paused.
                 </p>
                 
-                <a href="{% url 'case_simulation' case_id=case.id %}" class="btn-primary" id="begin-session-btn">
+                <a href="{% url 'case_simulation' case_id=case.case_id %}" class="btn-primary" id="begin-session-btn">
                     <i data-lucide="timer" class="w-6 h-6"></i>
                     Begin Timed Session
                 </a>
@@ -764,7 +791,7 @@
                 </a>
                 
                 <div class="session-info">
-                    <p><strong>Session Duration:</strong> {{ case.duration|default:"20" }} minutes • <strong>Difficulty:</strong> {{ case.difficulty|title|default:"Beginner" }} • <strong>Format:</strong> Interactive AI Simulation</p>
+                    <p><strong>Session Duration:</strong> 20 minutes • <strong>Category:</strong> {{ case.category_name|title }} • <strong>Format:</strong> Interactive AI Simulation</p>
                 </div>
             </section>
         </main>

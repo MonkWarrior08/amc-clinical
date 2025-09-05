@@ -405,6 +405,48 @@
             margin-bottom: 1.5rem;
         }
         
+        .case-description {
+            margin-bottom: 1.5rem;
+        }
+        
+        .case-description p {
+            font-size: 0.95rem;
+            color: var(--medical-text-light);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .patient-details-extended {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        
+        .detail-item i {
+            color: var(--medical-green);
+            flex-shrink: 0;
+        }
+        
+        .detail-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--medical-text-light);
+            min-width: 120px;
+        }
+        
+        .detail-value {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
         .scenario-section, .instruction-section {
             margin-bottom: 1.5rem;
         }
@@ -645,7 +687,7 @@
                     </div>
                     <div class="stat-item">
                         <i data-lucide="clock" class="w-4 h-4"></i>
-                        <span><span class="stat-number">15-30</span> Minutes Each</span>
+                        <span><span class="stat-number">10</span> Minutes Each</span>
                     </div>
                     <div class="stat-item">
                         <i data-lucide="target" class="w-4 h-4"></i>
@@ -673,12 +715,11 @@
                     </div>
                     
                     <div class="filter-group">
-                        <label class="filter-label" for="difficulty-filter">Difficulty Level</label>
-                        <select id="difficulty-filter" class="filter-select" onchange="filterCases()">
-                            <option value="">All Difficulties</option>
-                            <option value="beginner">Beginner</option>
-                            <option value="intermediate">Intermediate</option>
-                            <option value="advanced">Advanced</option>
+                        <label class="filter-label" for="case-type-filter">Case Type</label>
+                        <select id="case-type-filter" class="filter-select" onchange="filterCases()">
+                            <option value="">All Case Types</option>
+                            <option value="short">Short Case</option>
+                            <option value="long">Long Case</option>
                         </select>
                     </div>
                     
@@ -696,7 +737,7 @@
                         <select id="sort-select" class="filter-select" onchange="sortCases()">
                             <option value="name">Patient Name</option>
                             <option value="age">Age</option>
-                            <option value="difficulty">Difficulty</option>
+                            <option value="case-type">Case Type</option>
                             <option value="status">Completion Status</option>
                         </select>
                     </div>
@@ -707,7 +748,7 @@
             <section class="animate-list">
                 <div class="case-list" id="case-list">
                     {% for case in cases %}
-                    <a href="{% url 'case_detail' case_id=case.case_id %}" class="case-item" data-case='{"name":"{{ case.case_id|lower }}","difficulty":"intermediate","completed":false}'>
+                    <a href="{% url 'case_detail' case_id=case.case_id %}" class="case-item" data-case='{"name":"{{ case.case_id|lower }}","caseType":"{{ case.case_type|default:"short" }}","completed":false}'>
                         <div class="case-header">
                             <div class="patient-info">
                                 <h3 class="patient-name">{{ case.case_id|title }}</h3>
@@ -717,7 +758,9 @@
                                 </div>
                             </div>
                             <div class="case-status">
-                                <div class="difficulty-badge difficulty-intermediate">Clinical Case</div>
+                                <div class="difficulty-badge {% if case.case_type == 'long' %}difficulty-advanced{% else %}difficulty-intermediate{% endif %}">
+                                    {% if case.case_type %}{{ case.case_type|title }} Case{% else %}Clinical Case{% endif %}
+                                </div>
                                 <div class="completion-status">
                                     <i data-lucide="circle" class="w-4 h-4"></i>
                                     <span>Not Completed</span>
@@ -725,29 +768,36 @@
                             </div>
                         </div>
                         
-                        {% if case.scenario %}
-                        <div class="scenario-section">
-                            <h4 class="scenario-title">Scenario</h4>
-                            <p class="scenario-content">{{ case.scenario|truncatewords:50 }}</p>
-                            </div>
-                        {% endif %}
-                        
-                        {% if case.instruction_for_doc %}
-                        <div class="instruction-section">
-                            <h4 class="instruction-title">Instructions for Doctor</h4>
-                            <div class="instruction-content">{{ case.instruction_for_doc|truncatewords:100 }}</div>
+                        <div class="case-description">
+                            <div class="patient-details-extended">
+                                <div class="detail-item">
+                                    <i data-lucide="user" class="w-4 h-4"></i>
+                                    <span class="detail-label">Gender:</span>
+                                    <span class="detail-value">{{ case.gender|default:"Not specified" }}</span>
                                 </div>
-                        {% endif %}
+                                <div class="detail-item">
+                                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                                    <span class="detail-label">Age:</span>
+                                    <span class="detail-value">{{ case.age|default:"Not specified" }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i data-lucide="briefcase" class="w-4 h-4"></i>
+                                    <span class="detail-label">Occupation:</span>
+                                    <span class="detail-value">{{ case.occupation|default:"Not specified" }}</span>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div class="case-meta">
                             <div class="case-tags">
                                 <span class="case-tag">{{ category_name }}</span>
+                                {% if case.case_type %}<span class="case-tag">{{ case.case_type|title }} Case</span>{% endif %}
                                 <span class="case-tag">Clinical Practice</span>
                                 <span class="case-tag">AI Simulation</span>
                             </div>
                             <div class="duration-estimate">
                                 <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>~20 min</span>
+                                <span>~10 min</span>
                             </div>
                             <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
                         </div>
@@ -782,7 +832,7 @@
         // Filter and search functionality
         function filterCases() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const difficultyFilter = document.getElementById('difficulty-filter').value;
+            const caseTypeFilter = document.getElementById('case-type-filter').value;
             const statusFilter = document.getElementById('status-filter').value;
             const caseItems = document.querySelectorAll('.case-item');
             
@@ -791,12 +841,12 @@
             caseItems.forEach(item => {
                 const caseData = JSON.parse(item.getAttribute('data-case'));
                 const nameMatch = caseData.name.includes(searchTerm);
-                const difficultyMatch = !difficultyFilter || caseData.difficulty === difficultyFilter;
+                const caseTypeMatch = !caseTypeFilter || caseData.caseType === caseTypeFilter;
                 const statusMatch = !statusFilter || 
                     (statusFilter === 'completed' && caseData.completed) ||
                     (statusFilter === 'not-completed' && !caseData.completed);
                 
-                if (nameMatch && difficultyMatch && statusMatch) {
+                if (nameMatch && caseTypeMatch && statusMatch) {
                     item.style.display = 'block';
                     visibleCount++;
                 } else {
@@ -828,9 +878,9 @@
                         return dataA.name.localeCompare(dataB.name);
                     case 'age':
                         return dataA.age - dataB.age;
-                    case 'difficulty':
-                        const difficultyOrder = { 'beginner': 1, 'intermediate': 2, 'advanced': 3 };
-                        return difficultyOrder[dataA.difficulty] - difficultyOrder[dataB.difficulty];
+                    case 'case-type':
+                        const caseTypeOrder = { 'short': 1, 'long': 2 };
+                        return caseTypeOrder[dataA.caseType] - caseTypeOrder[dataB.caseType];
                     case 'status':
                         return dataB.completed - dataA.completed; // Completed first
                     default:
@@ -862,6 +912,9 @@
                 // Add loading state
                 const arrow = this.querySelector('.case-arrow');
                 arrow.style.transform = 'rotate(90deg)';
+                
+                // Allow the link to work normally - don't prevent default
+                // The link will navigate to the case detail page
             });
         });
         

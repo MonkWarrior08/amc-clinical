@@ -1,0 +1,473 @@
+[CASE_ID: Erin_Campbell]
+[SECTION_ID: Adolescent_health]
+[SECTION: Instruction_for_doc]
+[CASE_TYPE:short]
+[INSTRUCTION]
+Please take a history from Erin, examine her face only, then outline the most likely diagnosis and negotiate a management plan with her.
+[SCENARIO]
+Erin Campbell is a 14-year-old girl who presents to you with moderate facial acne. Her mum has come with her to the surgery but lets Erin see you on her own.
+[SUMMARY]
+Past medical history
+Nil significant
+Medication
+Nil
+Allergies
+Nil
+Immunisations
+Up to date
+Social history
+Lives with parents.
+
+[SECTION: Instructions_for_patient]
+You are 14 years old and attend the local high school. Your zits dominate your life. Each morning your mum shouts at you to get dressed and ready for school while you stare at your zits in the mirror. You are convinced that you will never have a boyfriend like all your other friends. You used to take comfort in eating chocolate and cheese but have stopped since a friend said that was causing your zits.
+You are embarrassed to be going to see the GP and hope the doctor will be kind.
+
+[SECTION: Suggested_approach]
+Establish rapport with Erin
+Open-ended questions to explore Erin’s concerns and expectations about her acne.
+[SPECIFIC_QUESTIONS]
+Duration of acne
+Location of acne
+Impact of acne on social life and relationships
+What has she tried so far as treatment?
+What does she think causes the acne?
+General health, e.g. are her periods regular?
+Request permission to examine.
+[EXAMINATION]
+Examine the face
+—confirm acne
+—describe signs: comedones, pustules, erythema or scarring.
+[MANAGEMENT]
+Explain medical understanding of cause of acne without using jargon
+Reassure that diet is not proven to change acne
+Reassure that acne can be controlled, should not stop her socialising
+Advise against picking or squeezing
+Offer treatment depending on what Erin has already tried
+Advise regular washing with soap
+Avoid oily or greasy skin preparations
+Treatment takes 4–8 weeks to be effective, can combine topical and oral treatments
+Reduce excess cells (hyperkeratinisation)
+Topical retinoids, azelaic acid
+Reduce bacteria (propioniobacterium acnes)
+Benzoyl peroxide, strength according to skin type
+Topical antibiotics (combine with Benzoyl peroxide to reduce antibiotic resistance)
+Oral antibiotics—tetracyclines not recommended until bone and teeth development complete
+Rebalance hormones (reduce androgen excess)
+Oral contraceptives containing an anti-androgen, such as cyproterone with ethinyloestradiol
+Reduce sebum hypersecretion
+Oral isotretinoin—high risk of teratogenicity
+Arrange follow-up.
+[COMMENTARY]
+Adolescent acne is a common problem and can lead to physical and psychological scarring. Myths about its cause abound but the doctor can reassure Erin that the acne is not her fault and is not related to junk food. However, there are other good reasons to encourage a healthy diet.
+Typically many treatments will have been tried at home prior to consulting a GP. It is important to find out what Erin has tried so you are offering something new rather than a treatment that has already been tried and failed.
+For some teenagers, the hidden agenda of an acne presentation is a request for contraception. This requires sensitive exploration. A phrase that I find useful is: ‘Some people who come to see me know that the contraceptive pill helps with their skin; is this the case with you?’ The question about Erin’s periods is to assess the likelihood of polycystic ovarian syndrome.
+[PITFALL]
+Teenagers determine the severity and impact of their acne, not doctors. This case tests the doctor’s ability to practise in a patient-centred framework. Low marks will be given to doctors who dismiss Erin as having a few pimples which are insignificant and which she should learn to live with.
+
+[CASE_ID: Amanda_Porter]
+[SECTION_ID: Adolescent_health]
+[SECTION: Instruction_for_doc]
+[CASE_TYPE:short]
+[INSTRUCTION]
+Please take a history from Amanda and then negotiate management with her. Your management plan will include explaining the need for a physical examination.
+[SCENARIO]
+Amanda Porter is a 16-year-old girl who has been coming to the practice for a long time. Last week during a school trip her class teacher caught Amanda making herself sick after the evening meal. With Amanda’s consent the teacher phoned to make this appointment.
+[SUMMARY]
+Past medical history
+Greenstick fracture left radius aged 8
+Medication
+Nil
+Allergies
+Nil
+Immunisations
+Up to date
+Social history
+Lives with parents.
+
+[SECTION: Instructions_for_patient]
+Your family have always had ‘big bones’. As a child you accepted the fact that your Mum and Dad were on the sidelines at sports day rather than entering in the parents’ races. You are used to being part of a big family and shopping at the outsize stores. Whenever friends visit they can’t finish the amount of food they are given.
+About three months ago you had a really bad attack of gastroenteritis. You were amazed to find that you lost weight. Losing weight made you feel great.
+You found that if you made yourself vomit just after the evening meal at home you could lose weight without having to diet. Although the vomiting is not pleasant it makes you feel good because your figure is better and you are getting attention from the boys at the youth club.
+Last week during a school trip your class teacher caught you making yourself sick after the evening meal. Your teacher phoned to make this appointment with your consent. You are 1.67 m tall and weighed 95 kg three months ago, giving you a BMI of 34 kg/m ². You now weigh 89 kg (BMI 29 kg/m ²).
+You are very scared about seeing the GP.
+
+[SECTION: Suggested_approach]
+Establish rapport
+Confirm confidentiality assured—unless disclosure required by law
+Sensitively explore Amanda’s ideas, concerns and expectations re the consultation.
+[SPECIFIC_QUESTIONS]
+Establish facts about the vomiting and weight loss
+Exclude significant physical pathology
+—Energy and general health
+—Diet, appetite
+
+Fever, cough, sputum
+—Nausea, vomiting, diarrhoea, bowel disturbance, abdominal pain, amenorrhoea.
+—Thirst, polyuria
+Explore symptoms of an eating disorder using the SCOFF questionnaire:
+—Do you make yourself Sick because you feel uncomfortably full?
+—Do you worry you have lost Control over how much you eat?
+—Have you recently lost more than One stone [approx 6.4 kg] in a three-month period?
+—Do you believe yourself to be Fat when others say you are too thin?
+—Would you say Food dominates your life?
+Exercise regime
+Drugs such as laxatives
+Or HEADSS¹ screen:
+—H Home situation
+—E Employment, Education, Economic situation
+—A Activities, Affect, Ambition, Anxieties
+—D Drugs, Depression
+—S Sexuality
+—S Suicide, Self-esteem, Stress
+Explain that a physical examination is needed.
+[DIAGNOSIS]
+Explain most likely diagnosis—eating disorder not otherwise specified (EDNOS).
+[MANAGEMENT]
+Explain reasons for concern about vomiting
+Raise possibility of an eating disorder
+Perform physical examination
+Urinalysis
+Assure of ongoing support and follow-up
+Reassure that assistance is available.
+[COMMENTARY]
+The aim of this case is for the doctor to develop a trusting relationship with Amanda and establish that she has an eating disorder. Sensitive questioning and active listening is needed to get Amanda to admit that she is making herself vomit. She does not meet the criteria for either anorexia or bulimia; however, the self-induced vomiting means she does have an eating disorder not otherwise specified (EDNOS). Eating disorders affect 2–3% of people in Australia and are presenting earlier and in more boys than previously.
+The SCOFF questionnaire provides a framework for asking about food and its place in people’s lives. Appropriate management is a combination of the medical aspects, such as a physical examination and investigations, and the psychosocial aspects. HEADSS is another useful framework for conversation with adolescents.
+A poor or inexperienced doctor will focus solely on the medical implications of EDNOS and not consider the person and their situation and the emotion surrounding the problem. Feedback to the teacher can only be given with Amanda’s permission.
+The doctor is not expected to give details of the proposed management in the time available, but should reassure Amanda that there are options for assistance which usually involve her family and a psychologist.
+[PITFALL]
+Teenagers determine the severity and impact of their acne, not doctors.
+This case tests the doctor’s ability to practise in a patient-centred
+framework. Low marks will be given to doctors who dismiss Erin as
+having a few pimples which are insignificant and which she should learn
+to live with.
+
+[CASE_ID: Elsie_Humphries]
+[SECTION_ID: Aged_care]
+[SECTION: Instruction_for_doc]
+[CASE_TYPE:long]
+[INSTRUCTION]
+Please take a history from Mrs Humphries. Then ask the facilitator for the results of the physical examination. Discuss your management plan with Mrs Humphries.
+Alternative instructions
+Medical students and junior doctors might learn more from this scenario if they are asked to conduct the physical examination and negotiate a management plan with Mrs Humphries without a time restriction.
+[SCENARIO]
+You are called to see Mrs Elsie Humphries, an 85-year-old lady, at home. Her family phoned for the visit because she has told them that she has had several falls recently. They run a business interstate and visit her twice a year. The family want reassurance that Mrs Humphries is safe.
+[SUMMARY]
+Current medical problems
+Diverticular disease
+Congestive heart failure
+Atrial fibrillation (AF)
+Past medical history
+Burnt-out rheumatoid arthritis
+First child 1945
+Second child 1947
+Medication
+Warfarin as directed
+Digoxin 0.625 mg od
+Frusemide 20mg od
+Perindopril 5 mg od
+Allergies
+Nil
+Social history
+Widowed 1995
+Husband was an Australian Football League coach
+Non-smoker
+Alcohol intake—2 standard drinks per week
+Immunisations
+Up to date.
+
+[SECTION: Instructions_for_patient]
+You are a rural battler. You have survived several droughts and floods and had rheumatoid arthritis during middle life. You are determined not to let old age beat you. You have coped since you were widowed and while you do not enjoy getting old you are proud of managing despite having only your cat for company.
+You gave up expecting your children to be of any help to you long ago. They visit for just long enough to ease their guilt and run back to the city. If the children had their way they would parcel you up and put you in a home. It has worried them that you have mentioned a couple of recent falls. The children have asked your doctor to make a home visit to check that you are still safe.
+Your house is full of curios and memorabilia, which makes moving without tripping difficult. You have an alarm, which you carry round your neck.
+
+[SECTION: info_for_facilator]
+
+Mrs Humphries has cataracts and her toenails are so long she cannot wear shoes. She is wearing slippers, and a headscarf to cover up the bruise on her left temple from a recent fall.
+Her blood pressure is 140/90 mm Hg with no postural drop and her pulse is 72 and irregularly irregular. There is no evidence of congestive cardiac failure. She has some ulnar deviation of the fingers following her rheumatoid arthritis.
+All other physical examination findings are within normal limits.
+Mrs Humphries house is full of curios and memorabilia, which makes moving without tripping difficult. She has an alarm, which she carries round her neck.
+
+[SECTION: Suggested_approach]
+Suggested approach to the case
+Establish rapport
+Open-ended questions to explore Mrs Humphries’ ideas, concerns and expectations.
+[SPECIFIC_QUESTIONS]
+Ask about the falls
+—Frequency of the falls
+—Timing of the falls
+—Mrs Humphries’ ideas on the cause of the falls
+—Have any of the falls been witnessed?
+—Have any injuries been sustained?
+—Any history of fits, incontinence or loss of consciousness?
+Obtain further history exploring possible causes of falls
+—Environment related/accommodation
+—Impaired sensory input
+—Drugs and alcohol
+—Locomotor disorders
+—Falls in cerebral perfusion—postural hypotension, syncope, uncontrolled atrial fibrillation
+—Epilepsy
+—Systemic illness, e.g. infection
+Explore her response to the falls, how she sees her future
+Social history—current support mechanisms
+Request permission to examine.
+[EXAMINATION]
+Ask the facilitator for specific examination findings or seek permission to examine
+Assess the home
+
+Causes of falls—loose rugs, obstacles, poor lighting, footwear
+
+Safety items—personal alarm
+Assess Mrs Humphries
+
+Temperature
+
+Inspect for evidence of injury such as multiple bruises of different ages
+
+Cardiovascular system
+—Pulse, rate and rhythm
+—BP standing and sitting
+—Jugular venous pulse
+—Heart sounds
+—Carotid bruits
+—Ankle oedema
+
+Respiratory system
+—Respiratory rate
+—Chest auscultation
+
+Neurological system
+—Cognitive function
+—Vision and hearing
+—Tremor
+—Weakness
+—Proprioception and balance: Romberg’s test
+—Coordination
+
+Movements
+—Walking
+—Neck movements
+
+Mental health
+—Depression
+—Anxiety
+
+Miscellaneous
+—Thyroid
+—Toenails
+—Metabolic.
+[INVESTIGATION]
+FBC ECG
+UEC 24 hr ECG
+BSL TFTs
+LFTs Exclude underlying urine infection—MSU for MCS
+CT head To exclude cerebral haemorrhage.
+[MANAGEMENT]
+Outline to Mrs Humphries that her cataracts and her toenails may be causing the falls
+Explain treatment is available for both
+Seek Mrs Humphries’ consent for referral and treatment
+Ophthalmologist for cataracts
+Podiatrist for toenails
+Drug therapy
+—Monitor current therapy
+—Consider risk–benefits of warfarin
+Maintain activity and mobility.
+Other options to consider will depend on the services available locally but could include: occupational therapy, physiotherapy, social services, volunteer services such as Meals on Wheels, trial of hip protectors, aged care assessment team, referral to a falls clinic. The issues to include regarding home safety are:
+—Current likelihood of fall—is she safe staying at home?
+—Ability to feed, dress and bathe safely
+—Clear passageways of curios and memorabilia
+—Remove loose rugs
+—Get frame/walking aid
+—Telephone near bed
+—Regular visitors
+Arrange follow-up
+Ask Mrs Humphries if she wishes you to discuss the outcome of the visit with her family.
+[COMMENTARY]
+This is a common general practice scenario: an elderly, independent lady who is at risk of losing her independence. Assessing Mrs Humphries at home is key to determining her level of risk and seeing life from her perspective. This richer understanding of the person and their life, compared to the impression gleaned in a clinic room, provides a good foundation for discussing her ability to continue to live independently.
+Doctors are expected to demonstrate a systematic approach to the problem of falls in the elderly, addressing the physical, psychological and social issues. The history should focus on the details of the falls and on identifying a potential cause together with a risk assessment of the likelihood of further falls and significant injury for Mrs Humphries. Mrs Humphries’ perspective on the falls must be explored. Is she frightened and seeking residential care? Or would she prefer to stay at home despite the risks? Mrs Humphries’ past history of rheumatoid arthritis is a risk factor for osteoporosis. Interventions can help elderly people to live safely and independently and delay admission to hospital or nursing home-care. Evidence on falls prevention is mixed.
+In this case the examination reveals cataracts and long toenails. The facilitator will only mention this pathology if asked. These are treatable and the doctor can be optimistic that Mrs Humphries can maintain her independence once these issues are dealt with appropriately. Before the cataracts are treated, the doctor may need to offer short-term residential care. I have seen one doctor offer to cut the toenails that day.
+Referral to allied health services through the enhanced primary care items can follow completion of a care plan. Mrs Humphries might benefit from a home medicines review; it is imperative that her warfarin is reviewed—does the risk of warfarin therapy now outweigh its potential benefits?
+[PITFALL]
+This case requires the doctor to focus their questions and examination on the common causes of falls in the elderly. Doctors who take an overly detailed history or examination will run out of time and not progress to discussing management with Mrs Humphries.
+Mrs Humphries is the doctor’s patient but the family have asked for the visit. It is important to involve her family in her care; however, her consent is needed before discussing the outcome of the visit with them.
+There is a risk of either bowing to the relatives’ pressure and arranging admission for Mrs Humphries or colluding with Mrs Humphries’ denial of the issue and not taking action where it is needed.
+
+[CASE_ID: Flora_McMillan]
+[SECTION_ID: Aged_care]
+[SECTION: Instruction_for_doc]
+[CASE_TYPE:short]
+[INSTRUCTION]
+Please explain the test results to Flora and develop a management plan with Flora for the prevention of further osteoporotic fractures.
+[SCENARIO]
+In January of this year Flora McMillan, aged 73, fell on her left arm and sustained a Colles fracture. She recently had a bone densitometry scan done and the results are:
+Scan BMD g/cm² T score Fracture risk Z score Peer relationship
+Lumbar spine 0.854 -2.6 Marked -1.2 Lowest quartile
+Total femur (L) 0.686 -2.6 Marked -1.5 Lowest quartile
+T score—comparison with young normal adult
+Z score—comparison with aged matched controls
+[SUMMARY]
+Past medical history
+Hyperlipidaemia
+Medication
+Simvastatin 40 mg od
+Allergies
+Nil known
+Immunisations
+Up to date
+Family history
+Father died of a myocardial infarction aged 45
+Social history
+Teacher, semi-retired
+Non-smoker
+Height 1.6 m
+Weight 66 kg
+BMI 26 kg/m ².
+
+[SECTION: Instructions_for_patient]
+You are a 73-year-old teacher. You work part-time in the school library. In January of this year you tripped over whilst on a walking holiday and broke your left wrist. (You did not quite hear the name of the fracture—it sounded like a Collie fracture but you though Collies were dogs.)
+You are now back at work. Your wrist is apparently healed but it feels stiff in the morning and aches after a long day of carrying books.
+Your GP arranged a bone density scan. You are here to find out the results and want to hear about anything you can do to prevent further fractures.
+
+[SECTION: Suggested_approach]
+Establish rapport
+Check reason for attendance—to obtain results of bone density scan
+Give results
+Explain results in terms that Flora understands—scan demonstrates osteoporosis
+Link osteoporosis with recent fracture
+Explain risk of further fractures and need to prevent
+Fracture and osteoporosis prevention
+—Preventing falls—regular exercises to maintain sense of balance and proprioception, appropriate footwear, safety at home, caution at night. (For higher risk patients, consider occupational therapy assessment, walking aids and hip protectors)
+—Exercise—30 to 60 minutes of moderate weight-bearing exercise 3–4 days per week
+—Review of medication that predispose to bone loss/falls, e.g. steroids, sleeping tablets, anti-hypertensives can cause postural drop
+—Avoid excess alcohol or caffeine. Don’t start smoking
+Bone strengthening
+—Calcium in diet—recommended amount of 1–1.5mg calcium per day, may need supplement if avoiding dairy foods because of hyperlipidaemia, advise re timing to ensure absorption
+—Vitamin D—assess sun exposure, consider measuring Vitamin D
+—Bisphosphonates, e.g. alendronate, advise re potential jaw problems and need to remain standing after taking it, available with government subsidy if T score is less than –3.0 or previous minimal trauma fracture
+—Strontium or raloxifene (a selective oestrogen-receptor modulator) are second-line drugs. HRT is no longer recommended for osteoporotic fracture prevention.
+Plan follow-up
+—Recommend 3–4 weeks to review medication, reinforce lifestyle advice
+—Repeat bone density scan in 2 years.
+[COMMENTARY]
+This case requires the GP to interpret Flora’s bone density scan results and give her understandable, practical information about osteoporosis and preventing falls. The Z-score compares Flora’s bone mineral density to that of other women of her age whereas the T-score compares Flora’s bone mineral density to that of normal young women. The T-score relates more closely to fracture risk. A T-score less than –2.5 is consistent with the diagnosis of osteoporosis and each standard deviation reduction in bone density is associated with an approximate doubling of the risk of hip fracture.
+Bisphosphonates are considered first-line therapy because of their proven value in reducing verterbral and non-vertebral fracture risk and longer term safety/risk data. No study has directly compared bisphosphonates and strontium. The recommended daily intake of calcium for women over 50 is 1300 mg/day. This requires at least three serves of dairy per day with one of these being calcium fortified.
+[PITFALL]
+There is a risk of seeing osteoporosis and fracture prevention purely in terms of medication. Drugs play an important role but are only one aspect of management. Simple advice about maintaining fitness and balance, safety at home, a healthy diet and adequate but not excessive sun exposure is also needed. The challenge is to say this in a way that Flora does not feel patronised. She sees herself as a working teacher, not an old lady!
+
+[CASE_ID: Nell_Worthington]
+[SECTION_ID: Aged_care]
+[SECTION: Instruction_for_doc]
+[CASE_TYPE:short]
+[INSTRUCTION]
+Please take a history as if you were in clinical practice and then outline your plans to Mrs Worthington.
+[SCENARIO]
+Mrs Nell Worthington is an 80-year-old retired legal secretary. She has hypertension. She has just moved to your area to be nearer to her daughter. She has brought her summary sheet from her previous practice.
+[SUMMARY]
+Past medical history
+Hypertension diagnosed 2003
+Osteoarthritis of neck and hips
+Vaginal hysterectomy for prolapse 1985
+Four children
+Medication
+Spironolactone 25 mg od
+Ramipril 10 mg od
+Potassium chloride 600 mg slow release 1 tab od
+Allergies
+Nil known
+Social history
+Widowed 1998
+Immunisations
+Up to date.
+
+[SECTION: Instructions_for_patient]
+You are an 80-year-old retired legal secretary. You have just moved to be nearer your daughter. Life has been hard since Vince, your husband, died in 1998. You are feeling lost as you try to establish your new life in this town. You had attended the same doctor back home for years and are nervous about coming here today.
+You have been feeling lethargic recently but have put this down to the move. Your opening line will be, ‘Doctor I’m feeling tired, but maybe this is because I have just moved here.’
+
+[SECTION: Suggested_approach]
+Establish rapport
+Welcome Nell to the practice
+Ask about the move, is she settling in?
+Explore patient’s ideas, concerns and expectations regarding this consultation.
+[SPECIFIC_QUESTIONS]
+Enquire about current symptoms
+Brief systems review—any problems with your breathing, your appetite, your bowels, your waterworks, sleep, energy level, weight changes?
+Review information on summary sheet with Mrs Worthington
+Confirm current medication
+Explore other cardiac risk factors
+—Exercise
+—Smoking
+Other preventive health measures
+—Immunisation status
+—Alcohol consumption
+Full physical examination—needed, but not part of this consultation.
+[INVESTIGATION]
+Explain need for investigations
+Surgery tests: BSL or urine dipstick, ECG
+Lab tests
+—Arrange urgent UEC—drug regimen risks hyperkalaemia, can cause tiredness
+—Non-urgent fasting lipids, BSL, FBC, LFTs, TFTs.
+[MANAGEMENT]
+Cease potassium supplement and explain why
+Arrange follow-up—how Mrs Worthington will get the results.
+[COMMENTARY]
+The first consultation for a new patient at a practice provides a good opportunity for a thorough medical review. Mrs Worthington’s drug regimen puts her at risk of hyperkalaemia and she needs urgent assessment of her electrolytes.
+Mrs Worthington’s lethargy could be due to the recent relocation but, given her age, it is important to exclude other pathology. Doctors are expected to deal with the immediate issue of potential hyperkalaemia and then make arrangements for further review. This prioritisation of ‘what do I need to do today, what do I need to do in the next week, what do I need to do in the next month’ is an important skill for doctors to learn and demonstrate. The cost of admission creates a tendency to do everything at once for hospitalised patients, but in general practice the best use of resources and the best way to help patients to change is to establish priorities and work through them systematically over time.
+This case is based on a true story. The patient was admitted to hospital because of the hyperkalaemia—an entirely preventable admission. In Australia up to 30% of hospital admissions in patients over the age of 75 are medication related, of which three-quarters are probably preventable.
+[PITFALL]
+Doctors should avoid unfair criticism of the doctor who instigated Mrs Worthington’s drug regimen. The ideal would be to discretely contact the prescriber and find out why this regimen was chosen, enabling the person to learn from the experience.
+
+[CASE_ID: Helen_Berkovic]
+[SECTION_ID: Cardiovascular_system]
+[SECTION: Instruction_for_doc]
+[CASE_TYPE:short]
+[INSTRUCTION]
+Please negotiate a management plan with Helen.
+[SCENARIO]
+Helen Berkovic is a 53-year-old prison officer. You have just returned from leave and in your absence Helen has been seeing your locum. The locum has diagnosed essential hypertension as blood pressure readings have been over 180/110 on three different occasions.
+[SUMMARY]
+Past medical history
+Nil
+Medication
+Nil
+Allergies
+Nil
+Immunisations
+Up to date
+Family history
+Father—on blood pressure medication
+Social history
+Smokes 10 cigarettes per day.
+
+[SECTION: Instructions_for_patient]
+You are a 53-year-old prison officer. Your own GP has been on leave and you have been seeing the locum. The locum has diagnosed high blood pressure but you don’t know what this means or what can be done about it. Your dad has been taking medication for his blood pressure for years.
+You have now come to see your own doctor to plan what to do.
+
+[SECTION: info_for_facilator]
+
+The locum conducted a physical examination that was normal. Your BMI is 27 kg/m ². The CXR, ECG, FBC, UEC, LFTs, fasting blood glucose and fasting lipids were normal.
+
+[SECTION: Suggested_approach]
+Suggested approach to the case
+[MANAGEMENT]
+Re-establish rapport
+Confirm diagnosis of essential hypertension
+Confirm with Helen that investigations and examination were normal
+Explore Helen’s understanding of hypertension and treatment.
+Treatment options
+Non-pharmacological
+—Exercise
+—Weight loss
+—Salt reduction
+—Reduce alcohol intake
+—Potential life stressors—work
+Need to discuss smoking and assess readiness to quit
+Pharmacological
+—Start medication—an ACE inhibitor is most often prescribed now.
+Follow-up
+Document BP and give card for patient to record readings
+Add to recall system to recheck UEC and BP on treatment.
+[COMMENTARY]
+This is a common general practice situation. The first aim of this case is to ensure that the doctor has the skill to take over management of a patient from a colleague.
+Traditional medical training is for doctors to plan patient management after taking a history and conducting an examination themselves. The increase in team practice now requires doctors who can pick up a consultation at different stages of the process. Reading the patient’s notes was considered ‘cheating’ prior to seeing patients as a medical student: now it is a prerequisite of every consultation. Scanning notes with an attitude of critical trust is needed.
+The second aim is to ensure the doctor can think holistically about hypertension and cardiovascular risk rather than taking a narrow pharmaco-therapeutic view. Helen needs tailored, practical assistance in smoking cessation and adopting a healthy lifestyle.
+Helen meets the criteria for starting medication for her blood pressure. The most common first choice in Australia is an ACE inhibitor; guidelines suggest that calcium-channel blockers are also first-line medication. The Heart Foundation recommends thiazides in those 65 or older.
+Lastly, arrangements for ongoing monitoring and follow-up are needed.
