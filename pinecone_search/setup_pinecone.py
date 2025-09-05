@@ -8,6 +8,10 @@ This script helps set up the environment and test the Pinecone connection.
 import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def check_environment():
     """Check if required environment variables are set"""

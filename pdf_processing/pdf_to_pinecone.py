@@ -12,6 +12,10 @@ import uuid
 from pathlib import Path
 from typing import List, Dict, Any
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # PDF processing
 import pypdf
@@ -51,7 +55,8 @@ class PDFToPineconeUploader:
         # Initialize embeddings (using text-embedding-3-small for 512 dimensions)
         self.embeddings = OpenAIEmbeddings(
             openai_api_key=openai_api_key or os.getenv("OPENAI_API_KEY"),
-            model="text-embedding-3-small"
+            model="text-embedding-3-small",
+            dimensions=512
         )
         
         # Initialize text splitter

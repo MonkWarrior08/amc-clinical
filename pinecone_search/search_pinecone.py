@@ -10,6 +10,10 @@ import os
 import sys
 from typing import List, Dict, Any
 import logging
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
@@ -40,7 +44,8 @@ class PineconeSearcher:
         # Initialize embeddings (using text-embedding-3-small for 512 dimensions)
         self.embeddings = OpenAIEmbeddings(
             openai_api_key=openai_api_key or os.getenv("OPENAI_API_KEY"),
-            model="text-embedding-3-small"
+            model="text-embedding-3-small",
+            dimensions=512
         )
         
         # Initialize vector store
