@@ -1,0 +1,474 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AMC Clinical Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --medical-green: #10b981;
+            --medical-green-light: #34d399;
+            --medical-green-dark: #059669;
+            --medical-bg: #f0fdf4;
+            --medical-card: #ffffff;
+            --medical-text: #064e3b;
+            --medical-text-light: #6b7280;
+            --medical-border: #d1fae5;
+            --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif !important;
+            background: linear-gradient(135deg, var(--medical-bg) 0%, #ecfdf5 100%) !important;
+            color: var(--medical-text) !important;
+            line-height: 1.6 !important;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--medical-card);
+            border-bottom: 1px solid var(--medical-border);
+            box-shadow: 0 1px 3px var(--medical-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--medical-text);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medical-text-light);
+            font-size: 0.875rem;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--medical-border);
+            color: var(--medical-text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .logout-btn:hover {
+            border-color: var(--medical-green);
+            color: var(--medical-green);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 1rem;
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            margin-bottom: 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+            transition: all 0.3s ease-out;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px var(--medical-shadow);
+        }
+        
+        .stat-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--medical-text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--medical-text-light);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .action-card {
+            background: var(--medical-card);
+            border: 2px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px var(--medical-shadow);
+            border-color: var(--medical-green-light);
+        }
+        
+        .action-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .action-card:hover .action-icon {
+            background: var(--medical-green);
+            color: white;
+        }
+        
+        .action-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.75rem;
+        }
+        
+        .action-description {
+            font-size: 0.95rem;
+            color: var(--medical-text-light);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .action-arrow {
+            color: var(--medical-green);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .action-card:hover .action-arrow {
+            transform: translateX(4px);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-header {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-welcome {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+        
+        .animate-stats {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+        
+        .animate-actions {
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="logo-text">AMC Clinical Exam Simulator</div>
+                </div>
+                
+                <div class="user-menu">
+                    <div class="user-info">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>Welcome, {{ user.username|default:"User" }}!</span>
+                    </div>
+                    <a href="{% url 'session_history' %}" class="logout-btn">
+                        <i data-lucide="history" class="w-4 h-4"></i>
+                        Session History
+                    </a>
+                    <a href="{% url 'logout' %}" class="logout-btn">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Section -->
+            <section class="welcome-section animate-welcome">
+                <h1 class="welcome-title">Welcome to Your Dashboard</h1>
+                <p class="welcome-subtitle">
+                    Ready to practice with AI patients? Choose your clinical category and start improving your diagnostic skills.
+                </p>
+            </section>
+            
+            <!-- Stats Section -->
+            <section class="stats-grid animate-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Cases Completed</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-lucide="clock" class="w-6 h-6"></i>
+                    </div>
+                    <div class="stat-number">0h 0m</div>
+                    <div class="stat-label">Total Practice Time</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-lucide="target" class="w-6 h-6"></i>
+                    </div>
+                    <div class="stat-number">0%</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Streak Days</div>
+                </div>
+            </section>
+            
+            <!-- Actions Section -->
+            <section class="actions-grid animate-actions">
+                <a href="{% url 'categories' %}" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="folder" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="action-title">Browse Categories</h3>
+                    <p class="action-description">
+                        Explore different clinical examination categories and choose cases that match your learning goals.
+                    </p>
+                    <i data-lucide="arrow-right" class="w-5 h-5 action-arrow"></i>
+                </a>
+                
+                <a href="{% url 'session_history' %}" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="history" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="action-title">Session History</h3>
+                    <p class="action-description">
+                        Review your past practice sessions, track your progress, and identify areas for improvement.
+                    </p>
+                    <i data-lucide="arrow-right" class="w-5 h-5 action-arrow"></i>
+                </a>
+                
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="action-title">Settings</h3>
+                    <p class="action-description">
+                        Customize your practice experience, adjust preferences, and manage your account settings.
+                    </p>
+                    <i data-lucide="arrow-right" class="w-5 h-5 action-arrow"></i>
+                </a>
+                
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i data-lucide="help-circle" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="action-title">Help & Support</h3>
+                    <p class="action-description">
+                        Get help with using the platform, learn about features, and access support resources.
+                    </p>
+                    <i data-lucide="arrow-right" class="w-5 h-5 action-arrow"></i>
+                </a>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Add hover effects
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-6px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

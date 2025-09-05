@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -424,7 +425,7 @@
                 
                 <!-- Login Form -->
                 <div id="login-form" class="form-container active">
-                    <form method="post" action="{% url 'login' %}" onsubmit="handleSubmit(event, 'login')">
+                    <form method="post" action="{% url 'auth' %}" onsubmit="handleSubmit(event, 'login')">
                         {% csrf_token %}
                         
                         <div class="form-group">
@@ -485,7 +486,7 @@
                 
                 <!-- Register Form -->
                 <div id="register-form" class="form-container">
-                    <form method="post" action="{% url 'register' %}" onsubmit="handleSubmit(event, 'register')">
+                    <form method="post" action="{% url 'auth' %}" onsubmit="handleSubmit(event, 'register')">
                         {% csrf_token %}
                         
                         <div class="form-group">
@@ -651,6 +652,7 @@
             const submitButton = document.getElementById(formType + '-submit');
             const spinner = document.getElementById(formType + '-spinner');
             const buttonText = submitButton.querySelector('.button-text');
+            const form = event.target;
             
             // Show loading state
             submitButton.disabled = true;
@@ -663,20 +665,67 @@
                 error.textContent = '';
             });
             
-            // Simulate form processing (replace with actual form submission)
-            setTimeout(() => {
+            // Collect form data
+            const formData = new FormData(form);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Submit to Django
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect to dashboard
+                    window.location.href = data.redirect;
+                } else {
+                    // Show errors
+                    if (data.error) {
+                        showError(formType + '-password', data.error);
+                    }
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(field => {
+                            const fieldName = formType + '-' + field.replace('username', 'email');
+                            showError(fieldName, data.errors[field][0]);
+                        });
+                    }
+                    
+                    // Reset loading state
+                    submitButton.disabled = false;
+                    spinner.style.display = 'none';
+                    buttonText.style.opacity = '1';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError(formType + '-password', 'An error occurred. Please try again.');
+                
                 // Reset loading state
                 submitButton.disabled = false;
                 spinner.style.display = 'none';
                 buttonText.style.opacity = '1';
-                
-                // Here you would normally submit the form to Django
-                // For demo purposes, we'll just show a success message
-                console.log('Form submitted:', formType);
-                
-                // Uncomment the line below to actually submit the form
-                // event.target.submit();
-            }, 2000);
+            });
+        }
+        
+        function showError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + '-error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+            
+            const inputElement = document.getElementById(fieldId);
+            if (inputElement) {
+                inputElement.style.borderColor = 'var(--medical-error)';
+            }
         }
         
         // Real-time password confirmation validation

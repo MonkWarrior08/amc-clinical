@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -339,7 +340,7 @@
         
         <!-- Action Section -->
         <div class="action-section animate-actions">
-            <a href="#" class="btn btn-primary">
+            <a href="{% url 'auth' %}" class="btn btn-primary">
                 <i data-lucide="log-in" class="w-5 h-5"></i>
                 Access Your Account
             </a>
@@ -348,7 +349,7 @@
                 <span>New to AMC Clinical Exam Prep?</span>
             </div>
             
-            <a href="#" class="btn btn-secondary">
+            <a href="{% url 'auth' %}" class="btn btn-secondary">
                 <i data-lucide="user-plus" class="w-5 h-5"></i>
                 Start Your Journey
             </a>
