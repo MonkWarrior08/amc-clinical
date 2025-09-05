@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMC Clinical Exam Simulator - AI Patient Practice</title>
+    <title>Clinical Apex - AI Patient Practice</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,7 @@
         .logo-icon {
             width: 6rem !important;
             height: 6rem !important;
-            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%) !important;
+            background: var(--medical-green) !important;
             color: white !important;
             border-radius: 50% !important;
             display: flex !important;
@@ -65,6 +65,16 @@
             margin: 0 auto 1.5rem auto !important;
             box-shadow: 0 10px 25px var(--medical-shadow), 0 0 0 1px var(--medical-border) !important;
             transition: all 0.3s ease-out !important;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .caduceus-symbol {
+            width: 3rem !important;
+            height: 3rem !important;
+            fill: white !important;
+            stroke: white !important;
+            stroke-width: 1.5 !important;
         }
         
         .logo-icon:hover {
@@ -321,9 +331,29 @@
         <!-- Logo Section -->
         <div class="logo-section animate-logo">
             <div class="logo-icon">
-                <i data-lucide="graduation-cap" class="w-10 h-10"></i>
+                <svg class="caduceus-symbol" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Caduceus Symbol -->
+                    <g transform="translate(50, 50)">
+                        <!-- Central Staff -->
+                        <line x1="0" y1="-40" x2="0" y2="40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                        
+                        <!-- Wings -->
+                        <path d="M-15,-40 Q-25,-35 -25,-25 Q-25,-15 -15,-10 Q-5,-15 -5,-25 Q-5,-35 -15,-40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M15,-40 Q25,-35 25,-25 Q25,-15 15,-10 Q5,-15 5,-25 Q5,-35 15,-40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                        
+                        <!-- Left Snake -->
+                        <path d="M-8,-35 Q-20,-25 -15,-10 Q-10,5 -5,15 Q0,25 5,20 Q10,15 8,5 Q5,-5 0,-10 Q-5,-15 -8,-25 Q-10,-30 -8,-35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- Right Snake -->
+                        <path d="M8,-35 Q20,-25 15,-10 Q10,5 5,15 Q0,25 -5,20 Q-10,15 -8,5 Q-5,-5 0,-10 Q5,-15 8,-25 Q10,-30 8,-35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        
+                        <!-- Snake Heads -->
+                        <circle cx="-8" cy="-35" r="3" fill="currentColor"/>
+                        <circle cx="8" cy="-35" r="3" fill="currentColor"/>
+                    </g>
+                </svg>
             </div>
-            <h1 class="brand-name">AMC Clinical Exam Simulator</h1>
+            <h1 class="brand-name">Clinical Apex</h1>
             <p class="brand-tagline">AI-Powered Clinical Skills Assessment</p>
         </div>
         
@@ -331,10 +361,10 @@
         <div class="welcome-section animate-welcome">
             <div class="pulse-dot"></div>
             <h2 class="welcome-title">
-                Master Your <span class="highlight">AMC Clinical</span> Exam
+                Master Your <span class="highlight">Clinical</span> Skills
             </h2>
             <p class="welcome-description">
-                Practice with AI patients in realistic examination scenarios. Get instant feedback and improve your clinical skills for the AMC Clinical Examination.
+                Practice with AI patients in realistic examination scenarios. Get instant feedback and improve your clinical skills for medical examinations.
             </p>
         </div>
         
@@ -346,7 +376,7 @@
             </a>
             
             <div class="divider">
-                <span>New to AMC Clinical Exam Prep?</span>
+                <span>New to Clinical Skills Training?</span>
             </div>
             
             <a href="{% url 'auth' %}?tab=register" class="btn btn-secondary">
@@ -358,7 +388,7 @@
         <!-- Features Hint -->
         <div class="features-hint animate-features">
             <p style="color: var(--medical-text-light) !important; margin-bottom: 1rem;">
-                Trusted by thousands of AMC Clinical exam candidates
+                Trusted by thousands of medical professionals
             </p>
             <div class="features-list">
                 <div class="feature-item">
