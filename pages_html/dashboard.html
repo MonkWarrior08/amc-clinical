@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AMC Clinical Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --medical-green: #10b981;
+            --medical-green-light: #34d399;
+            --medical-green-dark: #059669;
+            --medical-bg: #f0fdf4;
+            --medical-card: #ffffff;
+            --medical-text: #064e3b;
+            --medical-text-light: #6b7280;
+            --medical-border: #d1fae5;
+            --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif !important;
+            background: linear-gradient(135deg, var(--medical-bg) 0%, #ecfdf5 100%) !important;
+            color: var(--medical-text) !important;
+            line-height: 1.6 !important;
+            min-height: 100vh;
+        }
+        
+        .dashboard-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--medical-card);
+            border-bottom: 1px solid var(--medical-border);
+            box-shadow: 0 1px 3px var(--medical-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--medical-text);
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--medical-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--medical-text);
+            font-size: 0.9rem;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--medical-text-light);
+        }
+        
+        .logout-btn {
+            background: none;
+            border: 1px solid var(--medical-border);
+            color: var(--medical-text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .logout-btn:hover {
+            border-color: var(--medical-green);
+            color: var(--medical-green);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--medical-text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .welcome-title .highlight {
+            font-weight: 700;
+            color: var(--medical-green);
+        }
+        
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            margin-bottom: 2rem;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid var(--medical-border);
+        }
+        
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--medical-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Primary Action Section */
+        .primary-action {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .primary-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+        }
+        
+        .action-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 8px 16px var(--medical-shadow);
+            animation: gentle-float 3s ease-in-out infinite;
+        }
+        
+        .action-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 1rem;
+        }
+        
+        .action-description {
+            font-size: 1rem;
+            color: var(--medical-text-light);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border: none;
+            padding: 1.25rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--medical-shadow);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--medical-shadow);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Secondary Actions Grid */
+        .secondary-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .action-card {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease-out;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px var(--medical-shadow);
+            border-color: var(--medical-green-light);
+        }
+        
+        .card-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease-out;
+        }
+        
+        .action-card:hover .card-icon {
+            background: var(--medical-green);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.75rem;
+        }
+        
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--medical-text-light);
+            line-height: 1.5;
+        }
+        
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--medical-green);
+            font-weight: 500;
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .stats-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--medical-green);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--medical-text-light);
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 var(--medical-green);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px transparent;
+            }
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 transparent;
+            }
+        }
+        
+        @keyframes gentle-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-welcome {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-primary {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+        
+        .animate-secondary {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+        
+        .animate-stats {
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .primary-action {
+                padding: 2rem 1.5rem;
+            }
+            
+            .action-title {
+                font-size: 1.5rem;
+            }
+            
+            .btn-primary {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+            
+            .secondary-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .user-info {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="logo-text">AMC Clinical Exam Simulator</div>
+                </div>
+                
+                <div class="user-section">
+                    <div class="user-info">
+                        <div class="user-name">Dr. {{ user.first_name }} {{ user.last_name }}</div>
+                        <div class="user-role">Medical Student</div>
+                    </div>
+                    <div class="user-avatar">
+                        {{ user.first_name.0 }}{{ user.last_name.0 }}
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Welcome Section -->
+            <section class="welcome-section animate-welcome">
+                <h1 class="welcome-title">
+                    Welcome back, <span class="highlight">Dr. {{ user.first_name|default:"Student" }}!</span>
+                </h1>
+                <p class="welcome-subtitle">
+                    Ready to continue your AMC Clinical exam preparation? Let's practice with AI patients today.
+                </p>
+                <div class="status-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>System Ready - AI Patients Available</span>
+                </div>
+            </section>
+            
+            <!-- Primary Action -->
+            <section class="primary-action animate-primary">
+                <div class="action-icon">
+                    <i data-lucide="play-circle" class="w-8 h-8"></i>
+                </div>
+                <h2 class="action-title">Start New Practice Session</h2>
+                <p class="action-description">
+                    Begin a new clinical examination with an AI patient. Practice your diagnostic skills, 
+                    communication, and clinical reasoning in a realistic exam environment.
+                </p>
+                <a href="{% url 'start_session' %}" class="btn-primary">
+                    <i data-lucide="stethoscope" class="w-5 h-5"></i>
+                    Start Practice Session
+                </a>
+            </section>
+            
+            <!-- Secondary Actions -->
+            <section class="secondary-actions animate-secondary">
+                <a href="{% url 'session_history' %}" class="action-card">
+                    <div class="card-icon">
+                        <i data-lucide="history" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="card-title">Review Past Sessions</h3>
+                    <p class="card-description">
+                        Access your complete practice history, review AI feedback, and track your improvement over time.
+                    </p>
+                    <div class="card-meta">
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <span>View History</span>
+                    </div>
+                </a>
+                
+                <a href="{% url 'progress_analytics' %}" class="action-card">
+                    <div class="card-icon">
+                        <i data-lucide="trending-up" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="card-title">Progress Analytics</h3>
+                    <p class="card-description">
+                        Detailed insights into your performance, strengths, and areas for improvement with AI-powered analysis.
+                    </p>
+                    <div class="card-meta">
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <span>View Analytics</span>
+                    </div>
+                </a>
+                
+                <a href="{% url 'study_resources' %}" class="action-card">
+                    <div class="card-icon">
+                        <i data-lucide="book-open" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="card-title">Study Resources</h3>
+                    <p class="card-description">
+                        Access curated study materials, clinical guidelines, and exam preparation resources.
+                    </p>
+                    <div class="card-meta">
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <span>Browse Resources</span>
+                    </div>
+                </a>
+                
+                <a href="{% url 'settings' %}" class="action-card">
+                    <div class="card-icon">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="card-title">Account Settings</h3>
+                    <p class="card-description">
+                        Manage your profile, preferences, and customize your learning experience.
+                    </p>
+                    <div class="card-meta">
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        <span>Manage Settings</span>
+                    </div>
+                </a>
+            </section>
+            
+            <!-- Stats Section -->
+            <section class="stats-section animate-stats">
+                <h3 class="stats-title">Your Progress Overview</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ total_sessions|default:"0" }}</span>
+                        <div class="stat-label">Practice Sessions</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ avg_score|default:"0" }}%</span>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ study_hours|default:"0" }}</span>
+                        <div class="stat-label">Study Hours</div>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ streak_days|default:"0" }}</span>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Logout functionality
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '{% url "logout" %}';
+            }
+        }
+        
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn-primary').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                ripple.style.pointerEvents = 'none';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+        
+        // Add hover effects to action cards
+        document.querySelectorAll('.action-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Simulate real-time updates (in a real app, this would come from the server)
+        function updateStats() {
+            // This would typically fetch real data from your Django backend
+            console.log('Stats updated');
+        }
+        
+        // Update stats every 30 seconds (optional)
+        // setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>

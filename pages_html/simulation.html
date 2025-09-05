@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Simulation - AMC Clinical Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --medical-green: #10b981;
+            --medical-green-light: #34d399;
+            --medical-green-dark: #059669;
+            --medical-bg: #f0fdf4;
+            --medical-card: #ffffff;
+            --medical-text: #064e3b;
+            --medical-text-light: #6b7280;
+            --medical-border: #d1fae5;
+            --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
+            --medical-warning: #f59e0b;
+            --medical-warning-bg: #fef3c7;
+            --medical-error: #ef4444;
+            --medical-error-bg: #fef2f2;
+            --medical-success: #22c55e;
+            --medical-info: #3b82f6;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif !important;
+            background: var(--medical-bg) !important;
+            color: var(--medical-text) !important;
+            line-height: 1.6 !important;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .simulation-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--medical-bg);
+        }
+        
+        /* Top Bar with Timer */
+        .top-bar {
+            background: var(--medical-card);
+            border-bottom: 2px solid var(--medical-border);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .patient-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
+        .session-type {
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .timer-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .timer-display {
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+            box-shadow: 0 4px 8px var(--medical-shadow);
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .timer-warning {
+            background: linear-gradient(135deg, var(--medical-warning) 0%, #fbbf24 100%) !important;
+        }
+        
+        .timer-critical {
+            background: linear-gradient(135deg, var(--medical-error) 0%, #f87171 100%) !important;
+            animation: pulse-critical 1s ease-in-out infinite;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease-out;
+        }
+        
+        .status-listening {
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+        }
+        
+        .status-patient-speaking {
+            background: #dbeafe;
+            color: var(--medical-info);
+        }
+        
+        .status-examiner-speaking {
+            background: var(--medical-warning-bg);
+            color: #92400e;
+        }
+        
+        .status-processing {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 1rem;
+            padding: 1rem;
+            overflow: hidden;
+        }
+        
+        .conversation-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow: hidden;
+        }
+        
+        .patient-response-area {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .area-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--medical-border);
+        }
+        
+        .area-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--medical-green);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .area-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
+        .conversation-content {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--medical-border) transparent;
+        }
+        
+        .conversation-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .conversation-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .conversation-content::-webkit-scrollbar-thumb {
+            background: var(--medical-border);
+            border-radius: 3px;
+        }
+        
+        .conversation-content::-webkit-scrollbar-thumb:hover {
+            background: var(--medical-green-light);
+        }
+        
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        
+        .message-doctor {
+            background: var(--medical-accent);
+            border: 1px solid var(--medical-border);
+            margin-left: auto;
+            margin-right: 0;
+        }
+        
+        .message-patient {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .message-timestamp {
+            font-size: 0.75rem;
+            color: var(--medical-text-light);
+            margin-top: 0.5rem;
+        }
+        
+        .message-empty {
+            text-align: center;
+            color: var(--medical-text-light);
+            font-style: italic;
+            padding: 3rem;
+        }
+        
+        /* Input Area */
+        .input-section {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .input-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        
+        .input-field {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .input-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--medical-text);
+        }
+        
+        .input-textarea {
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 1px solid var(--medical-border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: var(--medical-text);
+            resize: vertical;
+            transition: all 0.2s ease-out;
+        }
+        
+        .input-textarea:focus {
+            outline: none;
+            border-color: var(--medical-green);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+        }
+        
+        .input-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            text-decoration: none;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--medical-green);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--medical-green-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+            border: 1px solid var(--medical-border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--medical-green);
+            color: white;
+        }
+        
+        .btn-voice {
+            background: var(--medical-info);
+            color: white;
+        }
+        
+        .btn-voice:hover {
+            background: #2563eb;
+        }
+        
+        .btn-voice.recording {
+            background: var(--medical-error);
+            animation: pulse-recording 1.5s ease-in-out infinite;
+        }
+        
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow: hidden;
+        }
+        
+        .examiner-findings {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .findings-content {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--medical-border) transparent;
+        }
+        
+        .findings-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .findings-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .findings-content::-webkit-scrollbar-thumb {
+            background: var(--medical-border);
+            border-radius: 3px;
+        }
+        
+        .findings-item {
+            padding: 0.75rem;
+            background: var(--medical-accent);
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-left: 3px solid var(--medical-green);
+        }
+        
+        .findings-category {
+            font-weight: 600;
+            color: var(--medical-green-dark);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .findings-text {
+            color: var(--medical-text);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .findings-empty {
+            text-align: center;
+            color: var(--medical-text-light);
+            font-style: italic;
+            padding: 2rem;
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .btn-summary {
+            background: var(--medical-info);
+            color: white;
+            grid-column: 1 / -1;
+        }
+        
+        .btn-summary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-finish {
+            background: var(--medical-error);
+            color: white;
+            grid-column: 1 / -1;
+        }
+        
+        .btn-finish:hover {
+            background: #dc2626;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-out;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background: var(--medical-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 800px;
+            max-height: 80vh;
+            width: 100%;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.3s ease-out;
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--medical-border);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--medical-text-light);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease-out;
+        }
+        
+        .modal-close:hover {
+            background: var(--medical-accent);
+            color: var(--medical-text);
+        }
+        
+        .modal-body {
+            color: var(--medical-text);
+            line-height: 1.6;
+        }
+        
+        /* Animations */
+        @keyframes pulse-critical {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes pulse-recording {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+            }
+            
+            .sidebar {
+                flex-direction: row;
+                max-height: 300px;
+            }
+            
+            .examiner-findings {
+                flex: 2;
+            }
+            
+            .control-panel {
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .session-info {
+                gap: 1rem;
+            }
+            
+            .timer-display {
+                font-size: 1.25rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .main-content {
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+            
+            .sidebar {
+                flex-direction: column;
+                max-height: none;
+            }
+            
+            .input-controls {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .input-actions {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .patient-response-area,
+            .examiner-findings,
+            .control-panel {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="simulation-container">
+        <!-- Top Bar with Timer -->
+        <div class="top-bar">
+            <div class="session-info">
+                <div class="patient-name" id="patient-name">{{ case.patient_name|default:"Erin Campbell" }}</div>
+                <div class="session-type">{{ case.difficulty|title|default:"Beginner" }} Level</div>
+            </div>
+            
+            <div class="timer-section">
+                <div class="status-indicator status-listening" id="status-indicator">
+                    <i data-lucide="mic" class="w-4 h-4"></i>
+                    <span id="status-text">Ready to Start</span>
+                </div>
+                <div class="timer-display" id="timer-display">
+                    <span id="timer-minutes">{{ case.duration|default:"20" }}</span>:<span id="timer-seconds">00</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Conversation Section -->
+            <div class="conversation-section">
+                <!-- Patient Response Area -->
+                <div class="patient-response-area">
+                    <div class="area-header">
+                        <div class="area-icon">
+                            <i data-lucide="user" class="w-5 h-5"></i>
+                        </div>
+                        <div class="area-title">Patient Conversation</div>
+                    </div>
+                    
+                    <div class="conversation-content" id="conversation-content">
+                        <div class="message-empty">
+                            Conversation will appear here. Click "Start Session" to begin interacting with the AI patient.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Section -->
+                <div class="input-section">
+                    <div class="input-controls">
+                        <div class="input-field">
+                            <label class="input-label" for="user-input">Your Response:</label>
+                            <textarea 
+                                id="user-input" 
+                                class="input-textarea" 
+                                placeholder="Type your question or response to the patient..."
+                                disabled
+                            ></textarea>
+                        </div>
+                        
+                        <div class="input-actions">
+                            <button class="btn btn-primary" id="send-message" disabled>
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                Send
+                            </button>
+                            
+                            <button class="btn btn-voice" id="voice-input">
+                                <i data-lucide="mic" class="w-4 h-4"></i>
+                                Voice
+                            </button>
+                            
+                            <button class="btn btn-secondary" id="start-session">
+                                <i data-lucide="play" class="w-4 h-4"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="sidebar">
+                <!-- Examiner Findings -->
+                <div class="examiner-findings">
+                    <div class="area-header">
+                        <div class="area-icon">
+                            <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                        </div>
+                        <div class="area-title">Examiner Findings</div>
+                    </div>
+                    
+                    <div class="findings-content" id="findings-content">
+                        <div class="findings-empty">
+                            Physical examination findings and test results will appear here as you conduct your assessment.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Control Panel -->
+                <div class="control-panel">
+                    <div class="area-header">
+                        <div class="area-icon">
+                            <i data-lucide="settings" class="w-5 h-5"></i>
+                        </div>
+                        <div class="area-title">Session Controls</div>
+                    </div>
+                    
+                    <div class="control-grid">
+                        <button class="btn btn-summary" id="summary-btn">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            Patient Summary
+                        </button>
+                        
+                        <button class="btn btn-secondary" id="pause-btn" disabled>
+                            <i data-lucide="pause" class="w-4 h-4"></i>
+                            Pause
+                        </button>
+                        
+                        <button class="btn btn-secondary" id="notes-btn">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                            Notes
+                        </button>
+                        
+                        <button class="btn btn-finish" id="finish-btn">
+                            <i data-lucide="square" class="w-4 h-4"></i>
+                            Finish Session
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Patient Summary Modal -->
+    <div class="modal-overlay" id="summary-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Patient Summary</h3>
+                <button class="modal-close" id="close-summary-modal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="summary-content">
+                Loading patient summary...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notes Modal -->
+    <div class="modal-overlay" id="notes-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Session Notes</h3>
+                <button class="modal-close" id="close-notes-modal">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea 
+                    id="session-notes" 
+                    class="input-textarea" 
+                    style="width: 100%; min-height: 300px; margin-bottom: 1rem;"
+                    placeholder="Record your clinical notes, observations, and thoughts here..."
+                ></textarea>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button class="btn btn-secondary" id="clear-notes">Clear Notes</button>
+                    <button class="btn btn-primary" id="save-notes">Save Notes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Session State
+        let sessionState = {
+            isActive: false,
+            isPaused: false,
+            timeRemaining: {{ case.duration|default:"20" }} * 60, // Convert minutes to seconds
+            currentStatus: 'ready',
+            isRecording: false,
+            conversationHistory: [],
+            findings: [],
+            notes: ''
+        };
+        
+        // DOM Elements
+        const elements = {
+            timerDisplay: document.getElementById('timer-display'),
+            timerMinutes: document.getElementById('timer-minutes'),
+            timerSeconds: document.getElementById('timer-seconds'),
+            statusIndicator: document.getElementById('status-indicator'),
+            statusText: document.getElementById('status-text'),
+            conversationContent: document.getElementById('conversation-content'),
+            userInput: document.getElementById('user-input'),
+            sendBtn: document.getElementById('send-message'),
+            voiceBtn: document.getElementById('voice-input'),
+            startBtn: document.getElementById('start-session'),
+            pauseBtn: document.getElementById('pause-btn'),
+            summaryBtn: document.getElementById('summary-btn'),
+            notesBtn: document.getElementById('notes-btn'),
+            finishBtn: document.getElementById('finish-btn'),
+            findingsContent: document.getElementById('findings-content'),
+            summaryModal: document.getElementById('summary-modal'),
+            summaryContent: document.getElementById('summary-content'),
+            notesModal: document.getElementById('notes-modal'),
+            sessionNotes: document.getElementById('session-notes'),
+            closeSummaryModal: document.getElementById('close-summary-modal'),
+            closeNotesModal: document.getElementById('close-notes-modal'),
+            clearNotes: document.getElementById('clear-notes'),
+            saveNotes: document.getElementById('save-notes')
+        };
+        
+        // Timer Functions
+        let timerInterval;
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (sessionState.isActive && !sessionState.isPaused && sessionState.timeRemaining > 0) {
+                    sessionState.timeRemaining--;
+                    updateTimerDisplay();
+                    
+                    // Update timer styling based on remaining time
+                    const totalTime = {{ case.duration|default:"20" }} * 60;
+                    const percentage = sessionState.timeRemaining / totalTime;
+                    
+                    if (percentage <= 0.1) { // Last 10%
+                        elements.timerDisplay.className = 'timer-display timer-critical';
+                    } else if (percentage <= 0.25) { // Last 25%
+                        elements.timerDisplay.className = 'timer-display timer-warning';
+                    } else {
+                        elements.timerDisplay.className = 'timer-display';
+                    }
+                    
+                    // Session auto-end when time reaches 0
+                    if (sessionState.timeRemaining <= 0) {
+                        endSession();
+                    }
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(sessionState.timeRemaining / 60);
+            const seconds = sessionState.timeRemaining % 60;
+            elements.timerMinutes.textContent = minutes.toString().padStart(2, '0');
+            elements.timerSeconds.textContent = seconds.toString().padStart(2, '0');
+        }
+        
+        function pauseTimer() {
+            sessionState.isPaused = !sessionState.isPaused;
+            elements.pauseBtn.innerHTML = sessionState.isPaused 
+                ? '<i data-lucide="play" class="w-4 h-4"></i> Resume'
+                : '<i data-lucide="pause" class="w-4 h-4"></i> Pause';
+            lucide.createIcons();
+        }
+        
+        // Status Updates
+        function updateStatus(status, text) {
+            sessionState.currentStatus = status;
+            elements.statusIndicator.className = `status-indicator status-${status}`;
+            elements.statusText.textContent = text;
+            
+            // Update icon based on status
+            const iconElement = elements.statusIndicator.querySelector('[data-lucide]');
+            switch(status) {
+                case 'listening':
+                    iconElement.setAttribute('data-lucide', 'mic');
+                    break;
+                case 'patient-speaking':
+                    iconElement.setAttribute('data-lucide', 'user');
+                    break;
+                case 'examiner-speaking':
+                    iconElement.setAttribute('data-lucide', 'clipboard-list');
+                    break;
+                case 'processing':
+                    iconElement.setAttribute('data-lucide', 'loader-2');
+                    iconElement.classList.add('animate-spin');
+                    break;
+                default:
+                    iconElement.setAttribute('data-lucide', 'circle');
+                    iconElement.classList.remove('animate-spin');
+            }
+            lucide.createIcons();
+        }
+        
+        // Session Management
+        function startSession() {
+            sessionState.isActive = true;
+            sessionState.isPaused = false;
+            
+            // Enable controls
+            elements.userInput.disabled = false;
+            elements.sendBtn.disabled = false;
+            elements.pauseBtn.disabled = false;
+            elements.startBtn.style.display = 'none';
+            
+            // Start timer
+            startTimer();
+            updateStatus('listening', 'Listening...');
+            
+            // Add initial message
+            addMessage('system', 'Session started. You may now begin your clinical examination.');
+            
+            console.log('Session started');
+        }
+        
+        function endSession() {
+            sessionState.isActive = false;
+            clearInterval(timerInterval);
+            
+            // Disable controls
+            elements.userInput.disabled = true;
+            elements.sendBtn.disabled = true;
+            elements.pauseBtn.disabled = true;
+            
+            updateStatus('processing', 'Session Ended');
+            
+            // Show session complete message
+            if (confirm('Session completed! Would you like to review your performance and get AI feedback?')) {
+                // Redirect to feedback page or show feedback modal
+                window.location.href = `{% url 'session_feedback' case_id=case.id %}`;
+            }
+            
+            console.log('Session ended');
+        }
+        
+        // Message Functions
+        function addMessage(sender, content, timestamp = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-${sender}`;
+            
+            const messageContent = document.createElement('div');
+            messageContent.textContent = content;
+            messageDiv.appendChild(messageContent);
+            
+            if (timestamp || sender !== 'system') {
+                const timestampDiv = document.createElement('div');
+                timestampDiv.className = 'message-timestamp';
+                timestampDiv.textContent = timestamp || new Date().toLocaleTimeString();
+                messageDiv.appendChild(timestampDiv);
+            }
+            
+            // Remove empty message if it exists
+            const emptyMessage = elements.conversationContent.querySelector('.message-empty');
+            if (emptyMessage) {
+                emptyMessage.remove();
+            }
+            
+            elements.conversationContent.appendChild(messageDiv);
+            elements.conversationContent.scrollTop = elements.conversationContent.scrollHeight;
+            
+            // Store in conversation history
+            sessionState.conversationHistory.push({
+                sender,
+                content,
+                timestamp: timestamp || new Date().toISOString()
+            });
+        }
+        
+        function sendMessage() {
+            const message = elements.userInput.value.trim();
+            if (!message || !sessionState.isActive) return;
+            
+            // Add doctor's message
+            addMessage('doctor', message);
+            elements.userInput.value = '';
+            
+            // Update status
+            updateStatus('processing', 'Processing...');
+            
+            // Simulate AI response (replace with actual API call)
+            setTimeout(() => {
+                simulatePatientResponse(message);
+            }, 1000 + Math.random() * 2000);
+        }
+        
+        function simulatePatientResponse(doctorMessage) {
+            updateStatus('patient-speaking', 'Patient Speaking...');
+            
+            // Sample responses (replace with actual AI integration)
+            const responses = [
+                "Well, doctor, I've been having this skin problem for about 3 months now.",
+                "It started as just a few spots on my forehead, but now it's spread to my cheeks too.",
+                "I've tried some over-the-counter creams, but they don't seem to help much.",
+                "It's really affecting my confidence, especially at school.",
+                "My mum says I should see a doctor, so here I am."
+            ];
+            
+            const response = responses[Math.floor(Math.random() * responses.length)];
+            
+            setTimeout(() => {
+                addMessage('patient', response);
+                updateStatus('listening', 'Listening...');
+                
+                // Sometimes add examiner findings
+                if (Math.random() > 0.7) {
+                    addExaminerFinding();
+                }
+            }, 2000);
+        }
+        
+        // Examiner Findings
+        function addExaminerFinding(category = null, finding = null) {
+            // Sample findings (replace with actual data from backend)
+            const sampleFindings = [
+                { category: 'Visual Inspection', finding: 'Multiple comedones observed on forehead and cheeks' },
+                { category: 'Skin Assessment', finding: 'Mild inflammatory papules present, no scarring noted' },
+                { category: 'Patient Behavior', finding: 'Patient appears anxious about appearance, frequent touching of face' },
+                { category: 'Physical Exam', finding: 'No lymphadenopathy detected, skin otherwise normal' }
+            ];
+            
+            const selectedFinding = category && finding 
+                ? { category, finding }
+                : sampleFindings[Math.floor(Math.random() * sampleFindings.length)];
+            
+            const findingDiv = document.createElement('div');
+            findingDiv.className = 'findings-item';
+            findingDiv.innerHTML = `
+                <div class="findings-category">${selectedFinding.category}</div>
+                <div class="findings-text">${selectedFinding.finding}</div>
+            `;
+            
+            // Remove empty message if it exists
+            const emptyMessage = elements.findingsContent.querySelector('.findings-empty');
+            if (emptyMessage) {
+                emptyMessage.remove();
+            }
+            
+            elements.findingsContent.appendChild(findingDiv);
+            elements.findingsContent.scrollTop = elements.findingsContent.scrollHeight;
+            
+            // Store in findings
+            sessionState.findings.push(selectedFinding);
+        }
+        
+        // Modal Functions
+        function openSummaryModal() {
+            elements.summaryModal.classList.add('active');
+            
+            // Simulate loading patient summary (replace with actual API call)
+            elements.summaryContent.innerHTML = 'Loading patient summary...';
+            
+            setTimeout(() => {
+                // Sample summary content (replace with actual data)
+                const summaryContent = `
+                    <h4 style="margin-bottom: 1rem; color: var(--medical-green-dark);">Patient Summary</h4>
+                    <p><strong>Name:</strong> Erin Campbell</p>
+                    <p><strong>Age:</strong> 14 years old</p>
+                    <p><strong>Chief Complaint:</strong> Facial acne affecting self-confidence</p>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--medical-green-dark);">Medical History</h4>
+                    <p>• No significant past medical history</p>
+                    <p>• No known allergies</p>
+                    <p>• No current medications</p>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--medical-green-dark);">Social History</h4>
+                    <p>• Year 9 student</p>
+                    <p>• Lives with parents and younger sister</p>
+                    <p>• Reports stress from school and social situations</p>
+                    
+                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--medical-green-dark);">Current Symptoms</h4>
+                    <p>• Comedones and inflammatory papules on face</p>
+                    <p>• Duration: 3 months</p>
+                    <p>• Worsening despite OTC treatments</p>
+                `;
+                elements.summaryContent.innerHTML = summaryContent;
+            }, 1000);
+        }
+        
+        function closeSummaryModal() {
+            elements.summaryModal.classList.remove('active');
+        }
+        
+        function openNotesModal() {
+            elements.notesModal.classList.add('active');
+            elements.sessionNotes.value = sessionState.notes;
+        }
+        
+        function closeNotesModal() {
+            elements.notesModal.classList.remove('active');
+        }
+        
+        function saveNotes() {
+            sessionState.notes = elements.sessionNotes.value;
+            console.log('Notes saved:', sessionState.notes);
+            closeNotesModal();
+        }
+        
+        function clearNotes() {
+            if (confirm('Are you sure you want to clear all notes?')) {
+                elements.sessionNotes.value = '';
+                sessionState.notes = '';
+            }
+        }
+        
+        // Voice Recording (placeholder)
+        function toggleVoiceRecording() {
+            sessionState.isRecording = !sessionState.isRecording;
+            
+            if (sessionState.isRecording) {
+                elements.voiceBtn.classList.add('recording');
+                elements.voiceBtn.innerHTML = '<i data-lucide="mic-off" class="w-4 h-4"></i> Stop';
+                updateStatus('processing', 'Recording...');
+                
+                // Simulate recording
+                setTimeout(() => {
+                    stopVoiceRecording();
+                }, 3000);
+            } else {
+                stopVoiceRecording();
+            }
+            
+            lucide.createIcons();
+        }
+        
+        function stopVoiceRecording() {
+            sessionState.isRecording = false;
+            elements.voiceBtn.classList.remove('recording');
+            elements.voiceBtn.innerHTML = '<i data-lucide="mic" class="w-4 h-4"></i> Voice';
+            updateStatus('listening', 'Listening...');
+            
+            // Simulate voice-to-text result
+            elements.userInput.value = "Could you tell me more about when this started?";
+            
+            lucide.createIcons();
+        }
+        
+        // Event Listeners
+        elements.startBtn.addEventListener('click', startSession);
+        elements.pauseBtn.addEventListener('click', pauseTimer);
+        elements.sendBtn.addEventListener('click', sendMessage);
+        elements.voiceBtn.addEventListener('click', toggleVoiceRecording);
+        elements.finishBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to finish this session? This cannot be undone.')) {
+                endSession();
+            }
+        });
+        
+        elements.summaryBtn.addEventListener('click', openSummaryModal);
+        elements.notesBtn.addEventListener('click', openNotesModal);
+        elements.closeSummaryModal.addEventListener('click', closeSummaryModal);
+        elements.closeNotesModal.addEventListener('click', closeNotesModal);
+        elements.saveNotes.addEventListener('click', saveNotes);
+        elements.clearNotes.addEventListener('click', clearNotes);
+        
+        // Modal close on outside click
+        elements.summaryModal.addEventListener('click', (e) => {
+            if (e.target === elements.summaryModal) {
+                closeSummaryModal();
+            }
+        });
+        
+        elements.notesModal.addEventListener('click', (e) => {
+            if (e.target === elements.notesModal) {
+                closeNotesModal();
+            }
+        });
+        
+        // Enter key to send message
+        elements.userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.matches('input, textarea')) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 's':
+                    if (!sessionState.isActive) {
+                        e.preventDefault();
+                        startSession();
+                    }
+                    break;
+                case 'p':
+                    if (sessionState.isActive) {
+                        e.preventDefault();
+                        pauseTimer();
+                    }
+                    break;
+                case 'n':
+                    e.preventDefault();
+                    openNotesModal();
+                    break;
+                case 'escape':
+                    closeSummaryModal();
+                    closeNotesModal();
+                    break;
+            }
+        });
+        
+        // Initialize
+        updateTimerDisplay();
+        updateStatus('ready', 'Ready to Start');
+        
+        // Focus input when session starts
+        function focusInput() {
+            if (sessionState.isActive) {
+                elements.userInput.focus();
+            }
+        }
+        
+        // Auto-save notes periodically
+        setInterval(() => {
+            if (elements.sessionNotes.value !== sessionState.notes) {
+                sessionState.notes = elements.sessionNotes.value;
+                console.log('Notes auto-saved');
+            }
+        }, 30000); // Auto-save every 30 seconds
+        
+        console.log('Simulation interface initialized');
+    </script>
+</body>
+</html>

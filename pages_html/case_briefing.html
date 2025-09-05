@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Briefing - AMC Clinical Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --medical-green: #10b981;
+            --medical-green-light: #34d399;
+            --medical-green-dark: #059669;
+            --medical-bg: #f0fdf4;
+            --medical-card: #ffffff;
+            --medical-text: #064e3b;
+            --medical-text-light: #6b7280;
+            --medical-border: #d1fae5;
+            --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
+            --medical-warning: #f59e0b;
+            --medical-warning-bg: #fef3c7;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif !important;
+            background: linear-gradient(135deg, var(--medical-bg) 0%, #ecfdf5 100%) !important;
+            color: var(--medical-text) !important;
+            line-height: 1.6 !important;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--medical-card);
+            border-bottom: 1px solid var(--medical-border);
+            box-shadow: 0 1px 3px var(--medical-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--medical-text);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medical-text-light);
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--medical-green);
+            text-decoration: none;
+            transition: color 0.2s ease-out;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--medical-green-dark);
+        }
+        
+        .back-btn {
+            background: none;
+            border: 1px solid var(--medical-border);
+            color: var(--medical-text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            border-color: var(--medical-green);
+            color: var(--medical-green);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        
+        /* Case Header */
+        .case-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .case-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .case-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--medical-green);
+            color: white;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .case-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .case-subtitle {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            margin-bottom: 2rem;
+        }
+        
+        .case-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--medical-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            color: var(--medical-green-dark);
+            border: 1px solid var(--medical-border);
+        }
+        
+        .meta-value {
+            font-weight: 600;
+        }
+        
+        /* Important Notice */
+        .important-notice {
+            background: var(--medical-warning-bg);
+            border: 1px solid #fbbf24;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .notice-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--medical-warning);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+        
+        .notice-content {
+            flex: 1;
+        }
+        
+        .notice-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+        
+        .notice-text {
+            color: #92400e;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        /* Briefing Content */
+        .briefing-section {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+            position: relative;
+        }
+        
+        .briefing-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .briefing-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--medical-border);
+        }
+        
+        .briefing-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .briefing-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
+        .briefing-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--medical-text);
+        }
+        
+        .briefing-content h1,
+        .briefing-content h2,
+        .briefing-content h3,
+        .briefing-content h4 {
+            color: var(--medical-text);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .briefing-content h1:first-child,
+        .briefing-content h2:first-child,
+        .briefing-content h3:first-child,
+        .briefing-content h4:first-child {
+            margin-top: 0;
+        }
+        
+        .briefing-content h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--medical-border);
+            padding-bottom: 0.5rem;
+        }
+        
+        .briefing-content h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .briefing-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .briefing-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        .briefing-content ul,
+        .briefing-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .briefing-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .briefing-content strong {
+            color: var(--medical-green-dark);
+            font-weight: 600;
+        }
+        
+        .briefing-content em {
+            color: var(--medical-text-light);
+            font-style: italic;
+        }
+        
+        /* Action Section */
+        .action-section {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+        }
+        
+        .action-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 8px 16px var(--medical-shadow);
+            animation: gentle-pulse 2s ease-in-out infinite;
+        }
+        
+        .action-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 1rem;
+        }
+        
+        .action-description {
+            font-size: 1rem;
+            color: var(--medical-text-light);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border: none;
+            padding: 1.5rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--medical-shadow);
+            margin-bottom: 1rem;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px var(--medical-shadow);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+        
+        .btn-secondary {
+            background: none;
+            color: var(--medical-text-light);
+            border: 1px solid var(--medical-border);
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            margin-left: 1rem;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--medical-green);
+            color: var(--medical-green);
+        }
+        
+        .session-info {
+            background: var(--medical-accent);
+            border: 1px solid var(--medical-border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: var(--medical-green-dark);
+        }
+        
+        /* Reading Progress */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+        }
+        
+        /* Animations */
+        @keyframes gentle-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 8px 16px var(--medical-shadow);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 12px 24px var(--medical-shadow);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-header {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-notice {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+        
+        .animate-briefing {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+        
+        .animate-action {
+            animation: fadeInUp 0.6s ease-out 0.6s both;
+        }
+        
+        /* Print Styles */
+        @media print {
+            .header,
+            .action-section,
+            .important-notice {
+                display: none;
+            }
+            
+            body {
+                background: white !important;
+            }
+            
+            .briefing-section {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .case-title {
+                font-size: 2rem;
+            }
+            
+            .briefing-section {
+                padding: 2rem;
+            }
+            
+            .action-section {
+                padding: 2rem;
+            }
+            
+            .case-meta {
+                gap: 1rem;
+            }
+            
+            .btn-primary {
+                padding: 1.25rem 2rem;
+                font-size: 1.1rem;
+            }
+            
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .case-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .important-notice {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .briefing-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+            
+            .action-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Reading Progress Bar -->
+    <div class="reading-progress" id="reading-progress"></div>
+    
+    <div class="page-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="logo-text">AMC Clinical Exam Simulator</div>
+                </div>
+                
+                <div class="breadcrumb">
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <a href="{% url 'categories' %}">Categories</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <a href="{% url 'case_list' category=category %}">{{ category_name|title }}</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <span>Case Briefing</span>
+                </div>
+                
+                <a href="{% url 'case_list' category=category %}" class="back-btn">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to Cases
+                </a>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Case Header -->
+            <section class="case-header animate-header">
+                <div class="case-info">
+                    <div class="case-icon">
+                        <i data-lucide="file-text" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="case-title">{{ case.patient_name|default:"Erin Campbell" }}</h1>
+                        <p class="case-subtitle">
+                            Case Briefing - Read the instructions carefully before beginning your timed session
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="case-meta">
+                    <div class="meta-item">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span><span class="meta-value">{{ case.age|default:"14" }} years old</span> • {{ case.gender|default:"Female" }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        <span><span class="meta-value">{{ case.duration|default:"20" }} minutes</span> session</span>
+                    </div>
+                    <div class="meta-item">
+                        <i data-lucide="target" class="w-4 h-4"></i>
+                        <span class="meta-value">{{ case.difficulty|title|default:"Beginner" }}</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Important Notice -->
+            <section class="important-notice animate-notice">
+                <div class="notice-icon">
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                </div>
+                <div class="notice-content">
+                    <h3 class="notice-title">Before You Begin</h3>
+                    <p class="notice-text">
+                        Please read the entire case briefing carefully. Once you start the timed session, you cannot return to these instructions. 
+                        Ensure you have a quiet environment and are ready to begin your clinical examination.
+                    </p>
+                </div>
+            </section>
+            
+            <!-- Briefing Content -->
+            <section class="briefing-section animate-briefing">
+                <div class="briefing-header">
+                    <div class="briefing-icon">
+                        <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                    </div>
+                    <h2 class="briefing-title">Clinical Case Instructions</h2>
+                </div>
+                
+                <div class="briefing-content">
+                    <!-- Sample Instructions - Replace with {{ case.instruction_for_doc|safe }} -->
+                    <h1>Patient Information</h1>
+                    <p>You are about to examine <strong>Erin Campbell</strong>, a 14-year-old female who has presented to your clinic with concerns about her skin condition.</p>
+                    
+                    <h2>Setting</h2>
+                    <p>This consultation is taking place in a general practice clinic. You have allocated 20 minutes for this appointment. The patient's mother has accompanied her but has agreed to wait outside during the initial consultation to allow the patient to speak freely.</p>
+                    
+                    <h2>Your Role</h2>
+                    <p>You are the general practitioner conducting the consultation. Your objectives include:</p>
+                    <ul>
+                        <li>Conducting a thorough history taking focused on the presenting complaint</li>
+                        <li>Performing an appropriate physical examination</li>
+                        <li>Demonstrating effective communication skills with an adolescent patient</li>
+                        <li>Addressing the patient's concerns and providing appropriate management</li>
+                        <li>Discussing treatment options and lifestyle modifications</li>
+                    </ul>
+                    
+                    <h2>Key Areas to Address</h2>
+                    <p>During this consultation, you should focus on:</p>
+                    <ol>
+                        <li><strong>History Taking:</strong> Explore the onset, duration, and characteristics of the skin condition</li>
+                        <li><strong>Psychosocial Impact:</strong> Assess how the condition is affecting the patient's self-esteem and daily activities</li>
+                        <li><strong>Physical Examination:</strong> Conduct an appropriate dermatological examination</li>
+                        <li><strong>Patient Education:</strong> Explain the condition and available treatment options</li>
+                        <li><strong>Adolescent Communication:</strong> Use age-appropriate language and respect the patient's autonomy</li>
+                    </ol>
+                    
+                    <h2>Assessment Criteria</h2>
+                    <p>You will be assessed on the following areas:</p>
+                    <ul>
+                        <li>History taking skills and systematic approach</li>
+                        <li>Physical examination technique and completeness</li>
+                        <li>Communication skills and rapport building</li>
+                        <li>Clinical reasoning and diagnostic approach</li>
+                        <li>Management planning and patient education</li>
+                        <li>Professional behavior and ethical considerations</li>
+                    </ul>
+                    
+                    <h2>Special Considerations</h2>
+                    <p><em>Remember that this is an adolescent patient who may feel embarrassed about her appearance. Be sensitive to her emotional state and ensure she feels comfortable throughout the consultation. Consider issues around consent, confidentiality, and the role of parents in adolescent healthcare.</em></p>
+                    
+                    <h2>Available Resources</h2>
+                    <p>During the examination, you will have access to:</p>
+                    <ul>
+                        <li>Basic examination equipment (stethoscope, otoscope, etc.)</li>
+                        <li>Dermatoscope for detailed skin examination</li>
+                        <li>Patient information sheets about acne management</li>
+                        <li>Prescription pad for medications if indicated</li>
+                    </ul>
+                    
+                    <!-- This would be replaced with the actual case content -->
+                    <!-- {{ case.instruction_for_doc|safe|default:"<p>Case instructions will be displayed here...</p>" }} -->
+                </div>
+            </section>
+            
+            <!-- Action Section -->
+            <section class="action-section animate-action">
+                <div class="action-icon">
+                    <i data-lucide="play-circle" class="w-8 h-8"></i>
+                </div>
+                <h2 class="action-title">Ready to Begin?</h2>
+                <p class="action-description">
+                    Once you start the timed session, you will interact with an AI patient based on the case described above. 
+                    The timer will begin immediately and cannot be paused.
+                </p>
+                
+                <a href="{% url 'case_simulation' case_id=case.id %}" class="btn-primary" id="begin-session-btn">
+                    <i data-lucide="timer" class="w-6 h-6"></i>
+                    Begin Timed Session
+                </a>
+                
+                <a href="{% url 'case_list' category=category %}" class="btn-secondary">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Choose Different Case
+                </a>
+                
+                <div class="session-info">
+                    <p><strong>Session Duration:</strong> {{ case.duration|default:"20" }} minutes • <strong>Difficulty:</strong> {{ case.difficulty|title|default:"Beginner" }} • <strong>Format:</strong> Interactive AI Simulation</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Reading progress bar
+        function updateReadingProgress() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('reading-progress').style.width = scrolled + '%';
+        }
+        
+        window.addEventListener('scroll', updateReadingProgress);
+        
+        // Begin session confirmation
+        document.getElementById('begin-session-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const confirmed = confirm(
+                'Are you ready to begin the timed session?\n\n' +
+                '• The timer will start immediately\n' +
+                '• You cannot pause or return to these instructions\n' +
+                '• Ensure you have read all the case details\n\n' +
+                'Click OK to proceed or Cancel to review the instructions again.'
+            );
+            
+            if (confirmed) {
+                // Add loading state
+                this.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> Starting Session...';
+                this.style.pointerEvents = 'none';
+                
+                // Brief delay to show loading state
+                setTimeout(() => {
+                    window.location.href = this.getAttribute('href');
+                }, 1500);
+            }
+        });
+        
+        // Add ripple effect to primary button
+        document.querySelector('.btn-primary').addEventListener('click', function(e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s ease-out';
+            ripple.style.pointerEvents = 'none';
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+        
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            
+            .animate-spin {
+                animation: spin 1s linear infinite;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Press 'S' to start session
+            if (e.key === 's' || e.key === 'S') {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    document.getElementById('begin-session-btn').click();
+                }
+            }
+            
+            // Press 'B' to go back
+            if (e.key === 'b' || e.key === 'B') {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    document.querySelector('.btn-secondary').click();
+                }
+            }
+            
+            // Press 'P' to print
+            if (e.key === 'p' || e.key === 'P') {
+                if (!e.target.matches('input, textarea')) {
+                    e.preventDefault();
+                    window.print();
+                }
+            }
+        });
+        
+        // Smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Auto-save reading position (localStorage)
+        function saveReadingPosition() {
+            const scrollPosition = window.pageYOffset;
+            localStorage.setItem('case_briefing_scroll', scrollPosition);
+        }
+        
+        function restoreReadingPosition() {
+            const savedPosition = localStorage.getItem('case_briefing_scroll');
+            if (savedPosition) {
+                window.scrollTo(0, parseInt(savedPosition));
+                localStorage.removeItem('case_briefing_scroll');
+            }
+        }
+        
+        // Save position when leaving page
+        window.addEventListener('beforeunload', saveReadingPosition);
+        
+        // Restore position on page load
+        window.addEventListener('load', restoreReadingPosition);
+        
+        // Focus management for accessibility
+        document.querySelector('.btn-primary').addEventListener('focus', function() {
+            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        
+        // Estimate reading time
+        function estimateReadingTime() {
+            const text = document.querySelector('.briefing-content').textContent;
+            const wordsPerMinute = 200;
+            const words = text.trim().split(/\s+/).length;
+            const readingTime = Math.ceil(words / wordsPerMinute);
+            
+            // Add reading time indicator if desired
+            console.log(`Estimated reading time: ${readingTime} minute(s)`);
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            estimateReadingTime();
+            updateReadingProgress();
+        });
+    </script>
+</body>
+</html>

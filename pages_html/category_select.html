@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Category - AMC Clinical Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --medical-green: #10b981;
+            --medical-green-light: #34d399;
+            --medical-green-dark: #059669;
+            --medical-bg: #f0fdf4;
+            --medical-card: #ffffff;
+            --medical-text: #064e3b;
+            --medical-text-light: #6b7280;
+            --medical-border: #d1fae5;
+            --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif !important;
+            background: linear-gradient(135deg, var(--medical-bg) 0%, #ecfdf5 100%) !important;
+            color: var(--medical-text) !important;
+            line-height: 1.6 !important;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--medical-card);
+            border-bottom: 1px solid var(--medical-border);
+            box-shadow: 0 1px 3px var(--medical-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--medical-text);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medical-text-light);
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--medical-green);
+            text-decoration: none;
+            transition: color 0.2s ease-out;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--medical-green-dark);
+        }
+        
+        .back-btn {
+            background: none;
+            border: 1px solid var(--medical-border);
+            color: var(--medical-text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            border-color: var(--medical-green);
+            color: var(--medical-green);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 1rem;
+        }
+        
+        .page-title .highlight {
+            color: var(--medical-green);
+        }
+        
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+        
+        .category-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--medical-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            color: var(--medical-green-dark);
+            border: 1px solid var(--medical-border);
+        }
+        
+        .stat-number {
+            font-weight: 600;
+        }
+        
+        /* Search and Filter */
+        .search-section {
+            margin-bottom: 3rem;
+        }
+        
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            font-size: 1rem;
+            border: 2px solid var(--medical-border);
+            border-radius: 0.75rem;
+            background: var(--medical-card);
+            color: var(--medical-text);
+            transition: all 0.3s ease-out;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--medical-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medical-text-light);
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .category-card {
+            background: var(--medical-card);
+            border: 2px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease-out;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            transform: scaleX(0);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px var(--medical-shadow);
+            border-color: var(--medical-green-light);
+        }
+        
+        .category-icon {
+            width: 4rem;
+            height: 4rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease-out;
+        }
+        
+        .category-card:hover .category-icon {
+            background: var(--medical-green);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.75rem;
+        }
+        
+        .category-description {
+            font-size: 0.95rem;
+            color: var(--medical-text-light);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--medical-border);
+        }
+        
+        .case-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--medical-text-light);
+        }
+        
+        .difficulty-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .difficulty-beginner {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .difficulty-intermediate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .difficulty-advanced {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .category-arrow {
+            color: var(--medical-green);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .category-card:hover .category-arrow {
+            transform: translateX(4px);
+        }
+        
+        /* Popular Categories Section */
+        .popular-section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .section-icon {
+            width: 2rem;
+            height: 2rem;
+            background: var(--medical-green);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-header {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-search {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+        
+        .animate-grid {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+        
+        .category-card {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+        
+        .category-card:nth-child(1) { animation-delay: 0.1s; }
+        .category-card:nth-child(2) { animation-delay: 0.2s; }
+        .category-card:nth-child(3) { animation-delay: 0.3s; }
+        .category-card:nth-child(4) { animation-delay: 0.4s; }
+        .category-card:nth-child(5) { animation-delay: 0.5s; }
+        .category-card:nth-child(6) { animation-delay: 0.6s; }
+        .category-card:nth-child(7) { animation-delay: 0.7s; }
+        .category-card:nth-child(8) { animation-delay: 0.8s; }
+        .category-card:nth-child(9) { animation-delay: 0.9s; }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .category-stats {
+                gap: 1rem;
+            }
+            
+            .category-meta {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .category-card {
+                padding: 1.5rem;
+            }
+            
+            .category-icon {
+                width: 3rem;
+                height: 3rem;
+            }
+            
+            .category-title {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="logo-text">AMC Clinical Exam Simulator</div>
+                </div>
+                
+                <div class="breadcrumb">
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <span>Select Category</span>
+                </div>
+                
+                <a href="{% url 'dashboard' %}" class="back-btn">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <section class="page-header animate-header">
+                <h1 class="page-title">
+                    Choose Your <span class="highlight">Clinical Category</span>
+                </h1>
+                <p class="page-subtitle">
+                    Select a clinical examination category to begin practicing with AI patients. 
+                    Each category contains realistic cases designed to test your diagnostic and communication skills.
+                </p>
+                
+                <div class="category-stats">
+                    <div class="stat-item">
+                        <i data-lucide="folder" class="w-4 h-4"></i>
+                        <span><span class="stat-number">12</span> Categories</span>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span><span class="stat-number">180+</span> Cases</span>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="bot" class="w-4 h-4"></i>
+                        <span><span class="stat-number">AI-Powered</span> Patients</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Search Section -->
+            <section class="search-section animate-search">
+                <div class="search-container">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        placeholder="Search categories..."
+                        id="category-search"
+                        onkeyup="filterCategories()"
+                    >
+                </div>
+            </section>
+            
+            <!-- Popular Categories -->
+            <section class="popular-section animate-grid">
+                <h2 class="section-title">
+                    <div class="section-icon">
+                        <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    </div>
+                    Popular Categories
+                </h2>
+                
+                <div class="categories-grid" id="categories-container">
+                    <!-- Cardiovascular System -->
+                    <a href="{% url 'case_list' category='cardiovascular' %}" class="category-card" data-category="cardiovascular system cardiology heart">
+                        <div class="category-icon">
+                            <i data-lucide="heart" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Cardiovascular System</h3>
+                        <p class="category-description">
+                            Practice cardiac examinations, ECG interpretation, and cardiovascular disease diagnosis with AI patients presenting various heart conditions.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>24 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Respiratory System -->
+                    <a href="{% url 'case_list' category='respiratory' %}" class="category-card" data-category="respiratory system pulmonary lung breathing">
+                        <div class="category-icon">
+                            <i data-lucide="wind" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Respiratory System</h3>
+                        <p class="category-description">
+                            Examine patients with breathing difficulties, perform lung function assessments, and diagnose respiratory conditions.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>20 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Adolescent Health -->
+                    <a href="{% url 'case_list' category='adolescent' %}" class="category-card" data-category="adolescent health teenage youth pediatric">
+                        <div class="category-icon">
+                            <i data-lucide="users" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Adolescent Health</h3>
+                        <p class="category-description">
+                            Navigate sensitive consultations with teenage patients, addressing mental health, development, and behavioral concerns.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>16 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Aged Care -->
+                    <a href="{% url 'case_list' category='aged-care' %}" class="category-card" data-category="aged care elderly geriatric senior">
+                        <div class="category-icon">
+                            <i data-lucide="user-check" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Aged Care</h3>
+                        <p class="category-description">
+                            Manage complex cases involving elderly patients with multiple comorbidities, medication management, and quality of life issues.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>22 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Neurological System -->
+                    <a href="{% url 'case_list' category='neurological' %}" class="category-card" data-category="neurological system neurology brain nervous">
+                        <div class="category-icon">
+                            <i data-lucide="brain" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Neurological System</h3>
+                        <p class="category-description">
+                            Conduct neurological examinations, assess cognitive function, and diagnose conditions affecting the nervous system.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>18 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Gastrointestinal System -->
+                    <a href="{% url 'case_list' category='gastrointestinal' %}" class="category-card" data-category="gastrointestinal system digestive stomach intestinal">
+                        <div class="category-icon">
+                            <i data-lucide="activity" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Gastrointestinal System</h3>
+                        <p class="category-description">
+                            Examine patients with digestive complaints, perform abdominal assessments, and diagnose GI disorders.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>19 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Mental Health -->
+                    <a href="{% url 'case_list' category='mental-health' %}" class="category-card" data-category="mental health psychiatry psychology depression anxiety">
+                        <div class="category-icon">
+                            <i data-lucide="heart-handshake" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Mental Health</h3>
+                        <p class="category-description">
+                            Practice sensitive mental health consultations, risk assessments, and therapeutic communication techniques.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>15 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Women's Health -->
+                    <a href="{% url 'case_list' category='womens-health' %}" class="category-card" data-category="womens health gynecology obstetrics reproductive">
+                        <div class="category-icon">
+                            <i data-lucide="flower" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Women's Health</h3>
+                        <p class="category-description">
+                            Handle gynecological examinations, reproductive health consultations, and pregnancy-related care scenarios.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>17 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Emergency Medicine -->
+                    <a href="{% url 'case_list' category='emergency' %}" class="category-card" data-category="emergency medicine urgent care trauma critical">
+                        <div class="category-icon">
+                            <i data-lucide="zap" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Emergency Medicine</h3>
+                        <p class="category-description">
+                            Manage acute presentations, perform rapid assessments, and make critical decisions under time pressure.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>21 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Search functionality
+        function filterCategories() {
+            const searchTerm = document.getElementById('category-search').value.toLowerCase();
+            const categoryCards = document.querySelectorAll('.category-card');
+            
+            categoryCards.forEach(card => {
+                const searchData = card.getAttribute('data-category').toLowerCase();
+                const title = card.querySelector('.category-title').textContent.toLowerCase();
+                const description = card.querySelector('.category-description').textContent.toLowerCase();
+                
+                const isMatch = searchData.includes(searchTerm) || 
+                               title.includes(searchTerm) || 
+                               description.includes(searchTerm);
+                
+                if (isMatch) {
+                    card.style.display = 'block';
+                    card.style.animation = 'fadeInUp 0.4s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Add hover effects and analytics tracking
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-6px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            
+            card.addEventListener('click', function(e) {
+                // Track category selection (replace with actual analytics)
+                const categoryName = this.querySelector('.category-title').textContent;
+                console.log('Category selected:', categoryName);
+                
+                // Add loading state
+                const arrow = this.querySelector('.category-arrow');
+                arrow.style.transform = 'rotate(90deg)';
+                
+                // Optional: Add loading spinner or animation here
+            });
+        });
+        
+        // Keyboard navigation for accessibility
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('category-search').blur();
+            }
+        });
+        
+        // Clear search on escape
+        document.getElementById('category-search').addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                filterCategories();
+                this.blur();
+            }
+        });
+        
+        // Auto-focus search on '/' key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/' && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                document.getElementById('category-search').focus();
+            }
+        });
+    </script>
+</body>
+</html>

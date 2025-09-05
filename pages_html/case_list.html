@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case List - AMC Clinical Exam Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --medical-green: #10b981;
+            --medical-green-light: #34d399;
+            --medical-green-dark: #059669;
+            --medical-bg: #f0fdf4;
+            --medical-card: #ffffff;
+            --medical-text: #064e3b;
+            --medical-text-light: #6b7280;
+            --medical-border: #d1fae5;
+            --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif !important;
+            background: linear-gradient(135deg, var(--medical-bg) 0%, #ecfdf5 100%) !important;
+            color: var(--medical-text) !important;
+            line-height: 1.6 !important;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--medical-card);
+            border-bottom: 1px solid var(--medical-border);
+            box-shadow: 0 1px 3px var(--medical-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--medical-text);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medical-text-light);
+            font-size: 0.875rem;
+        }
+        
+        .breadcrumb a {
+            color: var(--medical-green);
+            text-decoration: none;
+            transition: color 0.2s ease-out;
+        }
+        
+        .breadcrumb a:hover {
+            color: var(--medical-green-dark);
+        }
+        
+        .back-btn {
+            background: none;
+            border: 1px solid var(--medical-border);
+            color: var(--medical-text-light);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            border-color: var(--medical-green);
+            color: var(--medical-green);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .category-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .category-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--medical-green);
+            color: white;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .category-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-subtitle {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+        
+        .case-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--medical-accent);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            color: var(--medical-green-dark);
+            border: 1px solid var(--medical-border);
+        }
+        
+        .stat-number {
+            font-weight: 600;
+        }
+        
+        /* Filter and Sort */
+        .filter-section {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--medical-text);
+        }
+        
+        .filter-input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medical-border);
+            border-radius: 0.5rem;
+            background: var(--medical-card);
+            color: var(--medical-text);
+            transition: all 0.2s ease-out;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--medical-green);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+        }
+        
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--medical-border);
+            border-radius: 0.5rem;
+            background: var(--medical-card);
+            color: var(--medical-text);
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--medical-green);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+        }
+        
+        /* Case List */
+        .case-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .case-item {
+            background: var(--medical-card);
+            border: 2px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease-out;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+        }
+        
+        .case-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .case-item:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .case-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px var(--medical-shadow);
+            border-color: var(--medical-green-light);
+        }
+        
+        .case-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .patient-info {
+            flex: 1;
+        }
+        
+        .patient-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.25rem;
+        }
+        
+        .patient-details {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .age-badge {
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .gender-badge {
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .case-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .difficulty-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .difficulty-beginner {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .difficulty-intermediate {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .difficulty-advanced {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .completion-status {
+            font-size: 0.875rem;
+            color: var(--medical-text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .completed {
+            color: var(--medical-green);
+        }
+        
+        .presenting-complaint {
+            font-size: 1rem;
+            color: var(--medical-text-light);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+        
+        .case-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid var(--medical-border);
+        }
+        
+        .case-tags {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .case-tag {
+            background: #f9fafb;
+            color: #6b7280;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .case-arrow {
+            color: var(--medical-green);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .case-item:hover .case-arrow {
+            transform: translateX(4px);
+        }
+        
+        .duration-estimate {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--medical-text-light);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--medical-text-light);
+        }
+        
+        .empty-icon {
+            width: 4rem;
+            height: 4rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-header {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        .animate-filter {
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+        
+        .animate-list {
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+        
+        .case-item {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+        
+        .case-item:nth-child(1) { animation-delay: 0.1s; }
+        .case-item:nth-child(2) { animation-delay: 0.2s; }
+        .case-item:nth-child(3) { animation-delay: 0.3s; }
+        .case-item:nth-child(4) { animation-delay: 0.4s; }
+        .case-item:nth-child(5) { animation-delay: 0.5s; }
+        .case-item:nth-child(6) { animation-delay: 0.6s; }
+        .case-item:nth-child(7) { animation-delay: 0.7s; }
+        .case-item:nth-child(8) { animation-delay: 0.8s; }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            
+            .category-title {
+                font-size: 2rem;
+            }
+            
+            .case-stats {
+                gap: 1rem;
+            }
+            
+            .filter-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .case-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .case-status {
+                align-items: flex-start;
+                flex-direction: row;
+                gap: 1rem;
+            }
+            
+            .patient-details {
+                flex-wrap: wrap;
+            }
+            
+            .case-meta {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .case-item {
+                padding: 1.5rem;
+            }
+            
+            .patient-name {
+                font-size: 1.25rem;
+            }
+            
+            .category-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="logo-text">AMC Clinical Exam Simulator</div>
+                </div>
+                
+                <div class="breadcrumb">
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <a href="{% url 'categories' %}">Categories</a>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <span>{{ category_name|title }}</span>
+                </div>
+                
+                <a href="{% url 'categories' %}" class="back-btn">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                    Back to Categories
+                </a>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Page Header -->
+            <section class="page-header animate-header">
+                <div class="category-info">
+                    <div class="category-icon">
+                        <i data-lucide="{{ category_icon|default:'heart' }}" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="category-title">{{ category_name|title|default:"Cardiovascular System" }}</h1>
+                        <p class="category-subtitle">
+                            Practice with AI patients presenting {{ category_name|lower }} cases. 
+                            Each case is designed to test your diagnostic skills and clinical reasoning.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="case-stats">
+                    <div class="stat-item">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span><span class="stat-number">{{ cases.count|default:"24" }}</span> Cases Available</span>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="clock" class="w-4 h-4"></i>
+                        <span><span class="stat-number">15-30</span> Minutes Each</span>
+                    </div>
+                    <div class="stat-item">
+                        <i data-lucide="target" class="w-4 h-4"></i>
+                        <span><span class="stat-number">{{ completion_rate|default:"0" }}%</span> Completed</span>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Filter Section -->
+            <section class="filter-section animate-filter">
+                <div class="filter-header">
+                    <h2 class="filter-title">Filter & Sort Cases</h2>
+                </div>
+                
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label" for="search-input">Search Patient Name</label>
+                        <input 
+                            type="text" 
+                            id="search-input" 
+                            class="filter-input" 
+                            placeholder="Search by patient name..."
+                            onkeyup="filterCases()"
+                        >
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label" for="difficulty-filter">Difficulty Level</label>
+                        <select id="difficulty-filter" class="filter-select" onchange="filterCases()">
+                            <option value="">All Difficulties</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label" for="status-filter">Completion Status</label>
+                        <select id="status-filter" class="filter-select" onchange="filterCases()">
+                            <option value="">All Cases</option>
+                            <option value="completed">Completed</option>
+                            <option value="not-completed">Not Completed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label" for="sort-select">Sort By</label>
+                        <select id="sort-select" class="filter-select" onchange="sortCases()">
+                            <option value="name">Patient Name</option>
+                            <option value="age">Age</option>
+                            <option value="difficulty">Difficulty</option>
+                            <option value="status">Completion Status</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Case List -->
+            <section class="animate-list">
+                <div class="case-list" id="case-list">
+                    <!-- Case 1: Erin Campbell -->
+                    <a href="{% url 'case_detail' case_id='1' %}" class="case-item" data-case='{"name":"erin campbell","age":14,"difficulty":"beginner","completed":false,"gender":"female","complaint":"acne"}'>
+                        <div class="case-header">
+                            <div class="patient-info">
+                                <h3 class="patient-name">Erin Campbell</h3>
+                                <div class="patient-details">
+                                    <div class="age-badge">14 years old</div>
+                                    <div class="gender-badge">Female</div>
+                                </div>
+                            </div>
+                            <div class="case-status">
+                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                                <div class="completion-status">
+                                    <i data-lucide="circle" class="w-4 h-4"></i>
+                                    <span>Not Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="presenting-complaint">
+                            <strong>Presenting Complaint:</strong> Teenager presenting with facial acne and concerns about skin appearance affecting self-confidence.
+                        </p>
+                        
+                        <div class="case-meta">
+                            <div class="case-tags">
+                                <span class="case-tag">Dermatology</span>
+                                <span class="case-tag">Adolescent Health</span>
+                                <span class="case-tag">Communication</span>
+                            </div>
+                            <div class="duration-estimate">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>~20 min</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Case 2: Michael Roberts -->
+                    <a href="{% url 'case_detail' case_id='2' %}" class="case-item" data-case='{"name":"michael roberts","age":45,"difficulty":"intermediate","completed":true,"gender":"male","complaint":"chest pain"}'>
+                        <div class="case-header">
+                            <div class="patient-info">
+                                <h3 class="patient-name">Michael Roberts</h3>
+                                <div class="patient-details">
+                                    <div class="age-badge">45 years old</div>
+                                    <div class="gender-badge">Male</div>
+                                </div>
+                            </div>
+                            <div class="case-status">
+                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                                <div class="completion-status completed">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                    <span>Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="presenting-complaint">
+                            <strong>Presenting Complaint:</strong> Middle-aged man with acute onset chest pain, shortness of breath, and family history of cardiac disease.
+                        </p>
+                        
+                        <div class="case-meta">
+                            <div class="case-tags">
+                                <span class="case-tag">Cardiology</span>
+                                <span class="case-tag">Emergency</span>
+                                <span class="case-tag">ECG Interpretation</span>
+                            </div>
+                            <div class="duration-estimate">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>~25 min</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Case 3: Sarah Chen -->
+                    <a href="{% url 'case_detail' case_id='3' %}" class="case-item" data-case='{"name":"sarah chen","age":32,"difficulty":"intermediate","completed":false,"gender":"female","complaint":"palpitations"}'>
+                        <div class="case-header">
+                            <div class="patient-info">
+                                <h3 class="patient-name">Sarah Chen</h3>
+                                <div class="patient-details">
+                                    <div class="age-badge">32 years old</div>
+                                    <div class="gender-badge">Female</div>
+                                </div>
+                            </div>
+                            <div class="case-status">
+                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                                <div class="completion-status">
+                                    <i data-lucide="circle" class="w-4 h-4"></i>
+                                    <span>Not Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="presenting-complaint">
+                            <strong>Presenting Complaint:</strong> Young woman experiencing episodes of palpitations, dizziness, and anxiety symptoms over the past month.
+                        </p>
+                        
+                        <div class="case-meta">
+                            <div class="case-tags">
+                                <span class="case-tag">Cardiology</span>
+                                <span class="case-tag">Arrhythmia</span>
+                                <span class="case-tag">Anxiety Assessment</span>
+                            </div>
+                            <div class="duration-estimate">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>~22 min</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Case 4: Robert Thompson -->
+                    <a href="{% url 'case_detail' case_id='4' %}" class="case-item" data-case='{"name":"robert thompson","age":68,"difficulty":"advanced","completed":false,"gender":"male","complaint":"heart failure"}'>
+                        <div class="case-header">
+                            <div class="patient-info">
+                                <h3 class="patient-name">Robert Thompson</h3>
+                                <div class="patient-details">
+                                    <div class="age-badge">68 years old</div>
+                                    <div class="gender-badge">Male</div>
+                                </div>
+                            </div>
+                            <div class="case-status">
+                                <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                                <div class="completion-status">
+                                    <i data-lucide="circle" class="w-4 h-4"></i>
+                                    <span>Not Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="presenting-complaint">
+                            <strong>Presenting Complaint:</strong> Elderly man with progressive shortness of breath, leg swelling, and reduced exercise tolerance over several weeks.
+                        </p>
+                        
+                        <div class="case-meta">
+                            <div class="case-tags">
+                                <span class="case-tag">Heart Failure</span>
+                                <span class="case-tag">Geriatrics</span>
+                                <span class="case-tag">Complex Management</span>
+                            </div>
+                            <div class="duration-estimate">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>~30 min</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Case 5: Emma Wilson -->
+                    <a href="{% url 'case_detail' case_id='5' %}" class="case-item" data-case='{"name":"emma wilson","age":28,"difficulty":"beginner","completed":true,"gender":"female","complaint":"high blood pressure"}'>
+                        <div class="case-header">
+                            <div class="patient-info">
+                                <h3 class="patient-name">Emma Wilson</h3>
+                                <div class="patient-details">
+                                    <div class="age-badge">28 years old</div>
+                                    <div class="gender-badge">Female</div>
+                                </div>
+                            </div>
+                            <div class="case-status">
+                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                                <div class="completion-status completed">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                    <span>Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="presenting-complaint">
+                            <strong>Presenting Complaint:</strong> Young woman with newly diagnosed hypertension seeking lifestyle advice and medication counseling.
+                        </p>
+                        
+                        <div class="case-meta">
+                            <div class="case-tags">
+                                <span class="case-tag">Hypertension</span>
+                                <span class="case-tag">Prevention</span>
+                                <span class="case-tag">Patient Education</span>
+                            </div>
+                            <div class="duration-estimate">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>~18 min</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Case 6: David Park -->
+                    <a href="{% url 'case_detail' case_id='6' %}" class="case-item" data-case='{"name":"david park","age":55,"difficulty":"advanced","completed":false,"gender":"male","complaint":"syncope"}'>
+                        <div class="case-header">
+                            <div class="patient-info">
+                                <h3 class="patient-name">David Park</h3>
+                                <div class="patient-details">
+                                    <div class="age-badge">55 years old</div>
+                                    <div class="gender-badge">Male</div>
+                                </div>
+                            </div>
+                            <div class="case-status">
+                                <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                                <div class="completion-status">
+                                    <i data-lucide="circle" class="w-4 h-4"></i>
+                                    <span>Not Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="presenting-complaint">
+                            <strong>Presenting Complaint:</strong> Middle-aged man with recurrent episodes of fainting, particularly during physical exertion, requiring comprehensive cardiac evaluation.
+                        </p>
+                        
+                        <div class="case-meta">
+                            <div class="case-tags">
+                                <span class="case-tag">Syncope</span>
+                                <span class="case-tag">Differential Diagnosis</span>
+                                <span class="case-tag">Risk Stratification</span>
+                            </div>
+                            <div class="duration-estimate">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>~28 min</span>
+                            </div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- Empty State (hidden by default) -->
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <div class="empty-icon">
+                        <i data-lucide="search-x" class="w-8 h-8"></i>
+                    </div>
+                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">No Cases Found</h3>
+                    <p>Try adjusting your search criteria or filters to find more cases.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Filter and search functionality
+        function filterCases() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const difficultyFilter = document.getElementById('difficulty-filter').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            const caseItems = document.querySelectorAll('.case-item');
+            
+            let visibleCount = 0;
+            
+            caseItems.forEach(item => {
+                const caseData = JSON.parse(item.getAttribute('data-case'));
+                const nameMatch = caseData.name.includes(searchTerm);
+                const difficultyMatch = !difficultyFilter || caseData.difficulty === difficultyFilter;
+                const statusMatch = !statusFilter || 
+                    (statusFilter === 'completed' && caseData.completed) ||
+                    (statusFilter === 'not-completed' && !caseData.completed);
+                
+                if (nameMatch && difficultyMatch && statusMatch) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show/hide empty state
+            const emptyState = document.getElementById('empty-state');
+            if (visibleCount === 0) {
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+        
+        // Sort functionality
+        function sortCases() {
+            const sortBy = document.getElementById('sort-select').value;
+            const caseList = document.getElementById('case-list');
+            const caseItems = Array.from(document.querySelectorAll('.case-item'));
+            
+            caseItems.sort((a, b) => {
+                const dataA = JSON.parse(a.getAttribute('data-case'));
+                const dataB = JSON.parse(b.getAttribute('data-case'));
+                
+                switch (sortBy) {
+                    case 'name':
+                        return dataA.name.localeCompare(dataB.name);
+                    case 'age':
+                        return dataA.age - dataB.age;
+                    case 'difficulty':
+                        const difficultyOrder = { 'beginner': 1, 'intermediate': 2, 'advanced': 3 };
+                        return difficultyOrder[dataA.difficulty] - difficultyOrder[dataB.difficulty];
+                    case 'status':
+                        return dataB.completed - dataA.completed; // Completed first
+                    default:
+                        return 0;
+                }
+            });
+            
+            // Clear the list and re-append sorted items
+            caseItems.forEach(item => {
+                caseList.appendChild(item);
+            });
+        }
+        
+        // Add hover effects
+        document.querySelectorAll('.case-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(8px)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+            
+            item.addEventListener('click', function(e) {
+                // Track case selection (replace with actual analytics)
+                const caseData = JSON.parse(this.getAttribute('data-case'));
+                console.log('Case selected:', caseData.name);
+                
+                // Add loading state
+                const arrow = this.querySelector('.case-arrow');
+                arrow.style.transform = 'rotate(90deg)';
+            });
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('search-input').blur();
+            }
+            
+            // Focus search with '/' key
+            if (e.key === '/' && !e.target.matches('input, textarea, select')) {
+                e.preventDefault();
+                document.getElementById('search-input').focus();
+            }
+        });
+        
+        // Clear search on escape
+        document.getElementById('search-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                this.value = '';
+                filterCases();
+                this.blur();
+            }
+        });
+        
+        // Initialize animations
+        function initializeAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.case-item').forEach(item => {
+                observer.observe(item);
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAnimations();
+        });
+    </script>
+</body>
+</html>
