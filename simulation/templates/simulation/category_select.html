@@ -536,7 +536,7 @@
                 
                 <div class="categories-grid" id="categories-container">
                     <!-- Cardiovascular System -->
-                    <a href="{% url 'case_list' category='cardiovascular' %}" class="category-card" data-category="cardiovascular system cardiology heart">
+                    <a href="{% url 'case_list' category='Cardiovascular_system' %}" class="category-card" data-category="cardiovascular system cardiology heart">
                         <div class="category-icon">
                             <i data-lucide="heart" class="w-8 h-8"></i>
                         </div>
@@ -555,7 +555,7 @@
                     </a>
                     
                     <!-- Respiratory System -->
-                    <a href="{% url 'case_list' category='respiratory' %}" class="category-card" data-category="respiratory system pulmonary lung breathing">
+                    <a href="{% url 'case_list' category='Respiratory_system' %}" class="category-card" data-category="respiratory system pulmonary lung breathing">
                         <div class="category-icon">
                             <i data-lucide="wind" class="w-8 h-8"></i>
                         </div>
@@ -574,7 +574,7 @@
                     </a>
                     
                     <!-- Adolescent Health -->
-                    <a href="{% url 'case_list' category='adolescent' %}" class="category-card" data-category="adolescent health teenage youth pediatric">
+                    <a href="{% url 'case_list' category='Adolescent_health' %}" class="category-card" data-category="adolescent health teenage youth pediatric">
                         <div class="category-icon">
                             <i data-lucide="users" class="w-8 h-8"></i>
                         </div>
@@ -593,7 +593,7 @@
                     </a>
                     
                     <!-- Aged Care -->
-                    <a href="{% url 'case_list' category='aged-care' %}" class="category-card" data-category="aged care elderly geriatric senior">
+                    <a href="{% url 'case_list' category='Aged_care' %}" class="category-card" data-category="aged care elderly geriatric senior">
                         <div class="category-icon">
                             <i data-lucide="user-check" class="w-8 h-8"></i>
                         </div>
@@ -612,7 +612,7 @@
                     </a>
                     
                     <!-- Neurological System -->
-                    <a href="{% url 'case_list' category='neurological' %}" class="category-card" data-category="neurological system neurology brain nervous">
+                    <a href="{% url 'case_list' category='Neurological_system' %}" class="category-card" data-category="neurological system neurology brain nervous">
                         <div class="category-icon">
                             <i data-lucide="brain" class="w-8 h-8"></i>
                         </div>
@@ -631,7 +631,7 @@
                     </a>
                     
                     <!-- Gastrointestinal System -->
-                    <a href="{% url 'case_list' category='gastrointestinal' %}" class="category-card" data-category="gastrointestinal system digestive stomach intestinal">
+                    <a href="{% url 'case_list' category='Gastroenterology' %}" class="category-card" data-category="gastrointestinal system digestive stomach intestinal">
                         <div class="category-icon">
                             <i data-lucide="activity" class="w-8 h-8"></i>
                         </div>
@@ -650,7 +650,7 @@
                     </a>
                     
                     <!-- Mental Health -->
-                    <a href="{% url 'case_list' category='mental-health' %}" class="category-card" data-category="mental health psychiatry psychology depression anxiety">
+                    <a href="{% url 'case_list' category='Mental_health' %}" class="category-card" data-category="mental health psychiatry psychology depression anxiety">
                         <div class="category-icon">
                             <i data-lucide="heart-handshake" class="w-8 h-8"></i>
                         </div>
@@ -669,7 +669,7 @@
                     </a>
                     
                     <!-- Women's Health -->
-                    <a href="{% url 'case_list' category='womens-health' %}" class="category-card" data-category="womens health gynecology obstetrics reproductive">
+                    <a href="{% url 'case_list' category='Womens_health' %}" class="category-card" data-category="womens health gynecology obstetrics reproductive">
                         <div class="category-icon">
                             <i data-lucide="flower" class="w-8 h-8"></i>
                         </div>
@@ -688,7 +688,7 @@
                     </a>
                     
                     <!-- Emergency Medicine -->
-                    <a href="{% url 'case_list' category='emergency' %}" class="category-card" data-category="emergency medicine urgent care trauma critical">
+                    <a href="{% url 'case_list' category='Emergency_medicine' %}" class="category-card" data-category="emergency medicine urgent care trauma critical">
                         <div class="category-icon">
                             <i data-lucide="zap" class="w-8 h-8"></i>
                         </div>
@@ -700,6 +700,177 @@
                             <div class="case-count">
                                 <i data-lucide="file-text" class="w-4 h-4"></i>
                                 <span>21 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Child Health -->
+                    <a href="{% url 'case_list' category='Child_health' %}" class="category-card" data-category="child health pediatric children kids">
+                        <div class="category-icon">
+                            <i data-lucide="baby" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Child Health</h3>
+                        <p class="category-description">
+                            Practice pediatric examinations, developmental assessments, and family-centered care with young patients.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>3 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Dermatology -->
+                    <a href="{% url 'case_list' category='Dermatology' %}" class="category-card" data-category="dermatology skin conditions rashes">
+                        <div class="category-icon">
+                            <i data-lucide="skin" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Dermatology</h3>
+                        <p class="category-description">
+                            Examine skin conditions, perform dermatological assessments, and diagnose various skin disorders.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>2 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Ear, Nose and Throat -->
+                    <a href="{% url 'case_list' category='Ear_nose_and_throat' %}" class="category-card" data-category="ear nose throat ent otolaryngology">
+                        <div class="category-icon">
+                            <i data-lucide="ear" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Ear, Nose and Throat</h3>
+                        <p class="category-description">
+                            Conduct ENT examinations, assess hearing and speech, and diagnose head and neck conditions.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>4 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Endocrinology -->
+                    <a href="{% url 'case_list' category='Endocrinology' %}" class="category-card" data-category="endocrinology diabetes thyroid hormones">
+                        <div class="category-icon">
+                            <i data-lucide="activity" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Endocrinology</h3>
+                        <p class="category-description">
+                            Manage endocrine disorders, diabetes care, and hormonal imbalances in patients.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>2 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Eyes -->
+                    <a href="{% url 'case_list' category='Eyes' %}" class="category-card" data-category="eyes ophthalmology vision eye care">
+                        <div class="category-icon">
+                            <i data-lucide="eye" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Eyes</h3>
+                        <p class="category-description">
+                            Perform eye examinations, assess visual acuity, and diagnose ocular conditions.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>2 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Infectious Disease -->
+                    <a href="{% url 'case_list' category='Infectious_disease' %}" class="category-card" data-category="infectious disease infection control microbiology">
+                        <div class="category-icon">
+                            <i data-lucide="shield" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Infectious Disease</h3>
+                        <p class="category-description">
+                            Diagnose and manage infectious diseases, implement infection control measures, and prescribe appropriate treatments.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>2 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-advanced">Advanced</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Men's Health -->
+                    <a href="{% url 'case_list' category='Mens_health' %}" class="category-card" data-category="mens health male reproductive urology">
+                        <div class="category-icon">
+                            <i data-lucide="user" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Men's Health</h3>
+                        <p class="category-description">
+                            Address male-specific health concerns, reproductive health, and preventive care for men.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>3 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Musculoskeletal Medicine -->
+                    <a href="{% url 'case_list' category='Musculoskeletal_medicine' %}" class="category-card" data-category="musculoskeletal medicine orthopedics bones joints">
+                        <div class="category-icon">
+                            <i data-lucide="bone" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Musculoskeletal Medicine</h3>
+                        <p class="category-description">
+                            Assess musculoskeletal conditions, perform joint examinations, and manage orthopedic problems.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>7 Cases</span>
+                            </div>
+                            <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
+                            <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>
+                        </div>
+                    </a>
+                    
+                    <!-- Challenging Consultation -->
+                    <a href="{% url 'case_list' category='Challenging_consultation' %}" class="category-card" data-category="challenging consultation difficult patient communication">
+                        <div class="category-icon">
+                            <i data-lucide="message-circle" class="w-8 h-8"></i>
+                        </div>
+                        <h3 class="category-title">Challenging Consultation</h3>
+                        <p class="category-description">
+                            Navigate difficult patient interactions, manage challenging communication scenarios, and develop consultation skills.
+                        </p>
+                        <div class="category-meta">
+                            <div class="case-count">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span>2 Cases</span>
                             </div>
                             <div class="difficulty-badge difficulty-advanced">Advanced</div>
                             <i data-lucide="arrow-right" class="w-5 h-5 category-arrow"></i>

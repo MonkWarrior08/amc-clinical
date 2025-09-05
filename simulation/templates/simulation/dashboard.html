@@ -347,7 +347,7 @@
                 <div class="user-menu">
                     <div class="user-info">
                         <i data-lucide="user" class="w-4 h-4"></i>
-                        <span>Welcome, {{ user.username|default:"User" }}!</span>
+                        <span>Welcome, {{ user.first_name|default:user.username|default:"User" }}!</span>
                     </div>
                     <a href="{% url 'session_history' %}" class="logout-btn">
                         <i data-lucide="history" class="w-4 h-4"></i>

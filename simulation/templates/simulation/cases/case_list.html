@@ -405,6 +405,34 @@
             margin-bottom: 1.5rem;
         }
         
+        .scenario-section, .instruction-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .scenario-title, .instruction-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--medical-green-dark);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+        
+        .scenario-content, .instruction-content {
+            font-size: 0.95rem;
+            color: var(--medical-text);
+            line-height: 1.6;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 3px solid var(--medical-green);
+        }
+        
+        .instruction-content {
+            background: #fef3c7;
+            border-left-color: #f59e0b;
+        }
+        
         .case-meta {
             display: flex;
             align-items: center;
@@ -613,7 +641,7 @@
                 <div class="case-stats">
                     <div class="stat-item">
                         <i data-lucide="file-text" class="w-4 h-4"></i>
-                        <span><span class="stat-number">{{ cases.count|default:"24" }}</span> Cases Available</span>
+                        <span><span class="stat-number">{{ cases_count }}</span> Cases Available</span>
                     </div>
                     <div class="stat-item">
                         <i data-lucide="clock" class="w-4 h-4"></i>
@@ -621,7 +649,7 @@
                     </div>
                     <div class="stat-item">
                         <i data-lucide="target" class="w-4 h-4"></i>
-                        <span><span class="stat-number">{{ completion_rate|default:"0" }}%</span> Completed</span>
+                        <span><span class="stat-number">{{ completion_rate }}%</span> Completed</span>
                     </div>
                 </div>
             </section>
@@ -678,18 +706,18 @@
             <!-- Case List -->
             <section class="animate-list">
                 <div class="case-list" id="case-list">
-                    <!-- Case 1: Erin Campbell -->
-                    <a href="{% url 'case_detail' case_id='1' %}" class="case-item" data-case='{"name":"erin campbell","age":14,"difficulty":"beginner","completed":false,"gender":"female","complaint":"acne"}'>
+                    {% for case in cases %}
+                    <a href="{% url 'case_detail' case_id=case.case_id %}" class="case-item" data-case='{"name":"{{ case.case_id|lower }}","difficulty":"intermediate","completed":false}'>
                         <div class="case-header">
                             <div class="patient-info">
-                                <h3 class="patient-name">Erin Campbell</h3>
+                                <h3 class="patient-name">{{ case.case_id|title }}</h3>
                                 <div class="patient-details">
-                                    <div class="age-badge">14 years old</div>
-                                    <div class="gender-badge">Female</div>
+                                    <div class="age-badge">{{ category_name }}</div>
+                                    <div class="gender-badge">Case Study</div>
                                 </div>
                             </div>
                             <div class="case-status">
-                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
+                                <div class="difficulty-badge difficulty-intermediate">Clinical Case</div>
                                 <div class="completion-status">
                                     <i data-lucide="circle" class="w-4 h-4"></i>
                                     <span>Not Completed</span>
@@ -697,15 +725,25 @@
                             </div>
                         </div>
                         
-                        <p class="presenting-complaint">
-                            <strong>Presenting Complaint:</strong> Teenager presenting with facial acne and concerns about skin appearance affecting self-confidence.
-                        </p>
+                        {% if case.scenario %}
+                        <div class="scenario-section">
+                            <h4 class="scenario-title">Scenario</h4>
+                            <p class="scenario-content">{{ case.scenario|truncatewords:50 }}</p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if case.instruction_for_doc %}
+                        <div class="instruction-section">
+                            <h4 class="instruction-title">Instructions for Doctor</h4>
+                            <div class="instruction-content">{{ case.instruction_for_doc|truncatewords:100 }}</div>
+                                </div>
+                        {% endif %}
                         
                         <div class="case-meta">
                             <div class="case-tags">
-                                <span class="case-tag">Dermatology</span>
-                                <span class="case-tag">Adolescent Health</span>
-                                <span class="case-tag">Communication</span>
+                                <span class="case-tag">{{ category_name }}</span>
+                                <span class="case-tag">Clinical Practice</span>
+                                <span class="case-tag">AI Simulation</span>
                             </div>
                             <div class="duration-estimate">
                                 <i data-lucide="clock" class="w-4 h-4"></i>
@@ -714,191 +752,15 @@
                             <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
                         </div>
                     </a>
-                    
-                    <!-- Case 2: Michael Roberts -->
-                    <a href="{% url 'case_detail' case_id='2' %}" class="case-item" data-case='{"name":"michael roberts","age":45,"difficulty":"intermediate","completed":true,"gender":"male","complaint":"chest pain"}'>
-                        <div class="case-header">
-                            <div class="patient-info">
-                                <h3 class="patient-name">Michael Roberts</h3>
-                                <div class="patient-details">
-                                    <div class="age-badge">45 years old</div>
-                                    <div class="gender-badge">Male</div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i data-lucide="file-x" class="w-8 h-8"></i>
                                 </div>
+                        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">No Cases Available</h3>
+                        <p>No cases found for this category. Please try a different category.</p>
                             </div>
-                            <div class="case-status">
-                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
-                                <div class="completion-status completed">
-                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                    <span>Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="presenting-complaint">
-                            <strong>Presenting Complaint:</strong> Middle-aged man with acute onset chest pain, shortness of breath, and family history of cardiac disease.
-                        </p>
-                        
-                        <div class="case-meta">
-                            <div class="case-tags">
-                                <span class="case-tag">Cardiology</span>
-                                <span class="case-tag">Emergency</span>
-                                <span class="case-tag">ECG Interpretation</span>
-                            </div>
-                            <div class="duration-estimate">
-                                <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>~25 min</span>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
-                        </div>
-                    </a>
-                    
-                    <!-- Case 3: Sarah Chen -->
-                    <a href="{% url 'case_detail' case_id='3' %}" class="case-item" data-case='{"name":"sarah chen","age":32,"difficulty":"intermediate","completed":false,"gender":"female","complaint":"palpitations"}'>
-                        <div class="case-header">
-                            <div class="patient-info">
-                                <h3 class="patient-name">Sarah Chen</h3>
-                                <div class="patient-details">
-                                    <div class="age-badge">32 years old</div>
-                                    <div class="gender-badge">Female</div>
-                                </div>
-                            </div>
-                            <div class="case-status">
-                                <div class="difficulty-badge difficulty-intermediate">Intermediate</div>
-                                <div class="completion-status">
-                                    <i data-lucide="circle" class="w-4 h-4"></i>
-                                    <span>Not Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="presenting-complaint">
-                            <strong>Presenting Complaint:</strong> Young woman experiencing episodes of palpitations, dizziness, and anxiety symptoms over the past month.
-                        </p>
-                        
-                        <div class="case-meta">
-                            <div class="case-tags">
-                                <span class="case-tag">Cardiology</span>
-                                <span class="case-tag">Arrhythmia</span>
-                                <span class="case-tag">Anxiety Assessment</span>
-                            </div>
-                            <div class="duration-estimate">
-                                <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>~22 min</span>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
-                        </div>
-                    </a>
-                    
-                    <!-- Case 4: Robert Thompson -->
-                    <a href="{% url 'case_detail' case_id='4' %}" class="case-item" data-case='{"name":"robert thompson","age":68,"difficulty":"advanced","completed":false,"gender":"male","complaint":"heart failure"}'>
-                        <div class="case-header">
-                            <div class="patient-info">
-                                <h3 class="patient-name">Robert Thompson</h3>
-                                <div class="patient-details">
-                                    <div class="age-badge">68 years old</div>
-                                    <div class="gender-badge">Male</div>
-                                </div>
-                            </div>
-                            <div class="case-status">
-                                <div class="difficulty-badge difficulty-advanced">Advanced</div>
-                                <div class="completion-status">
-                                    <i data-lucide="circle" class="w-4 h-4"></i>
-                                    <span>Not Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="presenting-complaint">
-                            <strong>Presenting Complaint:</strong> Elderly man with progressive shortness of breath, leg swelling, and reduced exercise tolerance over several weeks.
-                        </p>
-                        
-                        <div class="case-meta">
-                            <div class="case-tags">
-                                <span class="case-tag">Heart Failure</span>
-                                <span class="case-tag">Geriatrics</span>
-                                <span class="case-tag">Complex Management</span>
-                            </div>
-                            <div class="duration-estimate">
-                                <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>~30 min</span>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
-                        </div>
-                    </a>
-                    
-                    <!-- Case 5: Emma Wilson -->
-                    <a href="{% url 'case_detail' case_id='5' %}" class="case-item" data-case='{"name":"emma wilson","age":28,"difficulty":"beginner","completed":true,"gender":"female","complaint":"high blood pressure"}'>
-                        <div class="case-header">
-                            <div class="patient-info">
-                                <h3 class="patient-name">Emma Wilson</h3>
-                                <div class="patient-details">
-                                    <div class="age-badge">28 years old</div>
-                                    <div class="gender-badge">Female</div>
-                                </div>
-                            </div>
-                            <div class="case-status">
-                                <div class="difficulty-badge difficulty-beginner">Beginner</div>
-                                <div class="completion-status completed">
-                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
-                                    <span>Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="presenting-complaint">
-                            <strong>Presenting Complaint:</strong> Young woman with newly diagnosed hypertension seeking lifestyle advice and medication counseling.
-                        </p>
-                        
-                        <div class="case-meta">
-                            <div class="case-tags">
-                                <span class="case-tag">Hypertension</span>
-                                <span class="case-tag">Prevention</span>
-                                <span class="case-tag">Patient Education</span>
-                            </div>
-                            <div class="duration-estimate">
-                                <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>~18 min</span>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
-                        </div>
-                    </a>
-                    
-                    <!-- Case 6: David Park -->
-                    <a href="{% url 'case_detail' case_id='6' %}" class="case-item" data-case='{"name":"david park","age":55,"difficulty":"advanced","completed":false,"gender":"male","complaint":"syncope"}'>
-                        <div class="case-header">
-                            <div class="patient-info">
-                                <h3 class="patient-name">David Park</h3>
-                                <div class="patient-details">
-                                    <div class="age-badge">55 years old</div>
-                                    <div class="gender-badge">Male</div>
-                                </div>
-                            </div>
-                            <div class="case-status">
-                                <div class="difficulty-badge difficulty-advanced">Advanced</div>
-                                <div class="completion-status">
-                                    <i data-lucide="circle" class="w-4 h-4"></i>
-                                    <span>Not Completed</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="presenting-complaint">
-                            <strong>Presenting Complaint:</strong> Middle-aged man with recurrent episodes of fainting, particularly during physical exertion, requiring comprehensive cardiac evaluation.
-                        </p>
-                        
-                        <div class="case-meta">
-                            <div class="case-tags">
-                                <span class="case-tag">Syncope</span>
-                                <span class="case-tag">Differential Diagnosis</span>
-                                <span class="case-tag">Risk Stratification</span>
-                            </div>
-                            <div class="duration-estimate">
-                                <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>~28 min</span>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
-                        </div>
-                    </a>
+                    {% endfor %}
                 </div>
                 
                 <!-- Empty State (hidden by default) -->

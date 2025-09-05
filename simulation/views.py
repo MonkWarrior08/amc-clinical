@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.http import JsonResponse
 from django.urls import reverse
+from .forms import CustomUserCreationForm
+from .db_utils import MedicalCasesQuery
 import json
 
 
@@ -26,10 +28,10 @@ def auth_view(request):
         # Handle both login and registration from the same form
         data = json.loads(request.body) if request.content_type == 'application/json' else request.POST
         
-        if 'login-email' in data or 'email' in data:
-            # Handle login
-            email = data.get('login-email') or data.get('email')
-            password = data.get('login-password') or data.get('password')
+        if 'email' in data and 'first_name' not in data:
+            # Handle login - only if it's not a registration form
+            email = data.get('email')
+            password = data.get('password')
             
             # For now, use email as username (you might want to create a custom user model later)
             user = authenticate(request, username=email, password=password)
@@ -39,20 +41,28 @@ def auth_view(request):
             else:
                 return JsonResponse({'success': False, 'error': 'Invalid credentials'})
         
-        elif 'register-email' in data:
-            # Handle registration
-            form = UserCreationForm({
-                'username': data.get('register-email'),
-                'password1': data.get('register-password'),
-                'password2': data.get('register-password-confirm')
+        elif 'email' in data and 'first_name' in data:
+            # Handle registration - check for both email and first_name to distinguish from login
+            form = CustomUserCreationForm({
+                'first_name': data.get('first_name'),
+                'last_name': data.get('last_name'),
+                'email': data.get('email'),
+                'password1': data.get('password1'),
+                'password2': data.get('password2'),
+                'terms_agreement': data.get('terms_agreement') == 'on',
+                'marketing_emails': data.get('marketing_emails') == 'on'
             })
             
             if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return JsonResponse({'success': True, 'redirect': reverse('dashboard')})
+                try:
+                    user = form.save()
+                    login(request, user)
+                    return JsonResponse({'success': True, 'redirect': reverse('dashboard')})
+                except Exception as e:
+                    return JsonResponse({'success': False, 'error': f'Registration failed: {str(e)}'})
             else:
                 errors = dict(form.errors)
+                print(f"Form validation errors: {errors}")  # Debug logging
                 return JsonResponse({'success': False, 'errors': errors})
     
     return render(request, 'registration/auth.html')
@@ -81,12 +91,83 @@ def categories(request):
 
 @login_required
 def case_list(request, category):
-    return render(request, 'simulation/cases/case_list.html', {'category': category})
+    """Display cases for a specific category with database content"""
+    try:
+        db_query = MedicalCasesQuery()
+        cases = db_query.get_cases_with_content_by_category(category)
+        db_query.close()
+        
+        # Convert category name to display format
+        category_display = category.replace('_', ' ').title()
+        
+        # Get category icon mapping
+        category_icons = {
+            'cardiovascular_system': 'heart',
+            'dermatology': 'skin',
+            'mental_health': 'brain',
+            'emergency_medicine': 'alert-triangle',
+            'child_health': 'baby',
+            'aged_care': 'user-check',
+            'adolescent_health': 'users',
+            'challenging_consultation': 'message-circle',
+            'ear_nose_and_throat': 'ear',
+            'endocrinology': 'activity',
+            'eyes': 'eye',
+            'gastroenterology': 'stomach',
+            'infectious_disease': 'shield',
+            'mens_health': 'user',
+            'musculoskeletal_medicine': 'bone'
+        }
+        
+        category_icon = category_icons.get(category.lower(), 'file-text')
+        
+        context = {
+            'category': category,
+            'category_name': category_display,
+            'category_icon': category_icon,
+            'cases': cases,
+            'cases_count': len(cases),
+            'completion_rate': 0  # TODO: Calculate from user progress
+        }
+        
+        return render(request, 'simulation/cases/case_list.html', context)
+        
+    except Exception as e:
+        # Fallback to static data if database fails
+        messages.error(request, f"Error loading cases: {str(e)}")
+        return render(request, 'simulation/cases/case_list.html', {
+            'category': category,
+            'category_name': category.replace('_', ' ').title(),
+            'category_icon': 'file-text',
+            'cases': [],
+            'cases_count': 0,
+            'completion_rate': 0
+        })
 
 
 @login_required
 def case_detail(request, case_id):
-    return render(request, 'simulation/cases/case_briefing.html', {'case_id': case_id})
+    """Display case briefing with database content"""
+    try:
+        db_query = MedicalCasesQuery()
+        case_data = db_query.get_case_with_content(case_id)
+        db_query.close()
+        
+        if not case_data:
+            messages.error(request, f"Case '{case_id}' not found")
+            return redirect('categories')
+        
+        context = {
+            'case_id': case_id,
+            'case': case_data,
+            'category': case_data.get('category_name', 'Unknown')
+        }
+        
+        return render(request, 'simulation/cases/case_briefing.html', context)
+        
+    except Exception as e:
+        messages.error(request, f"Error loading case: {str(e)}")
+        return redirect('categories')
 
 
 @login_required

@@ -340,7 +340,7 @@
         
         <!-- Action Section -->
         <div class="action-section animate-actions">
-            <a href="{% url 'auth' %}" class="btn btn-primary">
+            <a href="{% url 'auth' %}?tab=login" class="btn btn-primary">
                 <i data-lucide="log-in" class="w-5 h-5"></i>
                 Access Your Account
             </a>
@@ -349,7 +349,7 @@
                 <span>New to AMC Clinical Exam Prep?</span>
             </div>
             
-            <a href="{% url 'auth' %}" class="btn btn-secondary">
+            <a href="{% url 'auth' %}?tab=register" class="btn btn-secondary">
                 <i data-lucide="user-plus" class="w-5 h-5"></i>
                 Start Your Journey
             </a>
@@ -384,7 +384,10 @@
         // Add smooth button interactions
         document.querySelectorAll('.btn').forEach(button => {
             button.addEventListener('click', function(e) {
-                e.preventDefault();
+                // Only prevent default for buttons without href (not links)
+                if (!this.hasAttribute('href')) {
+                    e.preventDefault();
+                }
                 
                 // Create ripple effect
                 const ripple = document.createElement('span');

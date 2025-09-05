@@ -98,6 +98,19 @@ simulation/templates/
 - Login required decorator on protected views
 - Automatic redirects for unauthenticated users
 - Secure password validation using Django's built-in validators
+- Email uniqueness validation
+- Required terms of service agreement
+- Custom form validation with proper error handling
+
+## Registration Form Fields
+
+- **First Name** (required): User's first name
+- **Last Name** (required): User's last name  
+- **Email Address** (required): Unique email used as username
+- **Password** (required): Must meet Django's password requirements
+- **Confirm Password** (required): Must match password
+- **Terms Agreement** (required): Must be checked to proceed
+- **Marketing Emails** (optional): Opt-in for promotional emails
 
 ## Testing
 

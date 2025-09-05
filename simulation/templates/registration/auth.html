@@ -611,6 +611,40 @@
         // Initialize Lucide icons
         lucide.createIcons();
         
+        // Check URL parameters and switch to appropriate tab
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get('tab');
+        
+        if (tab === 'register') {
+            // Switch to registration tab
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.tab-button[onclick="switchTab(\'register\')"]').classList.add('active');
+            
+            document.querySelectorAll('.form-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById('register-form').classList.add('active');
+            
+            // Re-initialize icons after DOM changes
+            setTimeout(() => lucide.createIcons(), 100);
+        } else if (tab === 'login') {
+            // Switch to login tab (default, but explicit for clarity)
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector('.tab-button[onclick="switchTab(\'login\')"]').classList.add('active');
+            
+            document.querySelectorAll('.form-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById('login-form').classList.add('active');
+            
+            // Re-initialize icons after DOM changes
+            setTimeout(() => lucide.createIcons(), 100);
+        }
+        
         // Tab switching functionality
         function switchTab(tabName) {
             // Update tab buttons
