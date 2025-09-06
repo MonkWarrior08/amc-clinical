@@ -994,6 +994,10 @@
                 };
                 
                 sessionState.speechRecognition.onresult = function(event) {
+                    // Ignore any incoming transcripts while patient is speaking (TTS)
+                    if (sessionState.isPatientSpeaking) {
+                        return;
+                    }
                     let finalTranscript = '';
                     let interimTranscript = '';
                     
@@ -1366,6 +1370,7 @@
                     return;
                 }
                 // Pause recognition while speaking to avoid echo
+                sessionState.isPatientSpeaking = true;
                 if (sessionState.speechRecognition && sessionState.isListening) {
                     sessionState.speechRecognition.stop();
                 }
@@ -1383,6 +1388,7 @@
                 sessionState.ttsUtterance = utter;
                 utter.onend = () => {
                     sessionState.ttsUtterance = null;
+                    sessionState.isPatientSpeaking = false;
                     // Resume recognition if session active and not paused/suspended
                     if (sessionState.speechRecognition && sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
                         try { sessionState.speechRecognition.start(); } catch (_) {}
@@ -1391,6 +1397,7 @@
                 window.speechSynthesis.speak(utter);
             } catch (e) {
                 console.error('TTS error:', e);
+                sessionState.isPatientSpeaking = false;
             }
         }
         
