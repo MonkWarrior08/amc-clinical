@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Session History - AMC Clinical Exam Simulator</title>
+    <title>Session History - Clinical Apex</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -82,7 +82,7 @@
         }
         
         .logo-text {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--medical-text);
         }
@@ -144,6 +144,26 @@
             font-weight: 600;
             color: var(--medical-text);
             margin-bottom: 1rem;
+        }
+        
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .category-icon-small {
+            width: 2rem;
+            height: 2rem;
+            background: var(--medical-green);
+            color: white;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
         
         .page-subtitle {
@@ -282,10 +302,7 @@
         <header class="header">
             <div class="header-content">
                 <div class="logo-section">
-                    <div class="logo-icon">
-                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-                    </div>
-                    <div class="logo-text">AMC Clinical Exam Simulator</div>
+                    <div class="logo-text">Clinical Apex</div>
                 </div>
                 
                 <div class="breadcrumb">
@@ -305,7 +322,12 @@
         <main class="main-content">
             <!-- Page Header -->
             <section class="page-header animate-header">
-                <h1 class="page-title">Session History</h1>
+                <div class="page-title-section">
+                    <div class="category-icon-small">
+                        <i data-lucide="history" class="w-6 h-6"></i>
+                    </div>
+                    <h1 class="page-title">Session History</h1>
+                </div>
                 <p class="page-subtitle">
                     Track your progress and review your practice sessions to identify areas for improvement.
                 </p>
