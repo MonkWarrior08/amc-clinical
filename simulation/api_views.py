@@ -296,3 +296,31 @@ class SessionHistoryView(View):
             
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+@method_decorator(csrf_exempt, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class TextToSpeechView(View):
+    """Generate TTS audio from text using OpenAI and return as base64 MP3"""
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            text = data.get('text', '').strip()
+            voice = data.get('voice', 'alloy')
+            model = data.get('model', 'gpt-4o-mini-tts')
+            if not text:
+                return JsonResponse({'error': 'text is required'}, status=400)
+
+            client = OpenAI(api_key=settings.OPENAI_API_KEY)
+            result = client.audio.speech.create(
+                model=model,
+                voice=voice,
+                input=text,
+                format='mp3'
+            )
+            # openai>=1.0 returns bytes in result.content or result.read()
+            audio_bytes = result.read() if hasattr(result, 'read') else result.content
+            audio_b64 = base64.b64encode(audio_bytes).decode('utf-8')
+
+            return JsonResponse({'success': True, 'audio_base64': audio_b64, 'mime': 'audio/mpeg'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
