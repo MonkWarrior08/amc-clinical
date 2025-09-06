@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clinical Apex - AI Patient Practice</title>
+    <title>Clinical Apex - AMC Clinical Exam Preparation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +28,7 @@
             --medical-text-light: #6b7280;
             --medical-border: #d1fae5;
             --medical-shadow: rgba(16, 185, 129, 0.1);
+            --medical-accent: #ecfdf5;
         }
         
         body {
@@ -37,92 +38,558 @@
             line-height: 1.6 !important;
         }
         
+        /* Navigation */
+        .nav-header {
+            background: var(--medical-card);
+            border-bottom: 1px solid var(--medical-border);
+            box-shadow: 0 1px 3px var(--medical-shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            justify-self: center;
+        }
+        
+        .nav-brand-container {
+            justify-self: start;
+        }
+        
+        
+        .nav-actions {
+            justify-self: end;
+        }
+        
+        .nav-brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        
+        .nav-logo:hover {
+            transform: scale(1.1);
+        }
+        
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--medical-text);
+            text-decoration: none;
+        }
+        
+        
+        .nav-link {
+            color: var(--medical-text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            color: var(--medical-green);
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            /* Increase space between Contact and Sign In without moving the nav menu */
+            margin-left: 2rem;
+        }
+        
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .nav-btn-secondary {
+            color: var(--medical-green);
+            border: 1px solid var(--medical-green);
+            background: transparent;
+        }
+        
+        .nav-btn-secondary:hover {
+            background: var(--medical-green);
+            color: white;
+        }
+        
+        .nav-btn-primary {
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border: none;
+        }
+        
+        .nav-btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--medical-shadow);
+        }
+        
         .container {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            max-width: 600px;
+            padding-top: 140px;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
             margin: 0 auto;
         }
         
-        .logo-section {
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            border: 1px solid var(--medical-border);
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--medical-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
             text-align: center;
-            margin-bottom: 4rem;
         }
         
-        .logo-icon {
-            width: 6rem !important;
-            height: 6rem !important;
-            background: var(--medical-green) !important;
-            color: white !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin: 0 auto 1.5rem auto !important;
-            box-shadow: 0 10px 25px var(--medical-shadow), 0 0 0 1px var(--medical-border) !important;
-            transition: all 0.3s ease-out !important;
-            position: relative;
-            overflow: hidden;
+        .hero-title .highlight {
+            color: var(--medical-green);
         }
         
-        .caduceus-symbol {
-            width: 3rem !important;
-            height: 3rem !important;
-            fill: white !important;
-            stroke: white !important;
-            stroke-width: 1.5 !important;
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--medical-text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
         }
         
-        .logo-icon:hover {
-            transform: scale(1.05) rotate(5deg) !important;
-            box-shadow: 0 15px 35px var(--medical-shadow), 0 0 0 1px var(--medical-green-light) !important;
-        }
-        
-        .brand-name {
-            font-size: 2rem !important;
-            font-weight: 700 !important;
-            color: var(--medical-text) !important;
-            margin-bottom: 0.5rem !important;
-        }
-        
-        .brand-tagline {
-            font-size: 1rem !important;
-            color: var(--medical-green-dark) !important;
-            font-weight: 500 !important;
-        }
-        
-        .welcome-section {
-            text-align: center;
+        .hero-features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
             margin-bottom: 3rem;
         }
         
-        .welcome-title {
-            font-size: 3rem !important;
-            font-weight: 300 !important;
-            color: var(--medical-text) !important;
-            margin-bottom: 1rem !important;
-            line-height: 1.2 !important;
+        .hero-feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--medical-text-light);
+            font-weight: 500;
         }
         
-        .welcome-title .highlight {
-            font-weight: 700 !important;
-            color: var(--medical-green) !important;
+        .hero-feature-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--medical-green);
         }
         
-        .welcome-description {
-            font-size: 1.2rem !important;
-            color: var(--medical-text-light) !important;
-            margin-bottom: 2rem !important;
-            line-height: 1.5 !important;
-        }
-        
+        /* Action Section */
         .action-section {
-            width: 100%;
             max-width: 400px;
+            margin: 0 auto 4rem auto;
+            padding: 0 2rem;
+        }
+        
+        /* Content Sections */
+        .content-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--medical-text);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .about-card {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+            transition: all 0.3s ease-out;
+        }
+        
+        .about-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px var(--medical-shadow);
+        }
+        
+        .about-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--medical-accent);
+            color: var(--medical-green);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+        }
+        
+        .about-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--medical-text);
+            margin-bottom: 0.75rem;
+        }
+        
+        .about-card-description {
+            color: var(--medical-text-light);
+            line-height: 1.6;
+        }
+        
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .contact-info {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--medical-text-light);
+        }
+        
+        .contact-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .contact-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--medical-green);
+        }
+        
+        .contact-form {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px var(--medical-shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--medical-text);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--medical-border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--medical-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .form-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--medical-shadow);
+        }
+        
+        .response-guarantee {
+            background: var(--medical-accent);
+            border: 1px solid var(--medical-border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--medical-text-light);
+        }
+        
+        /* Curriculum Alignment Section */
+        .curriculum-section {
+            background: var(--medical-accent);
+            border-top: 1px solid var(--medical-border);
+            border-bottom: 1px solid var(--medical-border);
+        }
+        
+        .curriculum-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+        
+        .curriculum-content h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--medical-text);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .curriculum-content p {
+            font-size: 1.1rem;
+            color: var(--medical-text-light);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .standards-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .standard-badge {
+            background: var(--medical-card);
+            border: 1px solid var(--medical-border);
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--medical-green-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Partner Logos */
+        .partner-logos {
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .logos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            align-items: center;
+            justify-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .logos-grid .logo-item:nth-child(5) {
+            grid-column: 2;
+            justify-self: center;
+        }
+        
+        .logos-grid .logo-item:nth-child(6) {
+            grid-column: 3;
+            justify-self: center;
+        }
+        
+        .logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: white;
+            border: 1px solid var(--medical-border);
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 4px var(--medical-shadow);
+            transition: all 0.3s ease;
+            width: 100%;
+            height: 100px;
+            max-width: 180px;
+        }
+        
+        .logo-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--medical-shadow);
+        }
+        
+        .org-logo {
+            max-width: 100%;
+            max-height: 80px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .logo-invert {
+            filter: brightness(0) saturate(100%);
+            opacity: 0.9;
+        }
+        
+        .logo-item:hover .org-logo {
+            transform: scale(1.05);
+        }
+        
+        
+        /* Footer */
+        .footer {
+            background: var(--medical-text);
+            color: var(--medical-card);
+            padding: 1.5rem 0;
+            margin-top: 0;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .footer-brand {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--medical-card);
+        }
+        
+        .footer-copyright {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--medical-green-light);
         }
         
         .btn {
@@ -297,122 +764,427 @@
         }
         
         @media (max-width: 768px) {
-            .container {
-                padding: 1.5rem;
+            .nav-container {
+                padding: 1rem;
             }
             
-            .welcome-title {
-                font-size: 2.5rem !important;
+            .nav-menu {
+                display: none;
             }
             
-            .welcome-description {
-                font-size: 1.1rem !important;
+            .nav-brand {
+                font-size: 1.25rem;
             }
             
-            .features-list {
+            .nav-brand-container {
+                gap: 0.5rem;
+            }
+            
+            .hero-section {
+                padding: 3rem 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .hero-features {
                 flex-direction: column;
                 align-items: center;
                 gap: 1rem;
             }
             
-            .logo-icon {
-                width: 5rem !important;
-                height: 5rem !important;
+            .action-section {
+                padding: 0 1rem;
             }
             
-            .brand-name {
-                font-size: 1.75rem !important;
+            .content-section {
+                padding: 3rem 1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .contact-info, .contact-form {
+                padding: 1.5rem;
+            }
+            
+            .curriculum-content {
+                padding: 3rem 1rem;
+            }
+            
+            .curriculum-content h2 {
+                font-size: 1.875rem;
+            }
+            
+            .logos-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .logos-grid .logo-item:nth-child(5) {
+                grid-column: 1;
+            }
+            
+            .logos-grid .logo-item:nth-child(6) {
+                grid-column: 2;
+            }
+            
+            .logo-item {
+                padding: 0.75rem;
+                height: 80px;
+                max-width: none;
+            }
+            
+            .org-logo {
+                max-height: 60px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .footer-left {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .footer-links {
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Logo Section -->
-        <div class="logo-section animate-logo">
-            <div class="logo-icon">
-                <svg class="caduceus-symbol" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Caduceus Symbol -->
-                    <g transform="translate(50, 50)">
-                        <!-- Central Staff -->
-                        <line x1="0" y1="-40" x2="0" y2="40" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                        
-                        <!-- Wings -->
-                        <path d="M-15,-40 Q-25,-35 -25,-25 Q-25,-15 -15,-10 Q-5,-15 -5,-25 Q-5,-35 -15,-40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                        <path d="M15,-40 Q25,-35 25,-25 Q25,-15 15,-10 Q5,-15 5,-25 Q5,-35 15,-40" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                        
-                        <!-- Left Snake -->
-                        <path d="M-8,-35 Q-20,-25 -15,-10 Q-10,5 -5,15 Q0,25 5,20 Q10,15 8,5 Q5,-5 0,-10 Q-5,-15 -8,-25 Q-10,-30 -8,-35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        
-                        <!-- Right Snake -->
-                        <path d="M8,-35 Q20,-25 15,-10 Q10,5 5,15 Q0,25 -5,20 Q-10,15 -8,5 Q-5,-5 0,-10 Q5,-15 8,-25 Q10,-30 8,-35" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        
-                        <!-- Snake Heads -->
-                        <circle cx="-8" cy="-35" r="3" fill="currentColor"/>
-                        <circle cx="8" cy="-35" r="3" fill="currentColor"/>
-                    </g>
-                </svg>
+    <!-- Navigation Header -->
+    <nav class="nav-header">
+        <div class="nav-container">
+            <div class="nav-brand-container">
+                <a href="#" class="nav-brand">Clinical Apex</a>
             </div>
-            <h1 class="brand-name">Clinical Apex</h1>
-            <p class="brand-tagline">AI-Powered Clinical Skills Assessment</p>
+            
+            <ul class="nav-menu">
+                <li><a href="{% url 'pricing' %}" class="nav-link">Pricing</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="{% url 'auth' %}?tab=login" class="nav-btn nav-btn-secondary">
+                    <i data-lucide="log-in" class="w-4 h-4"></i>
+                    Sign In
+                </a>
+                <a href="{% url 'auth' %}?tab=register" class="nav-btn nav-btn-primary">
+                    <i data-lucide="user-plus" class="w-4 h-4"></i>
+                    Get Started
+                </a>
+            </div>
         </div>
-        
-        <!-- Welcome Section -->
-        <div class="welcome-section animate-welcome">
-            <div class="pulse-dot"></div>
-            <h2 class="welcome-title">
-                Master Your <span class="highlight">Clinical</span> Skills
-            </h2>
-            <p class="welcome-description">
-                Practice with AI patients in realistic examination scenarios. Get instant feedback and improve your clinical skills for medical examinations.
-            </p>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section animate-logo">
+        <div class="hero-content">
+                <div class="hero-badge">
+                    <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                    AMC Clinical Exam Preparation
+                </div>
+                
+                <h1 class="hero-title">
+                    Master the <span class="highlight">AMC Clinical Exam</span><br>
+                    with AI-Powered Practice
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Experience groundbreaking voice-driven simulation technology. Practice with AI patients, receive real-time examiner findings, and build the confidence you need to excel in your AMC Clinical Examination.
+                </p>
+                
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <i data-lucide="mic" class="hero-feature-icon"></i>
+                        <span>Voice-Interactive AI Patients</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i data-lucide="brain" class="hero-feature-icon"></i>
+                        <span>Real-time Expert Feedback</span>
+                    </div>
+                    <div class="hero-feature">
+                        <i data-lucide="target" class="hero-feature-icon"></i>
+                        <span>Realistic Exam Conditions</span>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Action Section -->
         <div class="action-section animate-actions">
-            <a href="{% url 'auth' %}?tab=login" class="btn btn-primary">
-                <i data-lucide="log-in" class="w-5 h-5"></i>
-                Access Your Account
+            <a href="{% url 'auth' %}?tab=register" class="btn btn-primary">
+                <i data-lucide="rocket" class="w-5 h-5"></i>
+                Start Your AMC Preparation
             </a>
             
-            <div class="divider">
-                <span>New to Clinical Skills Training?</span>
+            <div style="text-align: center; margin-top: 1.5rem; color: var(--medical-text-light); font-size: 0.875rem;">
+                Trusted by thousands of AMC candidates
             </div>
-            
-            <a href="{% url 'auth' %}?tab=register" class="btn btn-secondary">
-                <i data-lucide="user-plus" class="w-5 h-5"></i>
-                Start Your Journey
-            </a>
         </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="content-section">
+        <h2 class="section-title">Why Choose Clinical Apex?</h2>
+        <p class="section-subtitle">
+            We combine cutting-edge AI technology with medical expertise to deliver the most realistic and effective AMC Clinical Exam preparation experience available.
+        </p>
         
-        <!-- Features Hint -->
-        <div class="features-hint animate-features">
-            <p style="color: var(--medical-text-light) !important; margin-bottom: 1rem;">
-                Trusted by thousands of medical professionals
+        <div class="about-grid">
+            <div class="about-card">
+                <div class="about-icon">
+                    <i data-lucide="mic" class="w-6 h-6"></i>
+                </div>
+                <h3 class="about-card-title">Voice-Driven Interactions</h3>
+                <p class="about-card-description">
+                    Practice natural conversations with AI patients using advanced speech recognition and synthesis technology, just like in the real exam.
+                </p>
+            </div>
+            
+            <div class="about-card">
+                <div class="about-icon">
+                    <i data-lucide="stethoscope" class="w-6 h-6"></i>
+                </div>
+                <h3 class="about-card-title">Realistic Clinical Scenarios</h3>
+                <p class="about-card-description">
+                    Experience authentic medical cases with dynamic patient responses and accurate clinical presentations based on real AMC exam patterns.
+                </p>
+            </div>
+            
+            <div class="about-card">
+                <div class="about-icon">
+                    <i data-lucide="brain" class="w-6 h-6"></i>
+                </div>
+                <h3 class="about-card-title">Expert AI Feedback</h3>
+                <p class="about-card-description">
+                    Receive personalized, expert-level feedback on your clinical reasoning, communication skills, and examination techniques.
+                </p>
+            </div>
+            
+            <div class="about-card">
+                <div class="about-icon">
+                    <i data-lucide="target" class="w-6 h-6"></i>
+                </div>
+                <h3 class="about-card-title">Exam-Focused Training</h3>
+                <p class="about-card-description">
+                    Every scenario is designed specifically for AMC Clinical Exam success, with detailed examiner findings and scoring criteria.
+                </p>
+            </div>
+            
+            <div class="about-card">
+                <div class="about-icon">
+                    <i data-lucide="trending-up" class="w-6 h-6"></i>
+                </div>
+                <h3 class="about-card-title">Progress Tracking</h3>
+                <p class="about-card-description">
+                    Monitor your improvement with detailed analytics, performance metrics, and personalized learning recommendations.
+                </p>
+            </div>
+            
+            <div class="about-card">
+                <div class="about-icon">
+                    <i data-lucide="clock" class="w-6 h-6"></i>
+                </div>
+                <h3 class="about-card-title">24/7 Availability</h3>
+                <p class="about-card-description">
+                    Practice anytime, anywhere with our cloud-based platform. No scheduling conflicts or geographical limitations.
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Curriculum Alignment Section -->
+    <section class="curriculum-section">
+        <div class="curriculum-content">
+            <h2>Aligned with Australian Medical Standards</h2>
+            <p>
+                Clinical Apex is committed to delivering the highest quality preparation resources that strictly adhere to Australian medical education standards. Our platform ensures comprehensive alignment with authoritative guidelines and frameworks essential for AMC Clinical Exam success.
             </p>
-            <div class="features-list">
-                <div class="feature-item">
-                    <i data-lucide="bot" class="feature-icon"></i>
-                    <span>AI Patient Interactions</span>
+            
+            <div class="standards-list">
+                <div class="standard-badge">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>AMC Guidelines</span>
                 </div>
-                <div class="feature-item">
-                    <i data-lucide="clipboard-check" class="feature-icon"></i>
-                    <span>Real Exam Conditions</span>
+                <div class="standard-badge">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>Therapeutic Guidelines (eTG)</span>
                 </div>
-                <div class="feature-item">
-                    <i data-lucide="brain" class="feature-icon"></i>
-                    <span>Instant AI Feedback</span>
+                <div class="standard-badge">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                    <span>RACGP Standards</span>
+                </div>
+                <div class="standard-badge">
+                    <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                    <span>Clinical Practice Guidelines</span>
+                </div>
+                <div class="standard-badge">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>AHPRA Requirements</span>
+                </div>
+                <div class="standard-badge">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>Patient Safety Standards</span>
+                </div>
+            </div>
+            
+            <!-- Partner Organizations Logos -->
+            <div class="partner-logos">
+                <div class="logos-grid">
+                    <!-- Top Row - 4 logos -->
+                    <div class="logo-item">
+                        <img src="https://www.amc.org.au/wp-content/uploads/2023/07/ColourWhite.svg" alt="Australian Medical Council" class="org-logo logo-invert" onerror="this.style.display='none'">
+                    </div>
+                    <div class="logo-item">
+                        <img src="https://www.rch.org.au/TemplateAssets/images/global/RCH-Brandmark@2x.png" alt="The Royal Children's Hospital Melbourne" class="org-logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="logo-item">
+                        <img src="https://i0.wp.com/protectusall.com.au/wp-content/uploads/2020/10/The-Royal-Australian-College-of-General-Practitioners-RACGP.jpg?w=1080&ssl=1" alt="Royal Australian College of General Practitioners" class="org-logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="logo-item">
+                        <img src="https://www.safetyandquality.gov.au/sites/default/files/2025-08/site-logo-color-3.png" alt="Australian Commission on Safety and Quality in Health Care" class="org-logo" onerror="this.style.display='none'">
+                    </div>
+                    <!-- Bottom Row - 2 centered logos -->
+                    <div class="logo-item">
+                        <img src="https://www1.racgp.org.au/getmedia/7d6ffa56-a3fa-43f0-979b-e7ddf328486d/tg-logo.png.aspx?width=600&height=200&ext=.png" alt="Therapeutic Guidelines" class="org-logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="logo-item">
+                        <img src="https://aekmedia.com.au/wp-content/uploads/2024/08/AHPRA_970_x_440.png" alt="AHPRA" class="org-logo" onerror="this.style.display='none'">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="content-section">
+        <h2 class="section-title">Get in Touch</h2>
+        <p class="section-subtitle">
+            Have questions about Clinical Apex? Our support team is here to help you succeed in your AMC Clinical Exam preparation.
+        </p>
+        
+        <div class="contact-content">
+            <div class="contact-info">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--medical-text); margin-bottom: 1.5rem;">Contact Information</h3>
+                
+                <div class="contact-item">
+                    <i data-lucide="mail" class="contact-icon"></i>
+                    <span>support@clinicalapex.com</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i data-lucide="clock" class="contact-icon"></i>
+                    <span>Monday - Friday: 9:00 AM - 6:00 PM AEST</span>
+                </div>
+                
+                <div class="contact-item">
+                    <i data-lucide="map-pin" class="contact-icon"></i>
+                    <span>Sydney, Australia</span>
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--medical-border);">
+                    <p style="color: var(--medical-text-light); font-size: 0.875rem; line-height: 1.5;">
+                        <strong>Response Guarantee:</strong> We respond to all inquiries within 24 hours.<br><br>
+                        <strong>Content Requests:</strong> Need specific case studies or training materials? Let us know in your message.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--medical-text); margin-bottom: 1.5rem;">Send us a Message</h3>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="name" class="form-label">Name *</label>
+                        <input type="text" id="name" name="name" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" id="email" name="email" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Message *</label>
+                        <textarea id="message" name="message" class="form-input form-textarea" placeholder="Tell us how we can help you with your AMC Clinical Exam preparation..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="form-button">
+                        <i data-lucide="send" class="w-4 h-4" style="display: inline; margin-right: 0.5rem;"></i>
+                        Send Message
+                    </button>
+                </form>
+                
+                <div class="response-guarantee">
+                    <i data-lucide="check-circle" class="w-4 h-4" style="display: inline; margin-right: 0.5rem; color: var(--medical-green);"></i>
+                    We'll respond within 24 hours
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-brand">Clinical Apex</div>
+                <div class="footer-copyright">© 2025 Clinical Apex. All rights reserved.</div>
+            </div>
+            
+            <div class="footer-links">
+                <a href="#" class="footer-link">Privacy Policy</a>
+                <a href="#" class="footer-link">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
         
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 100;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
         // Add smooth button interactions
-        document.querySelectorAll('.btn').forEach(button => {
+        document.querySelectorAll('.btn, .nav-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 // Only prevent default for buttons without href (not links)
                 if (!this.hasAttribute('href')) {
@@ -442,16 +1214,6 @@
                     ripple.remove();
                 }, 600);
             });
-            
-            // Add focus states
-            button.addEventListener('focus', function() {
-                this.style.outline = `2px solid var(--ring)`;
-                this.style.outlineOffset = '2px';
-            });
-            
-            button.addEventListener('blur', function() {
-                this.style.outline = 'none';
-            });
         });
         
         // Add ripple animation
@@ -466,23 +1228,26 @@
         `;
         document.head.appendChild(style);
         
-        // Add subtle parallax effect to logo
-        window.addEventListener('mousemove', (e) => {
-            const logo = document.querySelector('.logo-icon');
-            const rect = logo.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+        // Add active navigation highlighting
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
             
-            const deltaX = (e.clientX - centerX) * 0.01;
-            const deltaY = (e.clientY - centerY) * 0.01;
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
             
-            logo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(1.05)`;
-        });
-        
-        // Reset logo position when mouse leaves
-        document.addEventListener('mouseleave', () => {
-            const logo = document.querySelector('.logo-icon');
-            logo.style.transform = '';
+            navLinks.forEach(link => {
+                link.style.color = 'var(--medical-text-light)';
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.style.color = 'var(--medical-green)';
+                }
+            });
         });
     </script>
 </body>

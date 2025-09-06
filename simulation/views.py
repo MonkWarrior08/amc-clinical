@@ -19,6 +19,11 @@ def home(request):
     return render(request, 'simulation/welcome.html')
 
 
+def pricing(request):
+    """Pricing page"""
+    return render(request, 'simulation/pricing.html')
+
+
 def auth_view(request):
     """Authentication page with login and registration forms"""
     if request.user.is_authenticated:
