@@ -327,6 +327,33 @@
             color: var(--medical-green-dark);
             letter-spacing: 0.05em;
         }
+
+        .skip-btn {
+            background: var(--medical-accent);
+            border: 1px solid var(--medical-border);
+            color: var(--medical-green-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-left: 1rem;
+        }
+
+        .skip-btn:hover {
+            background: var(--medical-green);
+            color: white;
+            border-color: var(--medical-green);
+            transform: translateY(-1px);
+        }
+
+        .skip-btn:active {
+            transform: translateY(0);
+        }
         
         .briefing-content h1,
         .briefing-content h2,
@@ -771,16 +798,24 @@
                 
                 <div class="briefing-content">
                     <p>You have a short preparation period before the simulation begins. Use this time to get ready. Scenario details and instructions are hidden until the session starts.</p>
-                    <div class="countdown-container">
-                        <i data-lucide="timer" class="w-6 h-6"></i>
-                        <div class="countdown-timer" id="prep-countdown">02:00</div>
-                    </div>
-                    
                     <div id="pre-start-controls" style="text-align:center; margin-top: 1.5rem;">
                         <a href="#" class="btn-primary" id="start-prep-btn">
                             <i data-lucide="play" class="w-6 h-6"></i>
                             Start Preparation
                         </a>
+                        <a href="{% url 'case_simulation' case_id=case.case_id %}" class="btn-secondary" style="margin-left: 1rem;">
+                            <i data-lucide="skip-forward" class="w-4 h-4"></i>
+                            Skip to Simulation
+                        </a>
+                    </div>
+                    
+                    <div class="countdown-container" id="countdown-container" style="display:none;">
+                        <i data-lucide="timer" class="w-6 h-6"></i>
+                        <div class="countdown-timer" id="prep-countdown">02:00</div>
+                        <button class="skip-btn" id="skip-prep-btn" title="Skip preparation and start simulation immediately">
+                            <i data-lucide="skip-forward" class="w-4 h-4"></i>
+                            Skip
+                        </button>
                     </div>
 
                     <div id="prep-details" style="display:none;">
@@ -866,16 +901,32 @@
         // Wire Start button to reveal details and begin countdown
         document.addEventListener('DOMContentLoaded', function() {
             const startBtn = document.getElementById('start-prep-btn');
+            const skipBtn = document.getElementById('skip-prep-btn');
             const details = document.getElementById('prep-details');
             const controls = document.getElementById('pre-start-controls');
+            const startLink = document.getElementById('auto-start-link');
+            
             if (startBtn) {
                 startBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     // Reveal scenario/instruction
                     if (details) details.style.display = 'block';
                     if (controls) controls.style.display = 'none';
+                    // Show countdown container
+                    const countdownContainer = document.getElementById('countdown-container');
+                    if (countdownContainer) countdownContainer.style.display = 'flex';
                     // Start countdown (2 minutes)
                     startPrepCountdown(120);
+                });
+            }
+            
+            if (skipBtn) {
+                skipBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Skip directly to simulation
+                    if (startLink) {
+                        window.location.href = startLink.getAttribute('href');
+                    }
                 });
             }
         });

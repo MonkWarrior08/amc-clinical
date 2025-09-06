@@ -265,6 +265,14 @@
             margin-right: auto;
         }
         
+        .message-examiner {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            margin-left: 0;
+            margin-right: auto;
+            border-left: 4px solid #f59e0b;
+        }
+        
         .message-timestamp {
             font-size: 0.75rem;
             color: var(--medical-text-light);
@@ -278,7 +286,7 @@
             padding: 3rem;
         }
         
-        /* Input Area */
+        /* Speech Input Area */
         .input-section {
             background: var(--medical-card);
             border: 1px solid var(--medical-border);
@@ -287,46 +295,61 @@
             box-shadow: 0 2px 4px var(--medical-shadow);
         }
         
-        .input-controls {
+        .speech-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .speech-status {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .speech-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease-out;
+        }
+        
+        .speech-indicator.listening {
+            background: var(--medical-accent);
+            color: var(--medical-green-dark);
+            animation: pulse-gentle 2s ease-in-out infinite;
+        }
+        
+        .speech-indicator.recording {
+            background: var(--medical-error);
+            color: white;
+            animation: pulse-recording 1.5s ease-in-out infinite;
+        }
+        
+        .speech-indicator.processing {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        
+        .speech-actions {
             display: flex;
             gap: 1rem;
-            align-items: flex-end;
+            align-items: center;
         }
         
-        .input-field {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        .input-label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--medical-text);
-        }
-        
-        .input-textarea {
-            min-height: 80px;
-            padding: 0.75rem;
-            border: 1px solid var(--medical-border);
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            color: var(--medical-text);
-            resize: vertical;
-            transition: all 0.2s ease-out;
-        }
-        
-        .input-textarea:focus {
-            outline: none;
-            border-color: var(--medical-green);
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
-        }
-        
-        .input-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+        @keyframes pulse-gentle {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+            }
+            50% { 
+                transform: scale(1.02);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
         }
         
         .btn {
@@ -684,38 +707,45 @@
                     
                     <div class="conversation-content" id="conversation-content">
                         <div class="message-empty">
-                            Conversation will appear here. Click "Start Session" to begin interacting with the AI patient.
+                            <div style="text-align: center; padding: 2rem;">
+                                <h3 style="color: var(--medical-green-dark); margin-bottom: 1rem;">Clinical Simulation Ready</h3>
+                                <p style="margin-bottom: 1rem;">Click "Start Session" to begin your clinical examination.</p>
+                                <div style="background: var(--medical-accent); padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;">
+                                    <p><strong>How to interact:</strong></p>
+                                    <p>• <strong>Just speak naturally</strong> - no buttons needed!</p>
+                                    <p>• Address the patient directly: "Hello, how are you feeling?"</p>
+                                    <p>• Address the Examiner: "Examiner: What do I see on examination?"</p>
+                                    <p>• The system will automatically listen and respond</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Input Section -->
+                <!-- Speech Input Section -->
                 <div class="input-section">
-                    <div class="input-controls">
-                        <div class="input-field">
-                            <label class="input-label" for="user-input">Your Response:</label>
-                            <textarea 
-                                id="user-input" 
-                                class="input-textarea" 
-                                placeholder="Type your question or response to the patient..."
-                                disabled
-                            ></textarea>
+                    <div class="speech-controls">
+                        <div class="speech-status" id="speech-status">
+                            <div class="status-indicator status-listening" id="speech-indicator" style="cursor: pointer;">
+                                <i data-lucide="mic" class="w-5 h-5"></i>
+                                <span id="speech-text">Click "Start Session" to begin speaking</span>
+                            </div>
                         </div>
                         
-                        <div class="input-actions">
-                            <button class="btn btn-primary" id="send-message" disabled>
-                                <i data-lucide="send" class="w-4 h-4"></i>
-                                Send
+                        <div class="speech-actions">
+                            <button class="btn btn-primary" id="start-session">
+                                <i data-lucide="play" class="w-5 h-5"></i>
+                                Start Session
                             </button>
                             
-                            <button class="btn btn-voice" id="voice-input">
-                                <i data-lucide="mic" class="w-4 h-4"></i>
-                                Voice
+                            <button class="btn btn-secondary" id="pause-session" style="display: none;">
+                                <i data-lucide="pause" class="w-4 h-4"></i>
+                                Pause
                             </button>
                             
-                            <button class="btn btn-secondary" id="start-session">
-                                <i data-lucide="play" class="w-4 h-4"></i>
-                                Start
+                            <button class="btn btn-finish" id="finish-session" style="display: none;">
+                                <i data-lucide="square" class="w-4 h-4"></i>
+                                End Session
                             </button>
                         </div>
                     </div>
@@ -735,7 +765,13 @@
                     
                     <div class="findings-content" id="findings-content">
                         <div class="findings-empty">
-                            Physical examination findings and test results will appear here as you conduct your assessment.
+                            <div style="text-align: center; padding: 1.5rem;">
+                                <h4 style="color: var(--medical-green-dark); margin-bottom: 0.5rem;">Examiner Findings</h4>
+                                <p>Address the "Examiner" during your session to receive clinical findings and test results.</p>
+                                <p style="font-size: 0.875rem; color: var(--medical-text-light); margin-top: 0.5rem;">
+                                    Example: "Examiner: What do I see on physical examination?"
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -750,11 +786,6 @@
                     </div>
                     
                     <div class="control-grid">
-                        <button class="btn btn-summary" id="summary-btn">
-                            <i data-lucide="file-text" class="w-4 h-4"></i>
-                            Patient Summary
-                        </button>
-                        
                         <button class="btn btn-secondary" id="pause-btn" disabled>
                             <i data-lucide="pause" class="w-4 h-4"></i>
                             Pause
@@ -771,21 +802,6 @@
                         </button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Patient Summary Modal -->
-    <div class="modal-overlay" id="summary-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Patient Summary</h3>
-                <button class="modal-close" id="close-summary-modal">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="summary-content">
-                Loading patient summary...
             </div>
         </div>
     </div>
@@ -819,15 +835,23 @@
         lucide.createIcons();
         
         // Session State
+        const caseDuration = {{ case.duration|default:"20" }};
         let sessionState = {
             isActive: false,
             isPaused: false,
-            timeRemaining: {{ case.duration|default:"20" }} * 60, // Convert minutes to seconds
+            timeRemaining: caseDuration * 60, // Convert minutes to seconds
             currentStatus: 'ready',
             isRecording: false,
             conversationHistory: [],
             findings: [],
-            notes: ''
+            notes: '',
+            sessionId: null,
+            patientPaused: false,
+            speechRecognition: null,
+            isListening: false,
+            userHasStarted: false,
+            speechSuspended: false,
+            speechBackoffMs: 0
         };
         
         // DOM Elements
@@ -838,23 +862,18 @@
             statusIndicator: document.getElementById('status-indicator'),
             statusText: document.getElementById('status-text'),
             conversationContent: document.getElementById('conversation-content'),
-            userInput: document.getElementById('user-input'),
-            sendBtn: document.getElementById('send-message'),
-            voiceBtn: document.getElementById('voice-input'),
             startBtn: document.getElementById('start-session'),
-            pauseBtn: document.getElementById('pause-btn'),
-            summaryBtn: document.getElementById('summary-btn'),
+            pauseBtn: document.getElementById('pause-session'),
+            finishBtn: document.getElementById('finish-session'),
             notesBtn: document.getElementById('notes-btn'),
-            finishBtn: document.getElementById('finish-btn'),
             findingsContent: document.getElementById('findings-content'),
-            summaryModal: document.getElementById('summary-modal'),
-            summaryContent: document.getElementById('summary-content'),
             notesModal: document.getElementById('notes-modal'),
             sessionNotes: document.getElementById('session-notes'),
-            closeSummaryModal: document.getElementById('close-summary-modal'),
             closeNotesModal: document.getElementById('close-notes-modal'),
             clearNotes: document.getElementById('clear-notes'),
-            saveNotes: document.getElementById('save-notes')
+            saveNotes: document.getElementById('save-notes'),
+            speechIndicator: document.getElementById('speech-indicator'),
+            speechText: document.getElementById('speech-text')
         };
         
         // Timer Functions
@@ -867,7 +886,7 @@
                     updateTimerDisplay();
                     
                     // Update timer styling based on remaining time
-                    const totalTime = {{ case.duration|default:"20" }} * 60;
+                    const totalTime = caseDuration * 60;
                     const percentage = sessionState.timeRemaining / totalTime;
                     
                     if (percentage <= 0.1) { // Last 10%
@@ -895,9 +914,24 @@
         
         function pauseTimer() {
             sessionState.isPaused = !sessionState.isPaused;
-            elements.pauseBtn.innerHTML = sessionState.isPaused 
-                ? '<i data-lucide="play" class="w-4 h-4"></i> Resume'
-                : '<i data-lucide="pause" class="w-4 h-4"></i> Pause';
+            
+            if (sessionState.isPaused) {
+                // Pause speech recognition
+                if (sessionState.speechRecognition && sessionState.isListening) {
+                    sessionState.speechRecognition.stop();
+                }
+                elements.pauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Resume';
+                updateSpeechStatus('listening', 'Session paused. Click Resume to continue.');
+                updateStatus('processing', 'Session Paused');
+            } else {
+                // Resume speech recognition
+                if (sessionState.speechRecognition && sessionState.isActive) {
+                    sessionState.speechRecognition.start();
+                }
+                elements.pauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> Pause';
+                updateSpeechStatus('listening', 'Listening... Speak now');
+                updateStatus('listening', 'Listening...');
+            }
             lucide.createIcons();
         }
         
@@ -930,45 +964,320 @@
             lucide.createIcons();
         }
         
-        // Session Management
-        function startSession() {
-            sessionState.isActive = true;
-            sessionState.isPaused = false;
-            
-            // Enable controls
-            elements.userInput.disabled = false;
-            elements.sendBtn.disabled = false;
-            elements.pauseBtn.disabled = false;
-            elements.startBtn.style.display = 'none';
-            
-            // Start timer
-            startTimer();
-            updateStatus('listening', 'Listening...');
-            
-            // Add initial message
-            addMessage('system', 'Session started. You may now begin your clinical examination.');
-            
-            console.log('Session started');
+        // Speech Recognition Setup
+        function initializeSpeechRecognition() {
+            console.log('Initializing speech recognition...');
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                sessionState.speechRecognition = new SpeechRecognition();
+                console.log('Speech recognition object created');
+                
+                sessionState.speechRecognition.continuous = true;
+                sessionState.speechRecognition.interimResults = true;
+                sessionState.speechRecognition.lang = 'en-US';
+                let interimDebounceTimeout = null;
+                let lastInterimText = '';
+                
+                sessionState.speechRecognition.onstart = function() {
+                    console.log('Speech recognition started successfully');
+                    sessionState.isListening = true;
+                    updateSpeechStatus('recording', 'Listening... Speak now');
+                };
+                
+                sessionState.speechRecognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    if (finalTranscript) {
+                        if (interimDebounceTimeout) {
+                            clearTimeout(interimDebounceTimeout);
+                            interimDebounceTimeout = null;
+                        }
+                        lastInterimText = '';
+                        processUserSpeech(finalTranscript);
+                    } else if (interimTranscript) {
+                        lastInterimText = interimTranscript.trim();
+                        updateSpeechStatus('recording', `Listening... ${lastInterimText}`);
+                        if (interimDebounceTimeout) clearTimeout(interimDebounceTimeout);
+                        interimDebounceTimeout = setTimeout(() => {
+                            if (sessionState.isActive && !sessionState.isPaused && lastInterimText) {
+                                processUserSpeech(lastInterimText);
+                                lastInterimText = '';
+                            }
+                        }, 1200);
+                    }
+                };
+                
+                sessionState.speechRecognition.onerror = function(event) {
+                    console.error('Speech recognition error:', event.error);
+                    sessionState.isListening = false;
+                    
+                    switch(event.error) {
+                        case 'not-allowed':
+                            updateSpeechStatus('listening', 'Microphone access denied. Please allow microphone access and click to restart.');
+                            break;
+                        case 'no-speech':
+                            updateSpeechStatus('listening', 'No speech detected. Click to try again.');
+                            break;
+                        case 'audio-capture':
+                            updateSpeechStatus('listening', 'No microphone found. Please check your microphone and click to restart.');
+                            break;
+                        case 'network':
+                            updateSpeechStatus('listening', 'Network error. Please check your connection and click to restart.');
+                            break;
+                        default:
+                            updateSpeechStatus('listening', 'Speech recognition error. Click to restart.');
+                    }
+                };
+                
+                sessionState.speechRecognition.onend = function() {
+                    sessionState.isListening = false;
+                    if (sessionState.isActive && !sessionState.isPaused && lastInterimText) {
+                        processUserSpeech(lastInterimText);
+                        lastInterimText = '';
+                    }
+                    if (sessionState.isActive && !sessionState.isPaused) {
+                        updateSpeechStatus('listening', 'Listening... Speak now');
+                        // Restart listening automatically
+                        setTimeout(() => {
+                            if (sessionState.isActive && !sessionState.isPaused) {
+                                sessionState.speechRecognition.start();
+                            }
+                        }, 100);
+                    }
+                };
+            } else {
+                console.warn('Speech recognition not supported in this browser');
+                updateSpeechStatus('listening', 'Speech recognition not supported. Please use Chrome, Edge, or Safari.');
+                // Disable the speech indicator click
+                elements.speechIndicator.style.cursor = 'not-allowed';
+                elements.speechIndicator.style.opacity = '0.5';
+            }
         }
         
-        function endSession() {
+        function updateSpeechStatus(status, text) {
+            elements.speechIndicator.className = `status-indicator ${status}`;
+            elements.speechText.textContent = text;
+        }
+        
+        // Process user speech input
+        async function processUserSpeech(transcript) {
+            if (!sessionState.isActive || !sessionState.sessionId) return;
+            
+            // Mark that user has started
+            if (!sessionState.userHasStarted) {
+                sessionState.userHasStarted = true;
+                updateStatus('listening', 'Patient responding...');
+            }
+            
+            // Add doctor's message
+            addMessage('doctor', transcript);
+            
+            // Update status
+            updateStatus('processing', 'Processing...');
+            updateSpeechStatus('processing', 'Processing your speech...');
+            
+            try {
+                // Send message to AI API
+                const response = await fetch('/api/interact/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionState.sessionId,
+                        user_input: transcript
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Update patient paused state
+                    sessionState.patientPaused = data.patient_paused;
+                    
+                    if (data.type === 'patient_response') {
+                        // Add patient response
+                        addMessage('patient', data.response);
+                        updateStatus('listening', 'Listening...');
+                        updateSpeechStatus('listening', 'Listening... Speak now');
+                    } else if (data.type === 'examiner_response') {
+                        // Add examiner response
+                        addMessage('examiner', data.response);
+                        updateStatus('listening', 'Listening...');
+                        updateSpeechStatus('listening', 'Listening... Speak now');
+                        
+                        // Add to findings if it's examiner response
+                        addExaminerFinding('AI Examiner', data.response);
+                    }
+                } else {
+                    throw new Error(data.error || 'Failed to process message');
+                }
+            } catch (error) {
+                console.error('Error processing speech:', error);
+                addMessage('system', 'Error processing your speech. Please try again.');
+                updateStatus('listening', 'Listening...');
+                updateSpeechStatus('listening', 'Listening... Speak now');
+            }
+        }
+        
+        // Session Management
+        async function startSession() {
+            try {
+                // Preflight: request mic permission on user gesture to satisfy browser policies
+                try {
+                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        await navigator.mediaDevices.getUserMedia({ audio: true });
+                        console.log('Microphone permission granted');
+                    }
+                } catch (permErr) {
+                    console.warn('Microphone permission error:', permErr);
+                    updateSpeechStatus('listening', 'Please allow microphone access to start speaking.');
+                }
+
+                // Start AI session via API
+                const response = await fetch('/api/start-session/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        case_id: '{{ case_id }}'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    sessionState.sessionId = data.session_id;
+                    sessionState.isActive = true;
+                    sessionState.isPaused = false;
+                    sessionState.userHasStarted = false;
+                    
+                    // Update UI
+                    elements.startBtn.style.display = 'none';
+                    elements.pauseBtn.style.display = 'inline-flex';
+                    elements.finishBtn.style.display = 'inline-flex';
+                    
+                    // Start timer
+                    startTimer();
+                    updateStatus('listening', 'Ready for your first question');
+                    updateSpeechStatus('listening', 'Listening... Start by speaking to the patient');
+                    
+                    // Add initial message
+                    addMessage('system', 'Session started. Please begin by speaking to the patient. You can ask questions, conduct examinations, or address the "Examiner" for findings.');
+                    
+                    // Start speech recognition immediately on user gesture
+                    try {
+                        if (sessionState.speechRecognition && sessionState.isActive) {
+                            sessionState.speechRecognition.start();
+                            console.log('Speech recognition started (immediate)');
+                        } else {
+                            console.warn('Speech recognition not available or session not active');
+                        }
+                    } catch (error) {
+                        console.error('Error starting speech recognition immediately:', error);
+                        updateSpeechStatus('listening', 'Click the microphone icon to start speaking');
+                    }
+
+                    // Fallback retry shortly after
+                    setTimeout(() => {
+                        if (!sessionState.isListening && sessionState.speechRecognition && sessionState.isActive) {
+                            try {
+                                sessionState.speechRecognition.start();
+                                console.log('Speech recognition started (retry)');
+                            } catch (error) {
+                                console.error('Retry start error:', error);
+                            }
+                        }
+                    }, 600);
+                    
+                    console.log('Session started with ID:', sessionState.sessionId);
+                } else {
+                    throw new Error(data.error || 'Failed to start session');
+                }
+            } catch (error) {
+                console.error('Error starting session:', error);
+                alert('Failed to start session. Please try again.');
+            }
+        }
+        
+        async function endSession() {
+            try {
+                if (sessionState.sessionId) {
+                    // Stop speech recognition
+                    if (sessionState.speechRecognition && sessionState.isListening) {
+                        sessionState.speechRecognition.stop();
+                    }
+                    
+                    // End AI session via API
+                    const response = await fetch('/api/end-session/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({
+                            session_id: sessionState.sessionId
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        console.log('Session ended successfully');
+                    }
+                }
+            } catch (error) {
+                console.error('Error ending session:', error);
+            }
+            
             sessionState.isActive = false;
+            sessionState.isListening = false;
             clearInterval(timerInterval);
             
-            // Disable controls
-            elements.userInput.disabled = true;
-            elements.sendBtn.disabled = true;
-            elements.pauseBtn.disabled = true;
+            // Update UI
+            elements.startBtn.style.display = 'inline-flex';
+            elements.pauseBtn.style.display = 'none';
+            elements.finishBtn.style.display = 'none';
             
             updateStatus('processing', 'Session Ended');
+            updateSpeechStatus('listening', 'Session ended. Click "Start Session" to begin again.');
             
             // Show session complete message
             if (confirm('Session completed! Would you like to review your performance and get AI feedback?')) {
-                // Redirect to feedback page or show feedback modal
-                window.location.href = `{% url 'session_feedback' case_id=case.id %}`;
+                // Redirect to feedback page
+                window.location.href = `{% url 'session_feedback' case_id=case_id %}`;
             }
             
             console.log('Session ended');
+        }
+        
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
         
         // Message Functions
@@ -1004,67 +1313,17 @@
             });
         }
         
-        function sendMessage() {
-            const message = elements.userInput.value.trim();
-            if (!message || !sessionState.isActive) return;
-            
-            // Add doctor's message
-            addMessage('doctor', message);
-            elements.userInput.value = '';
-            
-            // Update status
-            updateStatus('processing', 'Processing...');
-            
-            // Simulate AI response (replace with actual API call)
-            setTimeout(() => {
-                simulatePatientResponse(message);
-            }, 1000 + Math.random() * 2000);
-        }
         
-        function simulatePatientResponse(doctorMessage) {
-            updateStatus('patient-speaking', 'Patient Speaking...');
-            
-            // Sample responses (replace with actual AI integration)
-            const responses = [
-                "Well, doctor, I've been having this skin problem for about 3 months now.",
-                "It started as just a few spots on my forehead, but now it's spread to my cheeks too.",
-                "I've tried some over-the-counter creams, but they don't seem to help much.",
-                "It's really affecting my confidence, especially at school.",
-                "My mum says I should see a doctor, so here I am."
-            ];
-            
-            const response = responses[Math.floor(Math.random() * responses.length)];
-            
-            setTimeout(() => {
-                addMessage('patient', response);
-                updateStatus('listening', 'Listening...');
-                
-                // Sometimes add examiner findings
-                if (Math.random() > 0.7) {
-                    addExaminerFinding();
-                }
-            }, 2000);
-        }
         
         // Examiner Findings
         function addExaminerFinding(category = null, finding = null) {
-            // Sample findings (replace with actual data from backend)
-            const sampleFindings = [
-                { category: 'Visual Inspection', finding: 'Multiple comedones observed on forehead and cheeks' },
-                { category: 'Skin Assessment', finding: 'Mild inflammatory papules present, no scarring noted' },
-                { category: 'Patient Behavior', finding: 'Patient appears anxious about appearance, frequent touching of face' },
-                { category: 'Physical Exam', finding: 'No lymphadenopathy detected, skin otherwise normal' }
-            ];
-            
-            const selectedFinding = category && finding 
-                ? { category, finding }
-                : sampleFindings[Math.floor(Math.random() * sampleFindings.length)];
+            if (!category || !finding) return;
             
             const findingDiv = document.createElement('div');
             findingDiv.className = 'findings-item';
             findingDiv.innerHTML = `
-                <div class="findings-category">${selectedFinding.category}</div>
-                <div class="findings-text">${selectedFinding.finding}</div>
+                <div class="findings-category">${category}</div>
+                <div class="findings-text">${finding}</div>
             `;
             
             // Remove empty message if it exists
@@ -1077,46 +1336,10 @@
             elements.findingsContent.scrollTop = elements.findingsContent.scrollHeight;
             
             // Store in findings
-            sessionState.findings.push(selectedFinding);
+            sessionState.findings.push({ category, finding });
         }
         
         // Modal Functions
-        function openSummaryModal() {
-            elements.summaryModal.classList.add('active');
-            
-            // Simulate loading patient summary (replace with actual API call)
-            elements.summaryContent.innerHTML = 'Loading patient summary...';
-            
-            setTimeout(() => {
-                // Sample summary content (replace with actual data)
-                const summaryContent = `
-                    <h4 style="margin-bottom: 1rem; color: var(--medical-green-dark);">Patient Summary</h4>
-                    <p><strong>Name:</strong> Erin Campbell</p>
-                    <p><strong>Age:</strong> 14 years old</p>
-                    <p><strong>Chief Complaint:</strong> Facial acne affecting self-confidence</p>
-                    
-                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--medical-green-dark);">Medical History</h4>
-                    <p>• No significant past medical history</p>
-                    <p>• No known allergies</p>
-                    <p>• No current medications</p>
-                    
-                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--medical-green-dark);">Social History</h4>
-                    <p>• Year 9 student</p>
-                    <p>• Lives with parents and younger sister</p>
-                    <p>• Reports stress from school and social situations</p>
-                    
-                    <h4 style="margin: 1.5rem 0 1rem 0; color: var(--medical-green-dark);">Current Symptoms</h4>
-                    <p>• Comedones and inflammatory papules on face</p>
-                    <p>• Duration: 3 months</p>
-                    <p>• Worsening despite OTC treatments</p>
-                `;
-                elements.summaryContent.innerHTML = summaryContent;
-            }, 1000);
-        }
-        
-        function closeSummaryModal() {
-            elements.summaryModal.classList.remove('active');
-        }
         
         function openNotesModal() {
             elements.notesModal.classList.add('active');
@@ -1140,74 +1363,38 @@
             }
         }
         
-        // Voice Recording (placeholder)
-        function toggleVoiceRecording() {
-            sessionState.isRecording = !sessionState.isRecording;
-            
-            if (sessionState.isRecording) {
-                elements.voiceBtn.classList.add('recording');
-                elements.voiceBtn.innerHTML = '<i data-lucide="mic-off" class="w-4 h-4"></i> Stop';
-                updateStatus('processing', 'Recording...');
-                
-                // Simulate recording
-                setTimeout(() => {
-                    stopVoiceRecording();
-                }, 3000);
-            } else {
-                stopVoiceRecording();
-            }
-            
-            lucide.createIcons();
-        }
-        
-        function stopVoiceRecording() {
-            sessionState.isRecording = false;
-            elements.voiceBtn.classList.remove('recording');
-            elements.voiceBtn.innerHTML = '<i data-lucide="mic" class="w-4 h-4"></i> Voice';
-            updateStatus('listening', 'Listening...');
-            
-            // Simulate voice-to-text result
-            elements.userInput.value = "Could you tell me more about when this started?";
-            
-            lucide.createIcons();
-        }
         
         // Event Listeners
         elements.startBtn.addEventListener('click', startSession);
         elements.pauseBtn.addEventListener('click', pauseTimer);
-        elements.sendBtn.addEventListener('click', sendMessage);
-        elements.voiceBtn.addEventListener('click', toggleVoiceRecording);
         elements.finishBtn.addEventListener('click', () => {
             if (confirm('Are you sure you want to finish this session? This cannot be undone.')) {
                 endSession();
             }
         });
         
-        elements.summaryBtn.addEventListener('click', openSummaryModal);
+        // Speech indicator click handler
+        elements.speechIndicator.addEventListener('click', () => {
+            if (sessionState.isActive && sessionState.speechRecognition && !sessionState.isListening) {
+                try {
+                    sessionState.speechRecognition.start();
+                    console.log('Speech recognition started manually');
+                } catch (error) {
+                    console.error('Error starting speech recognition manually:', error);
+                    updateSpeechStatus('listening', 'Speech recognition error. Please try again.');
+                }
+            }
+        });
+        
         elements.notesBtn.addEventListener('click', openNotesModal);
-        elements.closeSummaryModal.addEventListener('click', closeSummaryModal);
         elements.closeNotesModal.addEventListener('click', closeNotesModal);
         elements.saveNotes.addEventListener('click', saveNotes);
         elements.clearNotes.addEventListener('click', clearNotes);
         
         // Modal close on outside click
-        elements.summaryModal.addEventListener('click', (e) => {
-            if (e.target === elements.summaryModal) {
-                closeSummaryModal();
-            }
-        });
-        
         elements.notesModal.addEventListener('click', (e) => {
             if (e.target === elements.notesModal) {
                 closeNotesModal();
-            }
-        });
-        
-        // Enter key to send message
-        elements.userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
             }
         });
         
@@ -1233,7 +1420,6 @@
                     openNotesModal();
                     break;
                 case 'escape':
-                    closeSummaryModal();
                     closeNotesModal();
                     break;
             }
@@ -1242,13 +1428,10 @@
         // Initialize
         updateTimerDisplay();
         updateStatus('ready', 'Ready to Start');
+        updateSpeechStatus('listening', 'Click "Start Session" to begin speaking');
         
-        // Focus input when session starts
-        function focusInput() {
-            if (sessionState.isActive) {
-                elements.userInput.focus();
-            }
-        }
+        // Initialize speech recognition
+        initializeSpeechRecognition();
         
         // Auto-save notes periodically
         setInterval(() => {
@@ -1258,7 +1441,7 @@
             }
         }, 30000); // Auto-save every 30 seconds
         
-        console.log('Simulation interface initialized');
+        console.log('Speech-enabled simulation interface initialized');
     </script>
 </body>
 </html>

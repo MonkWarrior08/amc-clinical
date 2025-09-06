@@ -1,9 +1,6 @@
 # AMC Clinical - Main Requirements
 # Core database and PDF processing
 
-# Database
-sqlite3
-
 # PDF Processing
 pypdf==6.0.0
 
@@ -12,8 +9,17 @@ langchain==0.3.27
 langchain-core==0.3.75
 langchain-text-splitters==0.3.9
 
-# For Pinecone integration (see scripts/requirements_pinecone.txt)
-# pinecone==7.3.0
-# langchain-pinecone==0.2.11
-# langchain-openai==0.3.32
-# openai>=1.0.0
+# AI and LLM Integration
+langchain-openai==0.3.32
+langchain-pinecone==0.2.11
+openai>=1.0.0
+pinecone==7.3.0
+
+# Environment and Configuration
+python-dotenv==1.0.0
+
+# Django REST Framework
+djangorestframework==3.15.2
+
+# Additional utilities
+uuid==1.30

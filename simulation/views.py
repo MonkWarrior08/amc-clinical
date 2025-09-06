@@ -162,10 +162,24 @@ def case_detail(request, case_id):
             messages.error(request, f"Case '{case_id}' not found")
             return redirect('categories')
         
+        # Create a mock case object for template compatibility
+        class MockCase:
+            def __init__(self, data):
+                self.case_id = data.get('case_id', case_id)
+                self.patient_name = data.get('patient_name', 'Patient')
+                self.difficulty = data.get('difficulty', 'Beginner')
+                self.duration = data.get('duration', 20)
+                self.category_name = data.get('category', 'General')
+                self.scenario = data.get('scenario', '')
+                self.instruction = data.get('instruction', '')
+        
+        case = MockCase(case_data)
+        
         context = {
             'case_id': case_id,
-            'case': case_data,
-            'category': case_data.get('category_name', 'Unknown')
+            'case': case,
+            'category': case_data.get('category_name', 'Unknown'),
+            'category_name': case_data.get('category_name', 'Unknown')
         }
         
         return render(request, 'simulation/cases/case_briefing.html', context)
@@ -177,7 +191,38 @@ def case_detail(request, case_id):
 
 @login_required
 def case_simulation(request, case_id):
-    return render(request, 'simulation/cases/simulation.html', {'case_id': case_id})
+    try:
+        # Get case data from database
+        db_query = MedicalCasesQuery()
+        case_data = db_query.get_case_with_content(case_id)
+        db_query.close()
+        
+        if not case_data:
+            messages.error(request, 'Case not found')
+            return redirect('categories')
+        
+        # Create a mock case object for template compatibility
+        class MockCase:
+            def __init__(self, data):
+                self.case_id = data.get('case_id', case_id)
+                self.patient_name = data.get('patient_name', 'Patient')
+                self.difficulty = data.get('difficulty', 'Beginner')
+                self.duration = data.get('duration', 20)
+                self.category_name = data.get('category', 'General')
+        
+        case = MockCase(case_data)
+        
+        context = {
+            'case': case,
+            'case_id': case_id,
+            'category_icon': 'heart'  # Default icon
+        }
+        
+        return render(request, 'simulation/cases/simulation.html', context)
+        
+    except Exception as e:
+        messages.error(request, f"Error loading case: {str(e)}")
+        return redirect('categories')
 
 
 @login_required

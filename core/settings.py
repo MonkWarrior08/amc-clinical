@@ -22,6 +22,8 @@ environ.Env.read_env(BASE_DIR / '.env')
 GOOGLE_API_KEY = env('GOOGLE_API_KEY', default='')
 PINECONE_API_KEY = env('PINECONE_API_KEY', default='')
 PINECONE_ENVIRONMENT = env('PINECONE_ENVIRONMENT', default='')
+PINECONE_INDEX_NAME = env('PINECONE_INDEX_NAME', default='amc-tutor')
+OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
