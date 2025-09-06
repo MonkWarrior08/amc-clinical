@@ -18,6 +18,10 @@ from django.shortcuts import get_object_or_404
 from .models import Case, Session, Feedback, AIAgentState
 from .ai_core.ai_service import ai_service
 from .db_utils import MedicalCasesQuery
+from django.views.decorators.http import require_POST
+from django.conf import settings
+from openai import OpenAI
+import base64
 
 @method_decorator(csrf_exempt, name='dispatch')
 @method_decorator(login_required, name='dispatch')
