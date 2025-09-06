@@ -1091,6 +1091,9 @@
             // Ignore empty/whitespace-only transcripts
             if (!transcript || !transcript.trim()) return;
             
+            // Block user speech while patient is speaking
+            if (sessionState.isPatientSpeaking) return;
+
             // Mark that user has started
             if (!sessionState.userHasStarted) {
                 sessionState.userHasStarted = true;
