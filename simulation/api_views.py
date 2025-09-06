@@ -19,9 +19,10 @@ from .models import Case, Session, Feedback, AIAgentState
 from .ai_core.ai_service import ai_service
 from .db_utils import MedicalCasesQuery
 from django.views.decorators.http import require_POST
-from django.conf import settings
 from openai import OpenAI
 import base64
+import os
+from .ai_core.config import ai_config
 
 @method_decorator(csrf_exempt, name='dispatch')
 @method_decorator(login_required, name='dispatch')
@@ -310,17 +311,50 @@ class TextToSpeechView(View):
             if not text:
                 return JsonResponse({'error': 'text is required'}, status=400)
 
-            client = OpenAI(api_key=settings.OPENAI_API_KEY)
-            result = client.audio.speech.create(
-                model=model,
-                voice=voice,
-                input=text,
-                format='mp3'
-            )
-            # openai>=1.0 returns bytes in result.content or result.read()
-            audio_bytes = result.read() if hasattr(result, 'read') else result.content
+            api_key = ai_config.openai_api_key or os.environ.get('OPENAI_API_KEY')
+            if not api_key:
+                return JsonResponse({'error': 'OPENAI_API_KEY not configured'}, status=500)
+
+            client = OpenAI(api_key=api_key)
+            # Prefer streaming when available; fall back to non-streaming
+            try:
+                with client.audio.speech.with_streaming_response.create(
+                    model=model,
+                    voice=voice,
+                    input=text
+                ) as response:
+                    audio_bytes = response.read()
+            except Exception:
+                result = client.audio.speech.create(
+                    model=model,
+                    voice=voice,
+                    input=text
+                )
+                audio_bytes = None
+                if hasattr(result, 'read'):
+                    try:
+                        audio_bytes = result.read()
+                    except Exception:
+                        audio_bytes = None
+                if audio_bytes is None and hasattr(result, 'content'):
+                    audio_bytes = result.content
+                if audio_bytes is None and hasattr(result, 'to_bytes'):
+                    try:
+                        audio_bytes = result.to_bytes()
+                    except Exception:
+                        audio_bytes = None
+                if audio_bytes is None and hasattr(result, 'getvalue'):
+                    try:
+                        audio_bytes = result.getvalue()
+                    except Exception:
+                        audio_bytes = None
+                if audio_bytes is None:
+                    return JsonResponse({'error': 'Failed to generate audio bytes (non-streaming path)'}, status=500)
             audio_b64 = base64.b64encode(audio_bytes).decode('utf-8')
 
             return JsonResponse({'success': True, 'audio_base64': audio_b64, 'mime': 'audio/mpeg'})
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
+            import traceback
+            print('TTS ERROR:', e)
+            print(traceback.format_exc())
+            return JsonResponse({'error': str(e), 'type': e.__class__.__name__}, status=500)
