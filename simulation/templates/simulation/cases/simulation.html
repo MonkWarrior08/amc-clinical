@@ -1369,38 +1369,62 @@
         }
         
         // Patient TTS
-        function speakPatient(text) {
+        async function speakPatient(text) {
             try {
-                if (!('speechSynthesis' in window)) {
-                    console.warn('Speech Synthesis not supported');
-                    return;
-                }
                 // Pause recognition while speaking to avoid echo
                 sessionState.isPatientSpeaking = true;
                 if (sessionState.speechRecognition && sessionState.isListening) {
                     sessionState.speechRecognition.stop();
                 }
-                if (sessionState.ttsUtterance) {
-                    window.speechSynthesis.cancel();
-                }
-                const utter = new SpeechSynthesisUtterance(text);
-                utter.rate = 1.0;
-                utter.pitch = 1.0;
-                utter.volume = 1.0;
-                // Prefer a neutral female English voice if available
-                const voices = window.speechSynthesis.getVoices();
-                const preferred = voices.find(v => /en-?/i.test(v.lang) && /female|Google UK English Female|Samantha|Victoria|Allison/i.test(v.name));
-                if (preferred) utter.voice = preferred;
-                sessionState.ttsUtterance = utter;
-                utter.onend = () => {
-                    sessionState.ttsUtterance = null;
-                    sessionState.isPatientSpeaking = false;
-                    // Resume recognition if session active and not paused/suspended
-                    if (sessionState.speechRecognition && sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
-                        try { sessionState.speechRecognition.start(); } catch (_) {}
+                // Try backend OpenAI TTS first
+                try {
+                    const res = await fetch('/api/tts/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        },
+                        body: JSON.stringify({ text })
+                    });
+                    const data = await res.json();
+                    if (data && data.success && data.audio_base64) {
+                        const audio = new Audio(`data:${data.mime};base64,${data.audio_base64}`);
+                        await new Promise((resolve) => {
+                            audio.onended = resolve;
+                            audio.play().catch(resolve);
+                        });
+                        sessionState.isPatientSpeaking = false;
+                        if (sessionState.speechRecognition && sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
+                            try { sessionState.speechRecognition.start(); } catch (_) {}
+                        }
+                        return;
                     }
-                };
-                window.speechSynthesis.speak(utter);
+                } catch (_) {
+                    // Fall back to browser TTS below
+                }
+                
+                // Fallback: browser SpeechSynthesis
+                if ('speechSynthesis' in window) {
+                    if (sessionState.ttsUtterance) {
+                        window.speechSynthesis.cancel();
+                    }
+                    const utter = new SpeechSynthesisUtterance(text);
+                    utter.rate = 1.0;
+                    utter.pitch = 1.0;
+                    utter.volume = 1.0;
+                    const voices = window.speechSynthesis.getVoices();
+                    const preferred = voices.find(v => /en-?/i.test(v.lang) && /female|Google UK English Female|Samantha|Victoria|Allison/i.test(v.name));
+                    if (preferred) utter.voice = preferred;
+                    sessionState.ttsUtterance = utter;
+                    await new Promise((resolve) => {
+                        utter.onend = resolve;
+                        window.speechSynthesis.speak(utter);
+                    });
+                }
+                sessionState.isPatientSpeaking = false;
+                if (sessionState.speechRecognition && sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
+                    try { sessionState.speechRecognition.start(); } catch (_) {}
+                }
             } catch (e) {
                 console.error('TTS error:', e);
                 sessionState.isPatientSpeaking = false;
