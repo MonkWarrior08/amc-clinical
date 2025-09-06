@@ -520,6 +520,28 @@
             color: var(--medical-text-light);
         }
         
+        .start-btn {
+            background: linear-gradient(135deg, var(--medical-green) 0%, var(--medical-green-light) 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 10px var(--medical-shadow);
+            transition: all 0.2s ease-out;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px var(--medical-shadow);
+        }
+        
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -747,7 +769,7 @@
             <section class="animate-list">
                 <div class="case-list" id="case-list">
                     {% for case in cases %}
-                    <a href="{% url 'case_detail' case_id=case.case_id %}" class="case-item" data-case='{"name":"{{ case.case_id|lower }}","caseType":"{{ case.case_type|default:"short" }}","completed":false}'>
+                    <div class="case-item" data-case='{"name":"{{ case.case_id|lower }}","caseType":"{{ case.case_type|default:"short" }}","completed":false}'>
                         <div class="case-header">
                             <div class="patient-info">
                                 <h3 class="patient-name">{{ case.case_id|title }}</h3>
@@ -798,9 +820,13 @@
                                 <i data-lucide="clock" class="w-4 h-4"></i>
                                 <span>~10 min</span>
                             </div>
+                            <a href="{% url 'case_detail' case_id=case.case_id %}" class="start-btn">
+                                <i data-lucide="play" class="w-4 h-4"></i>
+                                Start
+                            </a>
                             <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
                         </div>
-                    </a>
+                    </div>
                     {% empty %}
                     <div class="empty-state">
                         <div class="empty-icon">

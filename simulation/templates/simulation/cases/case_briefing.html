@@ -312,6 +312,21 @@
             line-height: 1.8;
             color: var(--medical-text);
         }
+
+        .countdown-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .countdown-timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--medical-green-dark);
+            letter-spacing: 0.05em;
+        }
         
         .briefing-content h1,
         .briefing-content h2,
@@ -699,13 +714,10 @@
                     <a href="{% url 'categories' %}">Categories</a>
                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
                     <div class="breadcrumb-category">
-                        <div class="category-icon-small">
-                            <i data-lucide="{{ category_icon|default:'heart' }}" class="w-4 h-4"></i>
-                        </div>
                         <a href="{% url 'case_list' category=category %}">{{ category_name|title }}</a>
                     </div>
                     <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    <span>Case Briefing</span>
+                    <span>{{ case.case_id|title }}</span>
                 </div>
                 
                 <a href="{% url 'case_list' category=category %}" class="back-btn">
@@ -748,44 +760,44 @@
             </section>
             
             
-            <!-- Briefing Content -->
+            <!-- Briefing Content (Exam Prep) -->
             <section class="briefing-section animate-briefing">
                 <div class="briefing-header">
                     <div class="briefing-icon">
-                        <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                        <i data-lucide="hourglass" class="w-6 h-6"></i>
                     </div>
-                    <h2 class="briefing-title">Clinical Case Instructions</h2>
+                    <h2 class="briefing-title">Exam Preparation</h2>
                 </div>
                 
                 <div class="briefing-content">
-                    {% if case.case_type %}
-                    <div class="case-type-section">
-                        <h1>Case Type</h1>
-                        <div class="case-type-content">
-                            <span class="case-type-badge {% if case.case_type == 'long' %}case-type-long{% else %}case-type-short{% endif %}">
-                                {{ case.case_type|title }} Case
-                            </span>
+                    <p>You have a short preparation period before the simulation begins. Use this time to get ready. Scenario details and instructions are hidden until the session starts.</p>
+                    <div class="countdown-container">
+                        <i data-lucide="timer" class="w-6 h-6"></i>
+                        <div class="countdown-timer" id="prep-countdown">02:00</div>
+                    </div>
+                    
+                    <div id="pre-start-controls" style="text-align:center; margin-top: 1.5rem;">
+                        <a href="#" class="btn-primary" id="start-prep-btn">
+                            <i data-lucide="play" class="w-6 h-6"></i>
+                            Start Preparation
+                        </a>
+                    </div>
+
+                    <div id="prep-details" style="display:none;">
+                        {% if case.scenario %}
+                        <div class="scenario-section">
+                            <h1>Patient Scenario</h1>
+                            <div class="scenario-content">{{ case.scenario|safe }}</div>
                         </div>
+                        {% endif %}
+
+                        {% if case.instruction %}
+                        <div class="instruction-section">
+                            <h1>Instructions for Doctor</h1>
+                            <div class="instruction-content">{{ case.instruction|safe }}</div>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-                    
-                    {% if case.scenario %}
-                    <div class="scenario-section">
-                        <h1>Patient Scenario</h1>
-                        <div class="scenario-content">{{ case.scenario|safe }}</div>
-                    </div>
-                    {% endif %}
-                    
-                    {% if case.instruction %}
-                    <div class="instruction-section">
-                        <h1>Instructions for Doctor</h1>
-                        <div class="instruction-content">{{ case.instruction|safe }}</div>
-                    </div>
-                    {% endif %}
-                    
-                    {% if not case.scenario and not case.instruction %}
-                    <p>Case details are being prepared. Please check back later or contact support if this issue persists.</p>
-                    {% endif %}
                 </div>
             </section>
             
@@ -794,16 +806,10 @@
                 <div class="action-icon">
                     <i data-lucide="play-circle" class="w-8 h-8"></i>
                 </div>
-                <h2 class="action-title">Ready to Begin?</h2>
+                <h2 class="action-title">Preparing Your Session…</h2>
                 <p class="action-description">
-                    Once you start the timed session, you will interact with an AI patient based on the case described above. 
-                    The timer will begin immediately and cannot be paused.
+                    The simulation will start automatically when the countdown reaches zero. Ensure you are ready.
                 </p>
-                
-                <a href="{% url 'case_simulation' case_id=case.case_id %}" class="btn-primary" id="begin-session-btn">
-                    <i data-lucide="timer" class="w-6 h-6"></i>
-                    Begin Timed Session
-                </a>
                 
                 <a href="{% url 'case_list' category=category %}" class="btn-secondary">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
@@ -813,6 +819,9 @@
                 <div class="session-info">
                     <p><strong>Session Duration:</strong> 20 minutes • <strong>Category:</strong> {{ case.category_name|title }} • <strong>Format:</strong> Interactive AI Simulation</p>
                 </div>
+                
+                <!-- Hidden link for programmatic navigation -->
+                <a id="auto-start-link" href="{% url 'case_simulation' case_id=case.case_id %}" style="display:none;"></a>
             </section>
         </main>
     </div>
@@ -831,83 +840,62 @@
         
         window.addEventListener('scroll', updateReadingProgress);
         
-        // Begin session confirmation
-        document.getElementById('begin-session-btn').addEventListener('click', function(e) {
-            e.preventDefault();
+        // 2-minute countdown then auto-start simulation
+        function startPrepCountdown(durationSeconds) {
+            let remaining = durationSeconds;
+            const countdownEl = document.getElementById('prep-countdown');
+            const startLink = document.getElementById('auto-start-link');
             
-            const confirmed = confirm(
-                'Are you ready to begin the timed session?\n\n' +
-                '• The timer will start immediately\n' +
-                '• You cannot pause or return to these instructions\n' +
-                '• Ensure you have read all the case details\n\n' +
-                'Click OK to proceed or Cancel to review the instructions again.'
-            );
+            function format(seconds) {
+                const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const s = (seconds % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            }
             
-            if (confirmed) {
-                // Add loading state
-                this.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> Starting Session...';
-                this.style.pointerEvents = 'none';
-                
-                // Brief delay to show loading state
-                setTimeout(() => {
-                    window.location.href = this.getAttribute('href');
-                }, 1500);
+            countdownEl.textContent = format(remaining);
+            const interval = setInterval(() => {
+                remaining -= 1;
+                countdownEl.textContent = format(Math.max(remaining, 0));
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    window.location.href = startLink.getAttribute('href');
+                }
+            }, 1000);
+        }
+
+        // Wire Start button to reveal details and begin countdown
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('start-prep-btn');
+            const details = document.getElementById('prep-details');
+            const controls = document.getElementById('pre-start-controls');
+            if (startBtn) {
+                startBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Reveal scenario/instruction
+                    if (details) details.style.display = 'block';
+                    if (controls) controls.style.display = 'none';
+                    // Start countdown (2 minutes)
+                    startPrepCountdown(120);
+                });
             }
         });
         
-        // Add ripple effect to primary button
-        document.querySelector('.btn-primary').addEventListener('click', function(e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.style.position = 'absolute';
-            ripple.style.borderRadius = '50%';
-            ripple.style.background = 'rgba(255, 255, 255, 0.3)';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.animation = 'ripple 0.6s ease-out';
-            ripple.style.pointerEvents = 'none';
-            
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-        
-        // Add ripple animation
+        // Minimal spin animation helper (kept for icon compatibility)
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(2);
-                    opacity: 0;
-                }
-            }
-            
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-            
-            .animate-spin {
-                animation: spin 1s linear infinite;
-            }
+            @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            .animate-spin { animation: spin 1s linear infinite; }
         `;
         document.head.appendChild(style);
         
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
-            // Press 'S' to start session
+            // Press 'S' to skip waiting and start immediately (optional)
             if (e.key === 's' || e.key === 'S') {
                 if (!e.target.matches('input, textarea')) {
                     e.preventDefault();
-                    document.getElementById('begin-session-btn').click();
+                    const startLink = document.getElementById('auto-start-link');
+                    window.location.href = startLink.getAttribute('href');
                 }
             }
             
@@ -962,10 +950,15 @@
         // Restore position on page load
         window.addEventListener('load', restoreReadingPosition);
         
-        // Focus management for accessibility
-        document.querySelector('.btn-primary').addEventListener('focus', function() {
-            this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
+        // Focus management for accessibility (guard in case primary button is absent)
+        (function() {
+            const primaryBtn = document.querySelector('.btn-primary');
+            if (primaryBtn) {
+                primaryBtn.addEventListener('focus', function() {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            }
+        })();
         
         // Estimate reading time
         function estimateReadingTime() {
