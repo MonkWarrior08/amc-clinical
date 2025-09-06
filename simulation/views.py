@@ -277,11 +277,53 @@ def session_feedback(request, case_id):
         # Pull transcript from the session record
         transcript_text = session_obj.transcript or ''
 
+    # Build marksheet data
+    key_steps = []
+    covered = (feedback_data or {}).get('key_points_covered') or []
+    missed = (feedback_data or {}).get('key_points_missed') or []
+    # take up to 3 from covered then missed
+    for txt in covered[:3]:
+        key_steps.append({'text': txt, 'yes': True})
+    if len(key_steps) < 3:
+        for txt in missed:
+            key_steps.append({'text': txt, 'yes': False})
+            if len(key_steps) >= 3:
+                break
+
+    comp = (feedback_data or {}).get('compliance_analysis') or {}
+    overall = (feedback_data or {}).get('overall_score') or 0
+    # Simple heuristics for 1-7 ratings
+    def map_score(x):
+        try:
+            return max(1, min(7, int(round((x/100.0)*7))))
+        except Exception:
+            return 4
+    approach_score = 6 if (comp.get('maintained_rapport') and not comp.get('used_jargon')) else 4
+    history_score = map_score(overall)
+    examination_score = map_score(overall)
+    diagnosis_score = 6 if (feedback_data or {}).get('outcome') == 'pass' else 3
+    global_rating = map_score(overall)
+
+    marksheet = {
+        'topic': case_id.replace('_', ' ').title(),
+        'candidate_name': request.user.get_full_name() or request.user.username,
+        'key_steps': key_steps,
+        'ratings': {
+            'approach': approach_score,
+            'history': history_score,
+            'examination': examination_score,
+            'diagnosis': diagnosis_score,
+            'global_rating': global_rating,
+            'pass_fail': (feedback_data or {}).get('outcome') == 'pass'
+        }
+    }
+
     context = {
         'case_id': case_id,
         'session': session_ctx,
         'feedback': feedback_data or {},
         'transcript': transcript_text,
+        'marksheet': marksheet,
     }
 
     return render(request, 'simulation/feedback/feedback_report.html', context)
