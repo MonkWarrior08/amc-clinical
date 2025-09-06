@@ -22,6 +22,28 @@ class ExaminerWorkflow:
         self.case_data = case_data
         self.llm = ai_config.get_llm(temperature=0.3)  # Lower temperature for factual responses
     
+    def _get_field(self, field_name: str) -> str:
+        """Safely get a field from case_data whether it's an object or a dict."""
+        try:
+            # Object-style access
+            value = getattr(self.case_data, field_name)
+            return value if value is not None else ''
+        except Exception:
+            pass
+        try:
+            # Dict-style access
+            if isinstance(self.case_data, dict):
+                return self.case_data.get(field_name, '') or ''
+        except Exception:
+            pass
+        # Mapping-like access
+        if hasattr(self.case_data, 'get'):
+            try:
+                return self.case_data.get(field_name, '') or ''
+            except Exception:
+                return ''
+        return ''
+    
     def parse_examiner_request(self, user_input: str) -> Dict[str, Any]:
         """
         Parse the examiner request to understand what findings are needed
@@ -127,20 +149,22 @@ class ExaminerWorkflow:
     def _get_physical_exam_findings(self, parsed_request: Dict[str, Any]) -> str:
         """Get physical examination findings"""
         # Prioritize facilitator-specific findings if available
-        if self.case_data.info_for_facilitator_exam_findings:
-            return self.case_data.info_for_facilitator_exam_findings
+        info_for_facilitator = self._get_field('info_for_facilitator_exam_findings')
+        if info_for_facilitator:
+            return info_for_facilitator
         
         # Fall back to general examination details
-        if self.case_data.examination_details:
-            return self.case_data.examination_details
+        exam_details = self._get_field('examination_details')
+        if exam_details:
+            return exam_details
         
         return "No specific physical examination findings available for this case."
     
     def _get_lab_results(self, parsed_request: Dict[str, Any]) -> str:
         """Get laboratory results"""
         # Check for lab results in examination details
-        exam_details = self.case_data.examination_details or ''
-        info_for_facilitator = self.case_data.info_for_facilitator_exam_findings or ''
+        exam_details = self._get_field('examination_details') or ''
+        info_for_facilitator = self._get_field('info_for_facilitator_exam_findings') or ''
         
         # Look for lab-related content
         lab_content = ""
@@ -157,8 +181,8 @@ class ExaminerWorkflow:
     def _get_imaging_findings(self, parsed_request: Dict[str, Any]) -> str:
         """Get imaging findings"""
         # Check for imaging results in examination details
-        exam_details = self.case_data.examination_details or ''
-        info_for_facilitator = self.case_data.info_for_facilitator_exam_findings or ''
+        exam_details = self._get_field('examination_details') or ''
+        info_for_facilitator = self._get_field('info_for_facilitator_exam_findings') or ''
         
         # Look for imaging-related content
         imaging_content = ""
@@ -175,8 +199,8 @@ class ExaminerWorkflow:
     def _get_vital_signs(self, parsed_request: Dict[str, Any]) -> str:
         """Get vital signs"""
         # Check for vital signs in examination details
-        exam_details = self.case_data.examination_details or ''
-        info_for_facilitator = self.case_data.info_for_facilitator_exam_findings or ''
+        exam_details = self._get_field('examination_details') or ''
+        info_for_facilitator = self._get_field('info_for_facilitator_exam_findings') or ''
         
         # Look for vital signs content
         vital_content = ""
@@ -193,12 +217,14 @@ class ExaminerWorkflow:
     def _get_general_findings(self, parsed_request: Dict[str, Any]) -> str:
         """Get general examination findings"""
         # Prioritize facilitator-specific findings
-        if self.case_data.info_for_facilitator_exam_findings:
-            return self.case_data.info_for_facilitator_exam_findings
+        info_for_facilitator = self._get_field('info_for_facilitator_exam_findings')
+        if info_for_facilitator:
+            return info_for_facilitator
         
         # Fall back to general examination details
-        if self.case_data.examination_details:
-            return self.case_data.examination_details
+        exam_details = self._get_field('examination_details')
+        if exam_details:
+            return exam_details
         
         return "No examination findings available for this case."
     

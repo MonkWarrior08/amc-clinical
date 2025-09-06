@@ -747,6 +747,11 @@
                                 <i data-lucide="square" class="w-4 h-4"></i>
                                 End Session
                             </button>
+
+                            <button class="btn btn-secondary" id="toggle-tts">
+                                <i data-lucide="volume-2" class="w-4 h-4"></i>
+                                Patient Voice: On
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -851,7 +856,10 @@
             isListening: false,
             userHasStarted: false,
             speechSuspended: false,
-            speechBackoffMs: 0
+            speechBackoffMs: 0,
+            ttsEnabled: true,
+            ttsUtterance: null,
+            isPatientSpeaking: false
         };
         
         // DOM Elements
@@ -873,7 +881,8 @@
             clearNotes: document.getElementById('clear-notes'),
             saveNotes: document.getElementById('save-notes'),
             speechIndicator: document.getElementById('speech-indicator'),
-            speechText: document.getElementById('speech-text')
+            speechText: document.getElementById('speech-text'),
+            toggleTtsBtn: document.getElementById('toggle-tts')
         };
         
         // Timer Functions
@@ -1032,7 +1041,10 @@
                             updateSpeechStatus('listening', 'No microphone found. Please check your microphone and click to restart.');
                             break;
                         case 'network':
-                            updateSpeechStatus('listening', 'Network error. Please check your connection and click to restart.');
+                            // Suspend auto-restart and require manual retry
+                            sessionState.speechSuspended = true;
+                            sessionState.speechBackoffMs = Math.min((sessionState.speechBackoffMs || 500) * 2, 8000);
+                            updateSpeechStatus('listening', 'Network issue. Click mic to retry.');
                             break;
                         default:
                             updateSpeechStatus('listening', 'Speech recognition error. Click to restart.');
@@ -1045,11 +1057,11 @@
                         processUserSpeech(lastInterimText);
                         lastInterimText = '';
                     }
-                    if (sessionState.isActive && !sessionState.isPaused) {
+                    if (sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
                         updateSpeechStatus('listening', 'Listening... Speak now');
                         // Restart listening automatically
                         setTimeout(() => {
-                            if (sessionState.isActive && !sessionState.isPaused) {
+                            if (sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
                                 sessionState.speechRecognition.start();
                             }
                         }, 100);
@@ -1072,6 +1084,8 @@
         // Process user speech input
         async function processUserSpeech(transcript) {
             if (!sessionState.isActive || !sessionState.sessionId) return;
+            // Ignore empty/whitespace-only transcripts
+            if (!transcript || !transcript.trim()) return;
             
             // Mark that user has started
             if (!sessionState.userHasStarted) {
@@ -1125,7 +1139,7 @@
                 }
             } catch (error) {
                 console.error('Error processing speech:', error);
-                addMessage('system', 'Error processing your speech. Please try again.');
+                // Do not spam system error messages for transient issues
                 updateStatus('listening', 'Listening...');
                 updateSpeechStatus('listening', 'Listening... Speak now');
             }
@@ -1311,6 +1325,11 @@
                 content,
                 timestamp: timestamp || new Date().toISOString()
             });
+
+            // Speak patient messages via TTS when enabled
+            if (sender === 'patient' && sessionState.ttsEnabled) {
+                speakPatient(content);
+            }
         }
         
         
@@ -1337,6 +1356,42 @@
             
             // Store in findings
             sessionState.findings.push({ category, finding });
+        }
+        
+        // Patient TTS
+        function speakPatient(text) {
+            try {
+                if (!('speechSynthesis' in window)) {
+                    console.warn('Speech Synthesis not supported');
+                    return;
+                }
+                // Pause recognition while speaking to avoid echo
+                if (sessionState.speechRecognition && sessionState.isListening) {
+                    sessionState.speechRecognition.stop();
+                }
+                if (sessionState.ttsUtterance) {
+                    window.speechSynthesis.cancel();
+                }
+                const utter = new SpeechSynthesisUtterance(text);
+                utter.rate = 1.0;
+                utter.pitch = 1.0;
+                utter.volume = 1.0;
+                // Prefer a neutral female English voice if available
+                const voices = window.speechSynthesis.getVoices();
+                const preferred = voices.find(v => /en-?/i.test(v.lang) && /female|Google UK English Female|Samantha|Victoria|Allison/i.test(v.name));
+                if (preferred) utter.voice = preferred;
+                sessionState.ttsUtterance = utter;
+                utter.onend = () => {
+                    sessionState.ttsUtterance = null;
+                    // Resume recognition if session active and not paused/suspended
+                    if (sessionState.speechRecognition && sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
+                        try { sessionState.speechRecognition.start(); } catch (_) {}
+                    }
+                };
+                window.speechSynthesis.speak(utter);
+            } catch (e) {
+                console.error('TTS error:', e);
+            }
         }
         
         // Modal Functions
@@ -1377,12 +1432,29 @@
         elements.speechIndicator.addEventListener('click', () => {
             if (sessionState.isActive && sessionState.speechRecognition && !sessionState.isListening) {
                 try {
+                    // Clear suspension/backoff when user manually retries
+                    sessionState.speechSuspended = false;
+                    sessionState.speechBackoffMs = 0;
                     sessionState.speechRecognition.start();
                     console.log('Speech recognition started manually');
                 } catch (error) {
                     console.error('Error starting speech recognition manually:', error);
                     updateSpeechStatus('listening', 'Speech recognition error. Please try again.');
                 }
+            }
+        });
+
+        // Toggle TTS button
+        elements.toggleTtsBtn.addEventListener('click', () => {
+            sessionState.ttsEnabled = !sessionState.ttsEnabled;
+            elements.toggleTtsBtn.innerHTML = sessionState.ttsEnabled
+                ? '<i data-lucide="volume-2" class="w-4 h-4"></i> Patient Voice: On'
+                : '<i data-lucide="volume-x" class="w-4 h-4"></i> Patient Voice: Off';
+            lucide.createIcons();
+            // If turning off, cancel any ongoing speech
+            if (!sessionState.ttsEnabled && sessionState.ttsUtterance) {
+                try { window.speechSynthesis.cancel(); } catch (_) {}
+                sessionState.ttsUtterance = null;
             }
         });
         
