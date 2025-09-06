@@ -19,7 +19,7 @@
         
         :root {
             --medical-green: #10b981;
-            --medical-green-light: #34d39;
+            --medical-green-light: #34d399;
             --medical-green-dark: #059669;
             --medical-bg: #f0fdf4;
             --medical-card: #ffffff;
@@ -749,30 +749,78 @@
                     </div>
                     <div class="info-item">
                         <i data-lucide="clock" class="w-4 h-4"></i>
-                        <span><span class="info-value">{{ session.duration|default:"18" }} min</span> used</span>
+                        <span>
+                            <span class="info-value">{{ session.duration_used|default:session.duration|default:"8" }} min</span>
+                            used (of {{ session.time_limit|default:"8" }} min)
+                        </span>
                     </div>
                     
                 </div>
             </section>
             
-            <!-- Overall Score -->
-            <section class="score-section animate-score">
-                <div class="score-display">
-                    <div class="score-number">{{ feedback.overall_score|default:"75" }}%</div>
-                    <div class="score-label">Overall Performance Score</div>
-                </div>
-                
-                <div class="outcome-badge outcome-{{ feedback.outcome|default:'pass' }}">
-                    {% if feedback.outcome == 'pass' or not feedback.outcome %}
-                        <i data-lucide="check-circle" class="w-6 h-6"></i>
-                        <span>Outcome: Pass</span>
-                    {% elif feedback.outcome == 'fail' %}
-                        <i data-lucide="x-circle" class="w-6 h-6"></i>
-                        <span>Outcome: Needs Improvement</span>
-                    {% else %}
-                        <i data-lucide="alert-circle" class="w-6 h-6"></i>
-                        <span>Outcome: Under Review</span>
-                    {% endif %}
+            <!-- Marksheet (AMC-style) -->
+            <section class="score-section animate-score" style="margin-top:1rem;">
+                <div style="border:1px solid #e5e7eb; border-radius:12px; padding:16px; background:white; display:flex; flex-direction:column; gap:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+                        <h2 class="section-title" style="margin:0;">Station Marksheet</h2>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <span style="font-weight:600; color:#374151;">Global:</span>
+                            <span style="padding:4px 10px; border-radius:9999px; background:#eef2ff; color:#3730a3; font-weight:600;">{{ marksheet.ratings.global_rating }}/7</span>
+                            {% if marksheet.ratings.pass_fail %}
+                                <span style="padding:4px 10px; border-radius:9999px; background:#dcfce7; color:#166534; font-weight:600;">Pass</span>
+                            {% else %}
+                                <span style="padding:4px 10px; border-radius:9999px; background:#fee2e2; color:#991b1b; font-weight:600;">Needs Improvement</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns:1fr; gap:16px;">
+                        <div style="display:grid; grid-template-columns:1fr; gap:12px;">
+                            <div style="display:flex; gap:16px; flex-wrap:wrap; color:#6b7280;">
+                                <span><strong>Topic:</strong> {{ marksheet.topic }}</span>
+                                <span><strong>Candidate:</strong> {{ marksheet.candidate_name }}</span>
+                            </div>
+                            <div>
+                                <div style="font-weight:600; margin-bottom:6px;">Key Steps</div>
+                                <ol style="margin:0; padding:0; list-style-position:inside; display:flex; flex-direction:column; gap:6px;">
+                                    {% for step in marksheet.key_steps %}
+                                        <li style="display:flex; justify-content:space-between; gap:8px; align-items:center; border:1px solid #f3f4f6; border-radius:10px; padding:8px 10px;">
+                                            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:#374151;">{{ step.text }}</span>
+                                            {% if step.yes %}
+                                                <span style="padding:2px 10px; border-radius:9999px; background:#dcfce7; color:#166534; font-weight:600;">Yes</span>
+                                            {% else %}
+                                                <span style="padding:2px 10px; border-radius:9999px; background:#fee2e2; color:#991b1b; font-weight:600;">No</span>
+                                            {% endif %}
+                                        </li>
+                                    {% empty %}
+                                        <li style="color:#6b7280;">No key steps detected.</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div style="font-weight:600; margin-bottom:6px;">Domain Ratings (1–7)</div>
+                            <div style="display:grid; grid-template-columns: repeat(4, minmax(140px, 1fr)); gap:10px;">
+                                <div style="border:1px solid #e5e7eb; border-radius:10px; padding:10px; text-align:center;">
+                                    <div style="font-size:0.8rem; color:#6b7280;">Approach</div>
+                                    <div style="font-size:1.5rem; font-weight:700; color:#111827;">{{ marksheet.ratings.approach }}</div>
+                                </div>
+                                <div style="border:1px solid #e5e7eb; border-radius:10px; padding:10px; text-align:center;">
+                                    <div style="font-size:0.8rem; color:#6b7280;">History</div>
+                                    <div style="font-size:1.5rem; font-weight:700; color:#111827;">{{ marksheet.ratings.history }}</div>
+                                </div>
+                                <div style="border:1px solid #e5e7eb; border-radius:10px; padding:10px; text-align:center;">
+                                    <div style="font-size:0.8rem; color:#6b7280;">Examination</div>
+                                    <div style="font-size:1.5rem; font-weight:700; color:#111827;">{{ marksheet.ratings.examination }}</div>
+                                </div>
+                                <div style="border:1px solid #e5e7eb; border-radius:10px; padding:10px; text-align:center;">
+                                    <div style="font-size:0.8rem; color:#6b7280;">Diagnosis</div>
+                                    <div style="font-size:1.5rem; font-weight:700; color:#111827;">{{ marksheet.ratings.diagnosis }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             
@@ -785,74 +833,34 @@
                     <h2 class="section-title">Performance Breakdown</h2>
                 </div>
                 
-                <div class="score-breakdown">
-                    <div class="score-item">
+                <div class="score-breakdown" style="display:grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap:12px;">
+                    <div class="score-item" style="min-width:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:120px;">
                         <div class="score-item-title">History Taking</div>
-                        <div class="score-item-value">{{ feedback.history_score|default:"82" }}%</div>
-                        <div class="score-item-label">Excellent</div>
+                        <div class="score-item-value">{{ feedback.history_score|default:"0" }}%</div>
+                        <div class="score-item-label">{{ feedback.history_label|default:"Good" }}</div>
                     </div>
                     
-                    <div class="score-item">
+                    <div class="score-item" style="min-width:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:120px;">
                         <div class="score-item-title">Physical Examination</div>
-                        <div class="score-item-value">{{ feedback.examination_score|default:"68" }}%</div>
-                        <div class="score-item-label">Good</div>
+                        <div class="score-item-value">{{ feedback.examination_score|default:"0" }}%</div>
+                        <div class="score-item-label">{{ feedback.examination_label|default:"Good" }}</div>
                     </div>
                     
-                    <div class="score-item">
+                    <div class="score-item" style="min-width:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:120px;">
                         <div class="score-item-title">Communication</div>
-                        <div class="score-item-value">{{ feedback.communication_score|default:"78" }}%</div>
-                        <div class="score-item-label">Very Good</div>
+                        <div class="score-item-value">{{ feedback.communication_score|default:"0" }}%</div>
+                        <div class="score-item-label">{{ feedback.communication_label|default:"Good" }}</div>
                     </div>
                     
-                    <div class="score-item">
+                    <div class="score-item" style="min-width:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; min-height:120px;">
                         <div class="score-item-title">Clinical Reasoning</div>
-                        <div class="score-item-value">{{ feedback.reasoning_score|default:"72" }}%</div>
-                        <div class="score-item-label">Good</div>
+                        <div class="score-item-value">{{ feedback.reasoning_score|default:"0" }}%</div>
+                        <div class="score-item-label">{{ feedback.reasoning_label|default:"Good" }}</div>
                     </div>
                 </div>
             </section>
             
-            <!-- Progress Tracking -->
-            <section class="progress-section animate-breakdown">
-                <div class="section-header">
-                    <div class="section-icon">
-                        <i data-lucide="trending-up" class="w-5 h-5"></i>
-                    </div>
-                    <h2 class="section-title">Skill Development Progress</h2>
-                </div>
-                
-                <div class="progress-item">
-                    <span class="progress-label">History Taking Skills</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 82%"></div>
-                    </div>
-                    <span class="progress-value">82%</span>
-                </div>
-                
-                <div class="progress-item">
-                    <span class="progress-label">Physical Examination Technique</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 68%"></div>
-                    </div>
-                    <span class="progress-value">68%</span>
-                </div>
-                
-                <div class="progress-item">
-                    <span class="progress-label">Patient Communication</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 78%"></div>
-                    </div>
-                    <span class="progress-value">78%</span>
-                </div>
-                
-                <div class="progress-item">
-                    <span class="progress-label">Clinical Decision Making</span>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 72%"></div>
-                    </div>
-                    <span class="progress-value">72%</span>
-                </div>
-            </section>
+            
             
             <!-- What Went Well -->
             <section class="feedback-section animate-feedback">
@@ -865,30 +873,17 @@
                 
                 <div class="feedback-content">
                     <ul class="feedback-list">
+                        {% for item in feedback.what_went_well %}
                         <li>
                             <i data-lucide="check-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Excellent rapport building:</strong> You demonstrated strong communication skills by using age-appropriate language and showing empathy toward the patient's concerns about her appearance.
-                            </div>
+                            <div class="feedback-text">{{ item }}</div>
                         </li>
+                        {% empty %}
                         <li>
-                            <i data-lucide="check-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Systematic history taking:</strong> Your approach to gathering information about the onset, duration, and characteristics of the skin condition was thorough and well-structured.
-                            </div>
+                            <i data-lucide="info" class="feedback-icon"></i>
+                            <div class="feedback-text">No specific strengths detected for this session.</div>
                         </li>
-                        <li>
-                            <i data-lucide="check-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Appropriate psychosocial assessment:</strong> You effectively explored how the acne was affecting the patient's self-esteem and social interactions at school.
-                            </div>
-                        </li>
-                        <li>
-                            <i data-lucide="check-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Patient-centered approach:</strong> You consistently addressed the patient's main concerns and involved her in treatment discussions, respecting her autonomy as an adolescent.
-                            </div>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </section>
@@ -904,30 +899,17 @@
                 
                 <div class="feedback-content">
                     <ul class="feedback-list improvement-list">
+                        {% for item in feedback.areas_for_improvement %}
                         <li>
                             <i data-lucide="alert-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Physical examination completeness:</strong> Consider performing a more comprehensive skin examination, including assessment of other areas that may be affected by acne (chest, back).
-                            </div>
+                            <div class="feedback-text">{{ item }}</div>
                         </li>
+                        {% empty %}
                         <li>
-                            <i data-lucide="alert-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Family history exploration:</strong> Asking about family history of acne or skin conditions could provide valuable information for treatment planning.
-                            </div>
+                            <i data-lucide="info" class="feedback-icon"></i>
+                            <div class="feedback-text">No improvement items detected for this session.</div>
                         </li>
-                        <li>
-                            <i data-lucide="alert-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Treatment options discussion:</strong> Provide more detailed information about different treatment modalities available and their potential side effects.
-                            </div>
-                        </li>
-                        <li>
-                            <i data-lucide="alert-circle" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Follow-up planning:</strong> Be more specific about follow-up timelines and what to expect during treatment monitoring.
-                            </div>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </section>
@@ -943,24 +925,17 @@
                 
                 <div class="feedback-content">
                     <ul class="feedback-list">
+                        {% for item in feedback.specific_recommendations %}
                         <li>
-                            <i data-lucide="book-open" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Study dermatological examination techniques:</strong> Review proper methods for comprehensive skin assessment in adolescent patients.
-                            </div>
+                            <i data-lucide="list-checks" class="feedback-icon"></i>
+                            <div class="feedback-text">{{ item }}</div>
                         </li>
+                        {% empty %}
                         <li>
-                            <i data-lucide="users" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Practice with similar cases:</strong> Complete additional adolescent health scenarios to strengthen your communication and assessment skills.
-                            </div>
+                            <i data-lucide="info" class="feedback-icon"></i>
+                            <div class="feedback-text">No action items generated for this session.</div>
                         </li>
-                        <li>
-                            <i data-lucide="file-text" class="feedback-icon"></i>
-                            <div class="feedback-text">
-                                <strong>Review acne treatment guidelines:</strong> Familiarize yourself with current evidence-based approaches to acne management in teenagers.
-                            </div>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </section>
@@ -996,23 +971,23 @@
             
             <!-- Next Steps -->
             <section class="next-steps animate-actions">
-                <h2 class="next-steps-title">Continue Your Learning Journey</h2>
+                <h2 class="next-steps-title">Next Steps</h2>
                 <p class="next-steps-description">
-                    Keep practicing to improve your clinical skills and build confidence for the AMC Clinical Examination.
+                    Choose where to go next.
                 </p>
                 
                 <div class="next-steps-actions">
-                    <a href="{% url 'case_list' category='adolescent' %}" class="btn btn-white">
+                    <a href="{% if category_slug %}{% url 'case_list' category=category_slug %}{% else %}{% url 'categories' %}{% endif %}" class="btn btn-white">
                         <i data-lucide="repeat" class="w-4 h-4"></i>
                         Practice Similar Cases
                     </a>
                     <a href="{% url 'categories' %}" class="btn btn-transparent">
                         <i data-lucide="grid-3x3" class="w-4 h-4"></i>
-                        Explore Other Categories
+                        Explore Categories
                     </a>
                     <a href="{% url 'dashboard' %}" class="btn btn-transparent">
-                        <i data-lucide="trending-up" class="w-4 h-4"></i>
-                        Go to Dashboard
+                        <i data-lucide="home" class="w-4 h-4"></i>
+                        Back to Dashboard
                     </a>
                 </div>
             </section>

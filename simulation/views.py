@@ -250,10 +250,24 @@ def session_feedback(request, case_id):
         )
 
     feedback_data = None
+    # Compute time used and expose an 8-minute time limit for the OSCE station
+    duration_used = None
+    if session_obj and getattr(session_obj, 'started_at', None) and getattr(session_obj, 'ended_at', None):
+        try:
+            delta_seconds = (session_obj.ended_at - session_obj.started_at).total_seconds()
+            duration_used = int(round(delta_seconds / 60.0))
+        except Exception:
+            duration_used = None
+    # Fallback to stored minutes if available
+    if duration_used is None:
+        duration_used = getattr(session_obj, 'duration_minutes', None)
+
     session_ctx = {
         'patient_name': getattr(case, 'case_id', 'Patient'),
         'completed_date': getattr(session_obj, 'ended_at', None) or getattr(session_obj, 'started_at', None),
         'duration': getattr(session_obj, 'duration_minutes', None) or '',
+        'duration_used': duration_used,
+        'time_limit': 8,
     }
     transcript_text = ''
 
@@ -261,16 +275,33 @@ def session_feedback(request, case_id):
         try:
             feedback = Feedback.objects.get(session=session_obj)
             # Map model fields to template-friendly structure
+            # Ensure textual fields are normalized to lists for template iteration
+            def to_list(value):
+                if value is None:
+                    return []
+                if isinstance(value, list):
+                    return value
+                if isinstance(value, str):
+                    # Split on newlines or bullet separators; trim empties
+                    parts = [p.strip('-• \t').strip() for p in value.split('\n')]
+                    parts = [p for p in parts if p]
+                    if len(parts) > 1:
+                        return parts
+                    # Fallback: try semicolons
+                    parts = [p.strip() for p in value.split(';') if p.strip()]
+                    return parts if parts else ([value] if value.strip() else [])
+                return [str(value)]
+
             feedback_data = {
                 'overall_score': feedback.overall_score,
                 'outcome': 'pass' if feedback.pass_fail else 'fail',
-                'what_went_well': feedback.what_went_well,
-                'areas_for_improvement': feedback.areas_for_improvement,
-                'specific_recommendations': feedback.specific_recommendations,
-                'key_points_covered': feedback.key_points_covered,
-                'key_points_missed': feedback.key_points_missed,
-                'compliance_analysis': feedback.compliance_analysis,
-                'rag_sources': feedback.rag_sources,
+                'what_went_well': to_list(getattr(feedback, 'what_went_well', None)),
+                'areas_for_improvement': to_list(getattr(feedback, 'areas_for_improvement', None)),
+                'specific_recommendations': to_list(getattr(feedback, 'specific_recommendations', None)),
+                'key_points_covered': to_list(getattr(feedback, 'key_points_covered', None)),
+                'key_points_missed': to_list(getattr(feedback, 'key_points_missed', None)),
+                'compliance_analysis': getattr(feedback, 'compliance_analysis', {}) or {},
+                'rag_sources': getattr(feedback, 'rag_sources', []) or [],
             }
         except Feedback.DoesNotExist:
             pass
@@ -298,10 +329,90 @@ def session_feedback(request, case_id):
             return max(1, min(7, int(round((x/100.0)*7))))
         except Exception:
             return 4
-    approach_score = 6 if (comp.get('maintained_rapport') and not comp.get('used_jargon')) else 4
-    history_score = map_score(overall)
-    examination_score = map_score(overall)
-    diagnosis_score = 6 if (feedback_data or {}).get('outcome') == 'pass' else 3
+    # (ratings will be computed after deriving domain percentages below)
+
+    # Derive domain scores (history, examination, communication, reasoning) from AI feedback
+    def classify_category(text: str) -> str | None:
+        t = (text or '').lower()
+        if any(k in t for k in ['examin', 'palpat', 'auscultat', 'inspect', 'percuss', 'vital', 'bp', 'blood pressure']):
+            return 'examination'
+        if any(k in t for k in ['history', 'hx', 'symptom', 'onset', 'duration', 'medication', 'allerg', 'family', 'social', 'socrates']):
+            return 'history'
+        if any(k in t for k in ['explain', 'consent', 'rapport', 'empathy', 'reassur', 'open-ended', 'summar', 'communicat', 'ask if', 'any questions']):
+            return 'communication'
+        if any(k in t for k in ['diagnos', 'differential', 'investig', 'reason', 'management', 'plan', 'interpret']):
+            return 'reasoning'
+        return None
+
+    covered_points = (feedback_data or {}).get('key_points_covered') or []
+    missed_points = (feedback_data or {}).get('key_points_missed') or []
+    compliance = (feedback_data or {}).get('compliance_analysis') or {}
+
+    # Tally points by category
+    tallies = {'history': {'covered': 0, 'total': 0},
+               'examination': {'covered': 0, 'total': 0},
+               'communication': {'covered': 0, 'total': 0},
+               'reasoning': {'covered': 0, 'total': 0}}
+
+    for p in covered_points:
+        cat = classify_category(p)
+        if cat:
+            tallies[cat]['covered'] += 1
+            tallies[cat]['total'] += 1
+    for p in missed_points:
+        cat = classify_category(p)
+        if cat:
+            tallies[cat]['total'] += 1
+
+    def pct(covered: int, total: int, fallback: float) -> int:
+        if total > 0:
+            return max(0, min(100, int(round((covered / float(total)) * 100))))
+        # Fallback to overall if we cannot classify items
+        return int(round(fallback))
+
+    # Start from overall as fallback baseline
+    baseline = float(overall or 0)
+    history_pct = pct(tallies['history']['covered'], tallies['history']['total'], baseline)
+    exam_pct = pct(tallies['examination']['covered'], tallies['examination']['total'], baseline)
+    comm_pct = pct(tallies['communication']['covered'], tallies['communication']['total'], baseline)
+    reason_pct = pct(tallies['reasoning']['covered'], tallies['reasoning']['total'], baseline)
+
+    # Adjust communication with compliance signals
+    if compliance.get('used_jargon'):
+        comm_pct = max(0, comm_pct - 8)
+    if not compliance.get('maintained_rapport', True):
+        comm_pct = max(0, comm_pct - 8)
+
+    def label_for(score: int) -> str:
+        if score >= 85:
+            return 'Excellent'
+        if score >= 75:
+            return 'Very Good'
+        if score >= 65:
+            return 'Good'
+        if score >= 50:
+            return 'Satisfactory'
+        return 'Needs Improvement'
+
+    # Enrich feedback dict for template consumption
+    if feedback_data is None:
+        feedback_data = {}
+    feedback_data.update({
+        'history_score': history_pct,
+        'examination_score': exam_pct,
+        'communication_score': comm_pct,
+        'reasoning_score': reason_pct,
+        'history_label': label_for(history_pct),
+        'examination_label': label_for(exam_pct),
+        'communication_label': label_for(comm_pct),
+        'reasoning_label': label_for(reason_pct),
+    })
+
+    # Compute marksheet ratings now that domain percentages are available
+    approach_score = 6 if (compliance.get('maintained_rapport') and not compliance.get('used_jargon')) else 4
+    history_score = map_score(history_pct)
+    examination_score = map_score(exam_pct)
+    diagnosis_score = map_score(reason_pct)
     global_rating = map_score(overall)
 
     marksheet = {
@@ -324,6 +435,7 @@ def session_feedback(request, case_id):
         'feedback': feedback_data or {},
         'transcript': transcript_text,
         'marksheet': marksheet,
+        'category_slug': getattr(case, 'category', ''),
     }
 
     return render(request, 'simulation/feedback/feedback_report.html', context)

@@ -504,6 +504,14 @@
         .btn-finish:hover {
             background: #dc2626;
         }
+        /* Floating finish button */
+        .floating-finish {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            z-index: 2000;
+            box-shadow: 0 10px 15px rgba(239, 68, 68, 0.25);
+        }
         
         /* Modal */
         .modal-overlay {
@@ -687,7 +695,7 @@
                     <span id="status-text">Ready to Start</span>
                 </div>
                 <div class="timer-display" id="timer-display">
-                    <span id="timer-minutes">{{ case.duration|default:"20" }}</span>:<span id="timer-seconds">00</span>
+                    <span id="timer-minutes">8</span>:<span id="timer-seconds">00</span>
                 </div>
             </div>
         </div>
@@ -737,21 +745,7 @@
                                 <i data-lucide="play" class="w-5 h-5"></i>
                                 Start Session
                             </button>
-                            
-                            <button class="btn btn-secondary" id="pause-session" style="display: none;">
-                                <i data-lucide="pause" class="w-4 h-4"></i>
-                                Pause
-                            </button>
-                            
-                            <button class="btn btn-finish" id="finish-session" style="display: none;">
-                                <i data-lucide="square" class="w-4 h-4"></i>
-                                End Session
-                            </button>
-
-                            <button class="btn btn-secondary" id="toggle-tts">
-                                <i data-lucide="volume-2" class="w-4 h-4"></i>
-                                Patient Voice: On
-                            </button>
+                            <!-- Top-level Pause/End/TTS controls removed per requirements -->
                         </div>
                     </div>
                 </div>
@@ -791,7 +785,8 @@
                     </div>
                     
                     <div class="control-grid">
-                        <button class="btn btn-secondary" id="pause-btn" disabled>
+                        <!-- Pause/Resume button -->
+                        <button class="btn btn-secondary" id="pause-session" style="display:none;">
                             <i data-lucide="pause" class="w-4 h-4"></i>
                             Pause
                         </button>
@@ -801,7 +796,8 @@
                             Notes
                         </button>
                         
-                        <button class="btn btn-finish" id="finish-btn">
+                        <!-- Inline Finish button inside controls -->
+                        <button class="btn btn-finish" id="finish-session" style="display:none;">
                             <i data-lucide="square" class="w-4 h-4"></i>
                             Finish Session
                         </button>
@@ -810,6 +806,11 @@
             </div>
         </div>
     </div>
+    <!-- Floating Finish Session Button -->
+    <button class="btn btn-finish floating-finish" id="finish-floating" style="display:none;">
+        <i data-lucide="square" class="w-4 h-4"></i>
+        Finish Session
+    </button>
     
     <!-- Notes Modal -->
     <div class="modal-overlay" id="notes-modal">
@@ -840,7 +841,7 @@
         lucide.createIcons();
         
         // Session State
-        const caseDuration = {{ case.duration|default:"20" }};
+        const caseDuration = 8; // minutes
         let sessionState = {
             isActive: false,
             isPaused: false,
@@ -924,28 +925,7 @@
             elements.timerSeconds.textContent = seconds.toString().padStart(2, '0');
         }
         
-        function pauseTimer() {
-            sessionState.isPaused = !sessionState.isPaused;
-            
-            if (sessionState.isPaused) {
-                // Pause speech recognition
-                if (sessionState.speechRecognition && sessionState.isListening) {
-                    sessionState.speechRecognition.stop();
-                }
-                elements.pauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Resume';
-                updateSpeechStatus('listening', 'Session paused. Click Resume to continue.');
-                updateStatus('processing', 'Session Paused');
-            } else {
-                // Resume speech recognition
-                if (sessionState.speechRecognition && sessionState.isActive) {
-                    sessionState.speechRecognition.start();
-                }
-                elements.pauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> Pause';
-                updateSpeechStatus('listening', 'Listening... Speak now');
-                updateStatus('listening', 'Listening...');
-            }
-            lucide.createIcons();
-        }
+        // Pause removed
         
         // Status Updates
         function updateStatus(status, text) {
@@ -1187,9 +1167,11 @@
                     sessionState.userHasStarted = false;
             
                     // Update UI
-            elements.startBtn.style.display = 'none';
-                    elements.pauseBtn.style.display = 'inline-flex';
-                    elements.finishBtn.style.display = 'inline-flex';
+                    elements.startBtn.style.display = 'none';
+                    const finishFloating = document.getElementById('finish-floating');
+                    if (finishFloating) finishFloating.style.display = 'none';
+                    if (elements.finishBtn) elements.finishBtn.style.display = 'inline-flex';
+                    if (elements.pauseBtn) elements.pauseBtn.style.display = 'inline-flex';
             
             // Start timer
             startTimer();
@@ -1270,8 +1252,10 @@
             
             // Update UI
             elements.startBtn.style.display = 'inline-flex';
-            elements.pauseBtn.style.display = 'none';
-            elements.finishBtn.style.display = 'none';
+            const finishFloating2 = document.getElementById('finish-floating');
+            if (finishFloating2) finishFloating2.style.display = 'none';
+            if (elements.finishBtn) elements.finishBtn.style.display = 'none';
+            if (elements.pauseBtn) elements.pauseBtn.style.display = 'none';
             
             updateStatus('processing', 'Session Ended');
             updateSpeechStatus('listening', 'Session ended. Click "Start Session" to begin again.');
@@ -1452,12 +1436,47 @@
         
         // Event Listeners
         elements.startBtn.addEventListener('click', startSession);
-        elements.pauseBtn.addEventListener('click', pauseTimer);
-        elements.finishBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to finish this session? This cannot be undone.')) {
-                endSession();
-            }
-        });
+        const finishFloatingBtn = document.getElementById('finish-floating');
+        if (finishFloatingBtn) {
+            finishFloatingBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to finish this session? This cannot be undone.')) {
+                    endSession();
+                }
+            });
+        }
+        if (elements.finishBtn) {
+            elements.finishBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to finish this session? This cannot be undone.')) {
+                    endSession();
+                }
+            });
+        }
+
+        // Pause/Resume handler
+        if (elements.pauseBtn) {
+            elements.pauseBtn.addEventListener('click', () => {
+                if (!sessionState.isActive) return;
+                sessionState.isPaused = !sessionState.isPaused;
+                if (sessionState.isPaused) {
+                    // Stop listening while paused
+                    if (sessionState.speechRecognition && sessionState.isListening) {
+                        try { sessionState.speechRecognition.stop(); } catch (_) {}
+                    }
+                    updateStatus('processing', 'Paused');
+                    updateSpeechStatus('processing', 'Session paused');
+                    elements.pauseBtn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i> Resume';
+                } else {
+                    // Resume listening
+                    if (sessionState.speechRecognition && !sessionState.isListening && !sessionState.speechSuspended) {
+                        try { sessionState.speechRecognition.start(); } catch (_) {}
+                    }
+                    updateStatus('listening', 'Listening...');
+                    updateSpeechStatus('listening', 'Listening... Speak now');
+                    elements.pauseBtn.innerHTML = '<i data-lucide="pause" class="w-4 h-4"></i> Pause';
+                }
+                lucide.createIcons();
+            });
+        }
         
         // Speech indicator click handler
         elements.speechIndicator.addEventListener('click', () => {
@@ -1475,19 +1494,7 @@
             }
         });
 
-        // Toggle TTS button
-        elements.toggleTtsBtn.addEventListener('click', () => {
-            sessionState.ttsEnabled = !sessionState.ttsEnabled;
-            elements.toggleTtsBtn.innerHTML = sessionState.ttsEnabled
-                ? '<i data-lucide="volume-2" class="w-4 h-4"></i> Patient Voice: On'
-                : '<i data-lucide="volume-x" class="w-4 h-4"></i> Patient Voice: Off';
-            lucide.createIcons();
-            // If turning off, cancel any ongoing speech
-            if (!sessionState.ttsEnabled && sessionState.ttsUtterance) {
-                try { window.speechSynthesis.cancel(); } catch (_) {}
-                sessionState.ttsUtterance = null;
-            }
-        });
+        // TTS toggle removed
         
         elements.notesBtn.addEventListener('click', openNotesModal);
         elements.closeNotesModal.addEventListener('click', closeNotesModal);
@@ -1512,12 +1519,7 @@
                         startSession();
                     }
                     break;
-                case 'p':
-                    if (sessionState.isActive) {
-                        e.preventDefault();
-                        pauseTimer();
-                    }
-                    break;
+                // Pause shortcut removed
                 case 'n':
                     e.preventDefault();
                     openNotesModal();
