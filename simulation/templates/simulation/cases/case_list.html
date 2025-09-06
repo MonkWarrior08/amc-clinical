@@ -775,13 +775,11 @@
                                 <h3 class="patient-name">{{ case.case_id|title }}</h3>
                                 <div class="patient-details">
                                     <div class="age-badge">{{ category_name }}</div>
-                                    <div class="gender-badge">Case Study</div>
+                                    <div class="gender-badge">{% if case.case_type %}{{ case.case_type|title }} Case{% else %}Clinical Case{% endif %}</div>
                                 </div>
                             </div>
                             <div class="case-status">
-                                <div class="difficulty-badge {% if case.case_type == 'long' %}difficulty-advanced{% else %}difficulty-intermediate{% endif %}">
-                                    {% if case.case_type %}{{ case.case_type|title }} Case{% else %}Clinical Case{% endif %}
-                                </div>
+                                
                                 <div class="completion-status">
                                     <i data-lucide="circle" class="w-4 h-4"></i>
                                     <span>Not Completed</span>
@@ -810,12 +808,6 @@
                         </div>
                         
                         <div class="case-meta">
-                            <div class="case-tags">
-                                <span class="case-tag">{{ category_name }}</span>
-                                {% if case.case_type %}<span class="case-tag">{{ case.case_type|title }} Case</span>{% endif %}
-                                <span class="case-tag">Clinical Practice</span>
-                                <span class="case-tag">AI Simulation</span>
-                            </div>
                             <div class="duration-estimate">
                                 <i data-lucide="clock" class="w-4 h-4"></i>
                                 <span>~10 min</span>
@@ -824,7 +816,6 @@
                                 <i data-lucide="play" class="w-4 h-4"></i>
                                 Start
                             </a>
-                            <i data-lucide="arrow-right" class="w-5 h-5 case-arrow"></i>
                         </div>
                     </div>
                     {% empty %}

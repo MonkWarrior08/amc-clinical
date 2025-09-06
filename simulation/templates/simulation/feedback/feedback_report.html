@@ -751,10 +751,7 @@
                         <i data-lucide="clock" class="w-4 h-4"></i>
                         <span><span class="info-value">{{ session.duration|default:"18" }} min</span> used</span>
                     </div>
-                    <div class="info-item">
-                        <i data-lucide="target" class="w-4 h-4"></i>
-                        <span><span class="info-value">{{ session.difficulty|title|default:"Beginner" }}</span> Level</span>
-                    </div>
+                    
                 </div>
             </section>
             
@@ -982,25 +979,13 @@
                 </p>
                 
                 <div class="transcript-preview">
-[10:32] Doctor: Hello Erin, please have a seat. I'm Dr. Smith. I understand you've come to see me today about some skin concerns?
-
-[10:32] Patient: Hi doctor. Yeah, I've been having problems with spots on my face for a few months now and they're getting worse.
-
-[10:33] Doctor: I can see this is concerning for you. Can you tell me when you first noticed these spots appearing?
-
-[10:33] Patient: It started maybe 3 months ago with just a couple on my forehead, but now they're on my cheeks too and some of them are really red and sore.
-
-[10:34] Doctor: That must be frustrating. How has this been affecting you at school or with your friends?
-
-[10:34] Patient: It's really embarrassing. I don't want to go to school sometimes because I feel like everyone's staring at my face...
-
-<!-- Transcript continues... -->
+{{ transcript|default:"No transcript captured for this session." }}
                 </div>
                 
                 <div class="transcript-actions">
-                    <a href="{% url 'session_transcript' session_id=session.id %}" class="btn btn-outline">
+                    <a href="{% url 'session_history' %}" class="btn btn-outline">
                         <i data-lucide="eye" class="w-4 h-4"></i>
-                        View Full Transcript
+                        View Session History
                     </a>
                     <button class="btn btn-outline" onclick="downloadTranscript()">
                         <i data-lucide="download" class="w-4 h-4"></i>
@@ -1025,9 +1010,9 @@
                         <i data-lucide="grid-3x3" class="w-4 h-4"></i>
                         Explore Other Categories
                     </a>
-                    <a href="{% url 'progress_analytics' %}" class="btn btn-transparent">
+                    <a href="{% url 'dashboard' %}" class="btn btn-transparent">
                         <i data-lucide="trending-up" class="w-4 h-4"></i>
-                        View Progress Analytics
+                        Go to Dashboard
                     </a>
                 </div>
             </section>

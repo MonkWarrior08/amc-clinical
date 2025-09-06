@@ -29,6 +29,24 @@ class FeedbackAgent:
         self.llm = ai_config.get_llm(temperature=0.3)  # Lower temperature for consistent feedback
         self.rag_queries_used = []
     
+    def _get_suggested_approach(self) -> Dict[str, Any]:
+        """Support both Case model instances and dict case_data."""
+        try:
+            # Model-style access
+            if hasattr(self.case_data, 'get_suggested_approach'):
+                return self.case_data.get_suggested_approach()
+        except Exception:
+            pass
+        # Dict-style fallback
+        data = self.case_data if isinstance(self.case_data, dict) else {}
+        return {
+            'specific_questions': data.get('specific_questions', ''),
+            'examination_details': data.get('examination_details', ''),
+            'management_plan': data.get('management_plan', ''),
+            'case_commentary': data.get('case_commentary', ''),
+            'pitfalls': data.get('pitfalls', '')
+        }
+
     def generate_feedback(self, session_transcript: str, case_id: str) -> Dict[str, Any]:
         """
         Generate comprehensive feedback for a session
@@ -42,8 +60,8 @@ class FeedbackAgent:
         """
         start_time = time.time()
         
-        # Get suggested approach for evaluation
-        suggested_approach = self.case_data.get_suggested_approach()
+        # Get suggested approach for evaluation (robust to dict or model instance)
+        suggested_approach = self._get_suggested_approach()
         
         # Analyze the session
         analysis = self._analyze_session(session_transcript, suggested_approach)
@@ -66,6 +84,11 @@ class FeedbackAgent:
         return {
             'overall_score': scores['overall_score'],
             'pass_fail': scores['pass_fail'],
+            'coverage_percentage': round(analysis.get('coverage_percentage', 0), 1),
+            'covered_count': len(analysis.get('key_points_covered', [])),
+            'missed_count': len(analysis.get('key_points_missed', [])),
+            'total_key_points': analysis.get('total_key_points', 0),
+            'compliance_penalty': scores.get('compliance_penalty', 0),
             'what_went_well': feedback_report['what_went_well'],
             'areas_for_improvement': feedback_report['areas_for_improvement'],
             'specific_recommendations': feedback_report['specific_recommendations'],

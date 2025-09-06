@@ -227,4 +227,61 @@ def case_simulation(request, case_id):
 
 @login_required
 def session_feedback(request, case_id):
-    return render(request, 'simulation/feedback/feedback_report.html', {'case_id': case_id})
+    """Render personalized AI feedback for the user's latest session of this case"""
+    from .models import Session, Feedback, Case
+
+    # Find the case
+    try:
+        case = Case.objects.get(case_id=case_id)
+    except Case.DoesNotExist:
+        messages.error(request, 'Case not found')
+        return redirect('categories')
+
+    # Allow explicit session selection via query param
+    selected_session_id = request.GET.get('session_id')
+    if selected_session_id:
+        session_obj = Session.objects.filter(user=request.user, case=case, session_id=selected_session_id).first()
+    else:
+        # Get the most recent session for this user and case
+        session_obj = (
+            Session.objects.filter(user=request.user, case=case)
+            .order_by('-ended_at', '-started_at')
+            .first()
+        )
+
+    feedback_data = None
+    session_ctx = {
+        'patient_name': getattr(case, 'case_id', 'Patient'),
+        'completed_date': getattr(session_obj, 'ended_at', None) or getattr(session_obj, 'started_at', None),
+        'duration': getattr(session_obj, 'duration_minutes', None) or '',
+    }
+    transcript_text = ''
+
+    if session_obj:
+        try:
+            feedback = Feedback.objects.get(session=session_obj)
+            # Map model fields to template-friendly structure
+            feedback_data = {
+                'overall_score': feedback.overall_score,
+                'outcome': 'pass' if feedback.pass_fail else 'fail',
+                'what_went_well': feedback.what_went_well,
+                'areas_for_improvement': feedback.areas_for_improvement,
+                'specific_recommendations': feedback.specific_recommendations,
+                'key_points_covered': feedback.key_points_covered,
+                'key_points_missed': feedback.key_points_missed,
+                'compliance_analysis': feedback.compliance_analysis,
+                'rag_sources': feedback.rag_sources,
+            }
+        except Feedback.DoesNotExist:
+            pass
+        # Pull transcript from the session record
+        transcript_text = session_obj.transcript or ''
+
+    context = {
+        'case_id': case_id,
+        'session': session_ctx,
+        'feedback': feedback_data or {},
+        'transcript': transcript_text,
+    }
+
+    return render(request, 'simulation/feedback/feedback_report.html', context)

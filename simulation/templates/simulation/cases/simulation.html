@@ -678,7 +678,7 @@
                     </div>
                     <div class="patient-name" id="patient-name">{{ case.patient_name|default:"Erin Campbell" }}</div>
                 </div>
-                <div class="session-type">{{ case.difficulty|title|default:"Beginner" }} Level</div>
+                
             </div>
             
             <div class="timer-section">
@@ -1182,21 +1182,21 @@
                 
                 if (data.success) {
                     sessionState.sessionId = data.session_id;
-                    sessionState.isActive = true;
-                    sessionState.isPaused = false;
+            sessionState.isActive = true;
+            sessionState.isPaused = false;
                     sessionState.userHasStarted = false;
-                    
+            
                     // Update UI
-                    elements.startBtn.style.display = 'none';
+            elements.startBtn.style.display = 'none';
                     elements.pauseBtn.style.display = 'inline-flex';
                     elements.finishBtn.style.display = 'inline-flex';
-                    
-                    // Start timer
-                    startTimer();
+            
+            // Start timer
+            startTimer();
                     updateStatus('listening', 'Ready for your first question');
                     updateSpeechStatus('listening', 'Listening... Start by speaking to the patient');
-                    
-                    // Add initial message
+            
+            // Add initial message
                     addMessage('system', 'Session started. Please begin by speaking to the patient. You can ask questions, conduct examinations, or address the "Examiner" for findings.');
                     
                     // Start speech recognition immediately on user gesture
@@ -1276,11 +1276,8 @@
             updateStatus('processing', 'Session Ended');
             updateSpeechStatus('listening', 'Session ended. Click "Start Session" to begin again.');
             
-            // Show session complete message
-            if (confirm('Session completed! Would you like to review your performance and get AI feedback?')) {
-                // Redirect to feedback page
-                window.location.href = `{% url 'session_feedback' case_id=case_id %}`;
-            }
+            // Redirect to feedback page directly, include session_id to load exact feedback
+            window.location.href = `{% url 'session_feedback' case_id=case_id %}` + `?session_id=${encodeURIComponent(sessionState.sessionId || '')}`;
             
             console.log('Session ended');
         }
