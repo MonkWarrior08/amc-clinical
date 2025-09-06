@@ -859,7 +859,10 @@
             speechBackoffMs: 0,
             ttsEnabled: true,
             ttsUtterance: null,
-            isPatientSpeaking: false
+            isPatientSpeaking: false,
+            interimDebounceTimeout: null,
+            lastInterimText: '',
+            lastPatientText: ''
         };
         
         // DOM Elements
@@ -1022,7 +1025,7 @@
                         updateSpeechStatus('recording', `Listening... ${lastInterimText}`);
                         if (interimDebounceTimeout) clearTimeout(interimDebounceTimeout);
                         interimDebounceTimeout = setTimeout(() => {
-                            if (sessionState.isActive && !sessionState.isPaused && lastInterimText) {
+                            if (sessionState.isActive && !sessionState.isPaused && !sessionState.isPatientSpeaking && lastInterimText) {
                                 processUserSpeech(lastInterimText);
                                 lastInterimText = '';
                             }
@@ -1057,15 +1060,15 @@
                 
                 sessionState.speechRecognition.onend = function() {
                     sessionState.isListening = false;
-                    if (sessionState.isActive && !sessionState.isPaused && lastInterimText) {
+                    if (sessionState.isActive && !sessionState.isPaused && !sessionState.isPatientSpeaking && lastInterimText) {
                         processUserSpeech(lastInterimText);
                         lastInterimText = '';
                     }
-                    if (sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
+                    if (sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended && !sessionState.isPatientSpeaking) {
                         updateSpeechStatus('listening', 'Listening... Speak now');
                         // Restart listening automatically
                         setTimeout(() => {
-                            if (sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended) {
+                            if (sessionState.isActive && !sessionState.isPaused && !sessionState.speechSuspended && !sessionState.isPatientSpeaking) {
                                 sessionState.speechRecognition.start();
                             }
                         }, 100);
